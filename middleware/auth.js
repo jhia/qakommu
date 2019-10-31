@@ -3,38 +3,36 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models');
 const { Roles, Permissions, Resources, Users } = db;
-// const Op = require('sequelize').Op;
+const Op = require('sequelize').Op;
 
 async function permissionsVerification(req, res, decoded, module_name, action) {
     let user = false;
     if (!_.isEmpty(decoded.email) && !_.isEmpty(module_name) && !_.isEmpty(action) ) {
-        const user_attributes = [
-            'id',
-            'uuid'
-        ];
         const field_id = ['id'];
         user = await Users.findOne({
             where: {
                 email: decoded.email
             },
-            attributes: user_attributes,
+            attributes: field_id,
             include:[{
                 model: Roles,
                 as: 'roles',
                 required: true,
+                duplicating: true,
                 attributes: field_id,
                 through: {attributes: []},
                 include: [{
                     model: Permissions,
+                    as: 'permissions',
                     required:true,
-                    as:'permissions',
+                    duplicating: true,
                     attributes: field_id,
                     through: {attributes: []},
                     include: [{
                         model: Resources,
-                        required: true,
                         as:'resource',
                         attributes: field_id,
+                        duplicating: true,
                         where: {
                             module_name,
                             action

@@ -537,11 +537,12 @@ class base {
      */
     async getTotal(where){
         const clean_attributes_of_relations = cleanAttributes(_.cloneDeep(this.relations));
+        const private_field = `${this.model.tableName}.${this.pk}`;
         const total = await this.model.findAll({
             attributes:[this.pk],
             include: clean_attributes_of_relations,
             where,
-            group: [this.pk],
+            // group: [private_field],
         });
 
         return total.length || 0;

@@ -7,6 +7,7 @@ async function getUserUuid(queryInterface){
         type: queryInterface.sequelize.QueryTypes.SELECT
       }
     );
+
     return user[0].id;
 }
 

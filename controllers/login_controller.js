@@ -21,10 +21,12 @@ class login_controller extends base {
             },
             include:[{
                 model: Roles,
+                as: 'roles',
                 attributes: ['id'],
                 through: { attributes:[] },
                 include: [{
                     model: Permissions,
+                    as: 'permissions',
                     include: [{
                         model: Resources,
                         as: 'resource'
@@ -70,14 +72,14 @@ class login_controller extends base {
 
     getResourcesForUser(user) {
         const { roles } = user;
-
         if (roles) {
             const resources = roles.map((rol) => {
                 const { permissions } = rol;
                 return permissions.map((permission) => {
+                    const { resource } = permission.dataValues;
                     try {
-                        const { module_name, action } = permission.resource.dataValues;
-                        return `${module_name}.${action}`;
+                        const { module_name, action } = resource;
+                        return { [module_name]: action };
                     } catch (e) {
                         return false;
                     }
@@ -85,7 +87,6 @@ class login_controller extends base {
             });
             return resources[0];
         }
-
         return [];
     }
 }

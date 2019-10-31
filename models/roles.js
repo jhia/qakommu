@@ -1,7 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Roles = sequelize.define('Roles', {
-    userId: DataTypes.INTEGER,
     description: DataTypes.STRING
   }, {});
   Roles.associate = function(models) {
@@ -14,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     Roles.belongsToMany(models.Permissions, {
       through: 'PermissionsRoles',
       foreignKey: 'rolId',
+      as: 'permissions'
     });
   };
   return Roles;
