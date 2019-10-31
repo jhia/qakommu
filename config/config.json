@@ -1,0 +1,42 @@
+{
+  "development_docker": {
+    "username": "kommu",
+    "password": "kommu_password",
+    "database": "kommu",
+    "host": "kommu_db",
+    "dialect": "postgres",
+    "timezone": "-04:30"
+  },
+  "test_docker": {
+    "username": "kommu",
+    "password": "kommu_password",
+    "database": "kommu_test",
+    "host": "kommu_db",
+    "dialect": "postgres",
+    "timezone": "-04:30"
+  },
+  "development_local": {
+    "username": "kommu",
+    "password": "kommu_password",
+    "database": "kommu",
+    "host": "localhost",
+    "dialect": "postgres",
+    "timezone": "-04:30"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "timezone": "-04:30"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "timezone": "-04:30"
+  }
+}

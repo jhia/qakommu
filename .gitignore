@@ -1,0 +1,10 @@
+node_modules
+.idea
+package-lock.json
+.vscode
+.nyc_output
+test/report/*.js
+test/report/*.html
+test/report/assets/
+test/report/*.json
+mochawesome-report/

@@ -1,0 +1,39 @@
+version: '3.5'
+services:
+  kommu_db:
+    image: postgres:11-alpine
+    container_name: kommu_db
+    environment:
+      POSTGRES_DB: kommu
+      POSTGRES_PASSWORD: kommu_password
+      POSTGRES_USER: kommu
+    networks: [kommu]
+    ports:
+      - 5432:5432
+  kommu:
+    image: kommu_development:1.0
+    environment:
+      #DB CONFIGURATION
+      DB_HOST: kommu_db
+      NODE_ENV: development_docker
+      PORT: 8000
+      KOMMU_DB_PORT: 5432
+    container_name: kommu
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - 8000:8000
+      - 9229:9229
+    depends_on:
+      - kommu_db
+    networks: [kommu]
+
+networks:
+  kommu:
+    name: kommu
+    driver: bridge
