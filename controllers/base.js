@@ -128,12 +128,6 @@ class base {
         this.offset = 0;
 
         /**
-         * validate fields sent from query parameters
-         * @type {boolean}
-         */
-        this.validate_search_fields = false;
-
-        /**
          * fields used to match custom searches
          * @type {object}
          */
@@ -405,8 +399,8 @@ class base {
     async _validate_fields(fields, messages, update) {
         for (const index in fields) {
             const field = fields[index];
-            const where =  {
-                [field]: this.req.body[field]
+            const where = {
+                [field]: this.req.body[field] || null
             };
             if (update) {
                 where[this.pk] = {

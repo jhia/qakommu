@@ -10,11 +10,18 @@ class users_controller extends base {
     initProperties() {
         this.model = Users;
         this.response_fields = [
+            'name',
+            'last_name',
+            'email',
+            'gender',
+            'repositoryId',
+            'last_login',
             'active',
+            'createdAt',
+            'updatedAt',
         ];
 
         this.fillables = [];
-
 
         this.relations = [
             {

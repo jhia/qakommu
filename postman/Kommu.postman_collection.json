@@ -359,6 +359,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"henry\",\n    \"last_name\": \"drama\",\n    \"email\": \"dramatismo1123@email.com\",\n    \"username\": \"henrydrama\",\n    \"password\": \"dramatismo\",\n    \"gender\": \"M\",\n\t\"repository_id\": 0,\n\t\"address\": \"calle nueva\",\n\t\"country\": \"venezuela\"\n}"
+				},
+				"url": {
+					"raw": "{{server}}:{{port}}/register",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -385,13 +413,13 @@
 	],
 	"variable": [
 		{
-			"id": "4d10a1e2-cac0-4c79-9b7d-65b5a1b5d32f",
+			"id": "8e4b874a-1257-4d3d-bad5-81a298787608",
 			"key": "server",
 			"value": "localhost",
 			"type": "string"
 		},
 		{
-			"id": "e5249e10-b987-424c-b791-e7e013d1eb95",
+			"id": "0e34b7ef-7fdd-4108-9656-07de1e14a488",
 			"key": "port",
 			"value": "3000",
 			"type": "string"

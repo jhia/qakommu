@@ -1,1 +1,5 @@
-docker rmi -f $(docker images --filter "dangling=true" -q)
+none_images=$(docker images --filter "dangling=true" -q)
+echo $none_images
+if [ $none_image -ne "" ]; then
+    docker rmi $none_images
+fi

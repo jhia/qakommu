@@ -22,6 +22,9 @@ app.use(auth);
 //LOGIN
 const login_router = require('./routes/login');
 app.use('/auth', login_router);
+//Register
+const register_router = require('./routes/register');
+app.use('/register', register_router);
 //API ROUTES
 app.use('/api', api_router);
 
