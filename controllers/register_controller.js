@@ -33,8 +33,8 @@ class register_controller extends base {
         const email = this.req.body.email || null;
         const user_created = await this.create(true, ['email'], [`the email [${email}] already exists for a user`]);
         if (user_created) {
-            if (!_.isEmpty(this.req.body.roles)) {
-                user_created.addRoles(this.req.body.roles || []);
+            if (!_.isEmpty(this.req.body.roles) || 1) {
+                user_created.addRoles(this.req.body.roles || [1]);
             }
             //RESPONSE USER CREATED
             this.res.status(201).json({
