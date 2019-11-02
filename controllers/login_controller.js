@@ -51,6 +51,10 @@ class login_controller extends base {
                 resources: this.getResourcesForUser(user),
             };
 
+            user.update({
+                last_login: new Date()
+            });
+
             User.token = jwt.sign(User, keys.secret, {
                 expiresIn: '1y',
                 algorithm: 'HS512',
