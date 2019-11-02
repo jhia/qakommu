@@ -5,6 +5,7 @@ module.exports = {
     return queryInterface.bulkInsert('Roles', [{
         id: 1,
         description: 'admin',
+        default: true
     }], {});
   },
 

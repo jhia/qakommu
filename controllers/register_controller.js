@@ -1,6 +1,6 @@
 const base = require('./base');
 const db = require('../models');
-const { Users } = db;
+const { Users, Roles } = db;
 const keys = require('../config/keys');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -31,10 +31,17 @@ class register_controller extends base {
 
     async post() {
         const email = this.req.body.email || null;
+        const default_rol = await Roles.findOne({
+            where:{
+                default: true
+            },
+            attributes: ['id']
+        });
+
         const user_created = await this.create(true, ['email'], [`the email [${email}] already exists for a user`]);
         if (user_created) {
-            if (!_.isEmpty(this.req.body.roles) || 1) {
-                user_created.addRoles(this.req.body.roles || [1]);
+            if (!_.isEmpty(this.req.body.roles) || default_rol.id) {
+                user_created.addRoles(this.req.body.roles || default_rol.id);
             }
             //RESPONSE USER CREATED
             this.res.status(201).json({
