@@ -17,6 +17,7 @@ services:
       DB_HOST: kommu_db
       NODE_ENV: development_docker
       PORT: 8000
+      DEBUG_PORT: 9298
       KOMMU_DB_PORT: 5432
     container_name: kommu
     build:
@@ -28,7 +29,7 @@ services:
         target: /app
     ports:
       - 8000:8000
-      - 9229:9229
+      - 9228:9228
     depends_on:
       - kommu_db
     networks: [kommu]

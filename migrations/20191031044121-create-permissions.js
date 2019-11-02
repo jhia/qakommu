@@ -12,7 +12,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       resId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Resources',
+          key: 'id'
+        },
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
