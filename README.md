@@ -57,5 +57,5 @@ $ docker-compose logs -f kommu
 # ports:
 * ##### Postgres Server: 5432
 * ##### Kommu API: 8000
-* ##### Node Debug Port: 9229
+* ##### Node Debug Port: 9228
 
