@@ -15,8 +15,6 @@ module.exports = {
         email: 'nigga@mail.com',
         active: true,
         password: encrypt_password('admin'),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }], {});
   },
 

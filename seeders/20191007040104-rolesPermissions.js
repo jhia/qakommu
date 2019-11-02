@@ -16,8 +16,6 @@ module.exports = {
       return {
         rolId: 1,
         perId: permission.id,
-        createdAt: new Date(),
-        updatedAt: new Date()
       };
     });
 

@@ -16,8 +16,6 @@ module.exports = {
       return queryInterface.bulkInsert('UsersRoles', [{
         userId: await getUserUuid(queryInterface),
         rolId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
       }], {});
   },
 
