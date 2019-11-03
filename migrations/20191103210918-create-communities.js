@@ -25,7 +25,7 @@ module.exports = {
         allowNull: false,
       },
       member_verification: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BOOLEAN,
       },
       repositoryId: {
         type: Sequelize.INTEGER,

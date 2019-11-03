@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     web: DataTypes.STRING,
     prefix: DataTypes.STRING,
-    member_verification: DataTypes.INTEGER,
+    member_verification: DataTypes.BOOLEAN,
     repositoryId: DataTypes.INTEGER
   }, {});
   Communities.associate = function(models) {
