@@ -14,6 +14,7 @@ module.exports = {
         last_name: 'nigga',
         email: 'nigga@mail.com',
         active: true,
+        gender: 'M',
         password: encrypt_password('admin'),
       }], {});
   },
