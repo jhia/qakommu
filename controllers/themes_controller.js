@@ -11,16 +11,22 @@ class themes_controller extends base {
         this.model = Themes;
         this.response_fields = [
             'id',
+            'name',
             'description',
+            'active',
+            'requested'
         ];
 
         this.fillables = [
-            'description'
+            'name',
+            'description',
+            'active',
+            'requested'
         ];
         this.relations = [];
 
         this.pk = 'id';
-        this.not_found_message = 'Rol with id <%= record %> Not Found!';
+        this.not_found_message = 'Theme with id <%= record %> Not Found!';
         this.module_name = 'themes';
         this.validate_permissions = true;
     }
