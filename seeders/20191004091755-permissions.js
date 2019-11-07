@@ -107,6 +107,23 @@ module.exports = {
                 resId: await getResourceId(queryInterface,'communities', 'delete'),
                 description: 'delete Communities',
             },
+            //Events
+            {
+                resId: await getResourceId(queryInterface,'events', 'create'),
+                description: 'create Events',
+            },
+            {
+                resId: await getResourceId(queryInterface,'events', 'read'),
+                description: 'read Events',
+            },
+            {
+                resId: await getResourceId(queryInterface,'events', 'update'),
+                description: 'update Events',
+            },
+            {
+                resId: await getResourceId(queryInterface,'events', 'delete'),
+                description: 'delete Events',
+            },
         ], {});
     },
 

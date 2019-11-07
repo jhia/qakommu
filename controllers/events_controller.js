@@ -1,31 +1,37 @@
 const base = require('./base');
 const db = require('../models');
 // const sequelize = require('sequelize');
-const { Communities } = db;
+const { Events } = db;
 // const { Op } = sequelize;
 const _ = require('lodash');
 
-class communities_controller extends base {
+class events_controller extends base {
     initProperties() {
-        this.model = Communities;
+        this.model = Events;
         this.response_fields = [
             'id',
-            'name',
-            'description',
-            'web',
-            'prefix',
-            'member_verification',
+            'title',
+            'communityId',
+            'online',
+            'start',
+            'end',
+            'active',
+            'formId',
+            'prom_rate',
             'repositoryId',
             'createdAt',
             'updatedAt',
         ];
 
         this.fillables = [
-            'name',
-            'description',
-            'web',
-            'prefix',
-            'member_verification',
+            'title',
+            'communityId',
+            'online',
+            'start',
+            'end',
+            'active',
+            'formId',
+            'prom_rate',
             'repositoryId',
             'createdAt',
             'updatedAt',
@@ -34,7 +40,7 @@ class communities_controller extends base {
 
         this.pk = 'id';
         this.not_found_message = 'Community with id <%= record %> Not Found!';
-        this.module_name = 'communities';
+        this.module_name = 'events';
         this.validate_permissions = true;
     }
 
@@ -59,4 +65,4 @@ class communities_controller extends base {
     }
 }
 
-module.exports = communities_controller;
+module.exports = events_controller;

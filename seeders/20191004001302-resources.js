@@ -119,6 +119,27 @@ module.exports = {
               action: 'delete',
               description: 'Delete communities',
           },
+          //Events
+          {
+              module_name: 'events',
+              action: 'create',
+              description: 'Create events',
+          },
+          {
+              module_name: 'events',
+              action: 'read',
+              description: 'Read events',
+          },
+          {
+              module_name: 'events',
+              action: 'update',
+              description: 'Update events',
+          },
+          {
+              module_name: 'events',
+              action: 'delete',
+              description: 'Delete events',
+          },
       ], {})
   },
 

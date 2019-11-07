@@ -12,9 +12,12 @@ router.use('/permissions', permissions_router);
 //Resources
 const resources_router = require('./resources');
 router.use('/resources', resources_router);
-//Resources
+//Communities
 const communities_router = require('./communities');
 router.use('/communities', communities_router);
+//Events
+const events_router = require('./events');
+router.use('/events', events_router);
 
 
 module.exports = router;
