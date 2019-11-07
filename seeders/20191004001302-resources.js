@@ -140,6 +140,27 @@ module.exports = {
               action: 'delete',
               description: 'Delete events',
           },
+          //Themes
+          {
+              module_name: 'themes',
+              action: 'create',
+              description: 'Create themes',
+          },
+          {
+              module_name: 'themes',
+              action: 'read',
+              description: 'Read themes',
+          },
+          {
+              module_name: 'themes',
+              action: 'update',
+              description: 'Update themes',
+          },
+          {
+              module_name: 'themes',
+              action: 'delete',
+              description: 'Delete themes',
+          },
       ], {})
   },
 

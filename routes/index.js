@@ -18,6 +18,9 @@ router.use('/communities', communities_router);
 //Events
 const events_router = require('./events');
 router.use('/events', events_router);
+//Themes
+const themes_router = require('./themes');
+router.use('/themes', themes_router);
 
 
 module.exports = router;

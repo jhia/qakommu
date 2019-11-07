@@ -124,6 +124,23 @@ module.exports = {
                 resId: await getResourceId(queryInterface,'events', 'delete'),
                 description: 'delete Events',
             },
+            //Themes
+            {
+                resId: await getResourceId(queryInterface,'themes', 'create'),
+                description: 'create Themes',
+            },
+            {
+                resId: await getResourceId(queryInterface,'themes', 'read'),
+                description: 'read Themes',
+            },
+            {
+                resId: await getResourceId(queryInterface,'themes', 'update'),
+                description: 'update Themes',
+            },
+            {
+                resId: await getResourceId(queryInterface,'themes', 'delete'),
+                description: 'delete Themes',
+            },
         ], {});
     },
 
