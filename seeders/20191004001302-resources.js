@@ -98,6 +98,27 @@ module.exports = {
               action: 'update',
               description: 'Update me',
           },
+          //Communities
+          {
+              module_name: 'communities',
+              action: 'create',
+              description: 'Create communities',
+          },
+          {
+              module_name: 'communities',
+              action: 'read',
+              description: 'Read communities',
+          },
+          {
+              module_name: 'communities',
+              action: 'update',
+              description: 'Update communities',
+          },
+          {
+              module_name: 'communities',
+              action: 'delete',
+              description: 'Delete communities',
+          },
       ], {})
   },
 

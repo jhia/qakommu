@@ -90,6 +90,23 @@ module.exports = {
                 resId: await getResourceId(queryInterface,'me', 'update'),
                 description: 'update me',
             },
+            //Communities
+            {
+                resId: await getResourceId(queryInterface,'communities', 'create'),
+                description: 'create Communities',
+            },
+            {
+                resId: await getResourceId(queryInterface,'communities', 'read'),
+                description: 'read Communities',
+            },
+            {
+                resId: await getResourceId(queryInterface,'communities', 'update'),
+                description: 'update Communities',
+            },
+            {
+                resId: await getResourceId(queryInterface,'communities', 'delete'),
+                description: 'delete Communities',
+            },
         ], {});
     },
 
