@@ -44,8 +44,23 @@ class events_controller extends base {
         ];
         this.relations = [];
 
+        this.search_fields = {
+            "title": {
+                whereTo: "master",
+                real_name: "title"
+            },
+            "is_draft": {
+                whereTo: "master",
+                real_name: "is_draft"
+            },
+            "description": {
+                whereTo: "master",
+                real_name: "description"
+            }
+        };
+
         this.pk = 'id';
-        this.not_found_message = 'Community with id <%= record %> Not Found!';
+        this.not_found_message = 'Events with id <%= record %> Not Found!';
         this.module_name = 'events';
         this.validate_permissions = false;
     }
