@@ -11,6 +11,9 @@ class events_controller extends base {
         this.response_fields = [
             'id',
             'title',
+            'is_draft',
+            'location',
+            'description',
             'communityId',
             'online',
             'start',
@@ -25,6 +28,9 @@ class events_controller extends base {
 
         this.fillables = [
             'title',
+            'is_draft',
+            'location',
+            'description',
             'communityId',
             'online',
             'start',
@@ -41,7 +47,7 @@ class events_controller extends base {
         this.pk = 'id';
         this.not_found_message = 'Community with id <%= record %> Not Found!';
         this.module_name = 'events';
-        this.validate_permissions = true;
+        this.validate_permissions = false;
     }
 
     async getMany(){

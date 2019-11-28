@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     end: DataTypes.DATE,
     active: DataTypes.BOOLEAN,
     formId: DataTypes.INTEGER,
+    is_draft: DataTypes.BOOLEAN,
+    location: DataTypes.STRING,
     prom_rate: DataTypes.FLOAT,
     repositoryId: DataTypes.INTEGER
   }, {});

@@ -34,7 +34,8 @@ module.exports = {
         type: Sequelize.DATE,
       },
       active: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       formId: {
         type: Sequelize.INTEGER
@@ -44,6 +45,14 @@ module.exports = {
       },
       repositoryId: {
         type: Sequelize.INTEGER
+      },
+      is_draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      location: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
