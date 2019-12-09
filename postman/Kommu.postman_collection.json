@@ -1596,7 +1596,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"python\",\n\t\"description\": \"python conferences\",\n\t\"requested\": true,\n\t\"communityId\": 1\n}"
+							"raw": "{\n\t\"label\": \"input name\",\n\t\"type\": \"select\",\n\t\"placeholder\": \"\",\n\t\"params\": {},\n\t\"formId\": 1\n}"
 						},
 						"url": {
 							"raw": "{{server}}:{{port}}/api/inputs",
@@ -1634,7 +1634,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"python2\",\n\t\"description\": \"python conferences\"\n}"
+							"raw": "{\n\t\"label\": \"input name modified\",\n\t\"type\": \"select\",\n\t\"placeholder\": \"\",\n\t\"params\": {},\n\t\"formId\": 1\n}"
 						},
 						"url": {
 							"raw": "{{server}}:{{port}}/api/inputs/1",
@@ -1887,6 +1887,321 @@
 			]
 		},
 		{
+			"name": "inputs data",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZ2dhQG1haWwuY29tIiwicmVzb3VyY2VzIjpbeyJ1c2VycyI6ImNyZWF0ZSJ9LHsidXNlcnMiOiJyZWFkIn0seyJ1c2VycyI6InVwZGF0ZSJ9LHsidXNlcnMiOiJkZWxldGUifSx7InJvbGVzIjoiY3JlYXRlIn0seyJyb2xlcyI6InJlYWQifSx7InJvbGVzIjoidXBkYXRlIn0seyJyb2xlcyI6ImRlbGV0ZSJ9LHsicGVybWlzc2lvbnMiOiJjcmVhdGUifSx7InBlcm1pc3Npb25zIjoicmVhZCJ9LHsicGVybWlzc2lvbnMiOiJ1cGRhdGUifSx7InBlcm1pc3Npb25zIjoiZGVsZXRlIn0seyJyZXNvdXJjZXMiOiJjcmVhdGUifSx7InJlc291cmNlcyI6InJlYWQifSx7InJlc291cmNlcyI6InVwZGF0ZSJ9LHsicmVzb3VyY2VzIjoiZGVsZXRlIn0seyJtZSI6InJlYWQifSx7Im1lIjoidXBkYXRlIn1dLCJpYXQiOjE1NzI1NDU3NTQsImV4cCI6MTYwNDEwMzM1NH0.LDyy_s_oBQVcXQA2ktFoC8dJb1OucaZv6vthARfgKdW16SN1YH6DUAv2ZBa0Y32E_P07m8BgmYalejQ6vmbOyA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"inputId\": 7,\n\t\"data\": \"python conferences\",\n\t\"speakerId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{server}}:{{port}}/api/inputs_data",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"inputs_data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZ2dhQG1haWwuY29tIiwicmVzb3VyY2VzIjpbeyJ1c2VycyI6ImNyZWF0ZSJ9LHsidXNlcnMiOiJyZWFkIn0seyJ1c2VycyI6InVwZGF0ZSJ9LHsidXNlcnMiOiJkZWxldGUifSx7InJvbGVzIjoiY3JlYXRlIn0seyJyb2xlcyI6InJlYWQifSx7InJvbGVzIjoidXBkYXRlIn0seyJyb2xlcyI6ImRlbGV0ZSJ9LHsicGVybWlzc2lvbnMiOiJjcmVhdGUifSx7InBlcm1pc3Npb25zIjoicmVhZCJ9LHsicGVybWlzc2lvbnMiOiJ1cGRhdGUifSx7InBlcm1pc3Npb25zIjoiZGVsZXRlIn0seyJyZXNvdXJjZXMiOiJjcmVhdGUifSx7InJlc291cmNlcyI6InJlYWQifSx7InJlc291cmNlcyI6InVwZGF0ZSJ9LHsicmVzb3VyY2VzIjoiZGVsZXRlIn0seyJtZSI6InJlYWQifSx7Im1lIjoidXBkYXRlIn1dLCJpYXQiOjE1NzI1NDU3NTQsImV4cCI6MTYwNDEwMzM1NH0.LDyy_s_oBQVcXQA2ktFoC8dJb1OucaZv6vthARfgKdW16SN1YH6DUAv2ZBa0Y32E_P07m8BgmYalejQ6vmbOyA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"inputId\": 7,\n\t\"data\": \"python conferences\",\n\t\"speakerId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{server}}:{{port}}/api/inputs_data/1",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"inputs_data",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZ2dhQG1haWwuY29tIiwicmVzb3VyY2VzIjpbeyJ1c2VycyI6ImNyZWF0ZSJ9LHsidXNlcnMiOiJyZWFkIn0seyJ1c2VycyI6InVwZGF0ZSJ9LHsidXNlcnMiOiJkZWxldGUifSx7InJvbGVzIjoiY3JlYXRlIn0seyJyb2xlcyI6InJlYWQifSx7InJvbGVzIjoidXBkYXRlIn0seyJyb2xlcyI6ImRlbGV0ZSJ9LHsicGVybWlzc2lvbnMiOiJjcmVhdGUifSx7InBlcm1pc3Npb25zIjoicmVhZCJ9LHsicGVybWlzc2lvbnMiOiJ1cGRhdGUifSx7InBlcm1pc3Npb25zIjoiZGVsZXRlIn0seyJyZXNvdXJjZXMiOiJjcmVhdGUifSx7InJlc291cmNlcyI6InJlYWQifSx7InJlc291cmNlcyI6InVwZGF0ZSJ9LHsicmVzb3VyY2VzIjoiZGVsZXRlIn0seyJtZSI6InJlYWQifSx7Im1lIjoidXBkYXRlIn1dLCJpYXQiOjE1NzI1NDU3NTQsImV4cCI6MTYwNDEwMzM1NH0.LDyy_s_oBQVcXQA2ktFoC8dJb1OucaZv6vthARfgKdW16SN1YH6DUAv2ZBa0Y32E_P07m8BgmYalejQ6vmbOyA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}:{{port}}/api/inputs_data/1",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"inputs_data",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get many",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZ2dhQG1haWwuY29tIiwicmVzb3VyY2VzIjpbeyJ1c2VycyI6ImNyZWF0ZSJ9LHsidXNlcnMiOiJyZWFkIn0seyJ1c2VycyI6InVwZGF0ZSJ9LHsidXNlcnMiOiJkZWxldGUifSx7InJvbGVzIjoiY3JlYXRlIn0seyJyb2xlcyI6InJlYWQifSx7InJvbGVzIjoidXBkYXRlIn0seyJyb2xlcyI6ImRlbGV0ZSJ9LHsicGVybWlzc2lvbnMiOiJjcmVhdGUifSx7InBlcm1pc3Npb25zIjoicmVhZCJ9LHsicGVybWlzc2lvbnMiOiJ1cGRhdGUifSx7InBlcm1pc3Npb25zIjoiZGVsZXRlIn0seyJyZXNvdXJjZXMiOiJjcmVhdGUifSx7InJlc291cmNlcyI6InJlYWQifSx7InJlc291cmNlcyI6InVwZGF0ZSJ9LHsicmVzb3VyY2VzIjoiZGVsZXRlIn0seyJtZSI6InJlYWQifSx7Im1lIjoidXBkYXRlIn1dLCJpYXQiOjE1NzI2NTkwOTQsImV4cCI6MTYwNDIxNjY5NH0.JZHrR89pgU0WuQpUo7imeNIub12exRxq9uEt4vEgFm5DTLK5bUeCUdh2FIwQWA9f9aJ2ThXWdZIGEBBcXNi3ww",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}:{{port}}/api/inputs_data?",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"inputs_data"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "25",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "470",
+									"disabled": true
+								},
+								{
+									"key": "searchfield[]",
+									"value": "lastname",
+									"disabled": true
+								},
+								{
+									"key": "searchfield",
+									"value": "searchfield",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "orderby",
+									"value": "id",
+									"disabled": true
+								},
+								{
+									"key": "orderdirection",
+									"value": "ASC",
+									"disabled": true
+								},
+								{
+									"key": "search[]eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJlbWFpbCI6ImpvaG5AbWFpbC5jb20iLCJyZXNvdXJjZXMiOlsiYWRkcmVzcy5jcmVhdGUiLCJhZGRyZXNzLnJlYWQiLCJhZGRyZXNzLnVwZGF0ZSIsImFkZHJlc3MuZGVsZXRlIiwidXNlcnMuY3JlYXRlIiwidXNlcnMucmVhZCIsInVzZXJzLnVwZGF0ZSIsInVzZXJzLmRlbGV0ZSIsImNvdW50cmllcy5jcmVhdGUiLCJjb3VudHJpZXMucmVhZCIsImNvdW50cmllcy51cGRhdGUiLCJjb3VudHJpZXMuZGVsZXRlIiwiY2l0aWVzLmNyZWF0ZSIsImNpdGllcy5yZWFkIiwiY2l0aWVzLnVwZGF0ZSIsImNpdGllcy5kZWxldGUiLCJyb2xlcy5jcmVhdGUiLCJyb2xlcy5yZWFkIiwicm9sZXMudXBkYXRlIiwicm9sZXMuZGVsZXRlIiwicGVybWlzc2lvbnMuY3JlYXRlIiwicGVybWlzc2lvbnMucmVhZCIsInBlcm1pc3Npb25zLnVwZGF0ZSIsInBlcm1pc3Npb25zLmRlbGV0ZSJdLCJpYXQiOjE1NzA2NzM2NTYsImV4cCI6MTYwMjIzMTI1Nn0.U2TGGvekLjRlOD-Qb6lt4d2sK9Yv4mINNIvKxPI956bRwNbG7ITPgB__uivDFH0SO5cD8pUppa09194BrYyong",
+									"value": "not_active",
+									"disabled": true
+								},
+								{
+									"key": "searchtype[]",
+									"value": "eq",
+									"disabled": true
+								},
+								{
+									"key": "searchfield",
+									"value": "lastname",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "Sanchez",
+									"disabled": true
+								},
+								{
+									"key": "searchtype[]",
+									"value": "like",
+									"disabled": true
+								},
+								{
+									"key": "searchfield[]",
+									"value": "active",
+									"disabled": true
+								},
+								{
+									"key": "search[]",
+									"value": "Gonzalez",
+									"disabled": true
+								},
+								{
+									"key": "searchfield[]",
+									"value": "lastname",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZ2dhQG1haWwuY29tIiwicmVzb3VyY2VzIjpbeyJ1c2VycyI6ImNyZWF0ZSJ9LHsidXNlcnMiOiJyZWFkIn0seyJ1c2VycyI6InVwZGF0ZSJ9LHsidXNlcnMiOiJkZWxldGUifSx7InJvbGVzIjoiY3JlYXRlIn0seyJyb2xlcyI6InJlYWQifSx7InJvbGVzIjoidXBkYXRlIn0seyJyb2xlcyI6ImRlbGV0ZSJ9LHsicGVybWlzc2lvbnMiOiJjcmVhdGUifSx7InBlcm1pc3Npb25zIjoicmVhZCJ9LHsicGVybWlzc2lvbnMiOiJ1cGRhdGUifSx7InBlcm1pc3Npb25zIjoiZGVsZXRlIn0seyJyZXNvdXJjZXMiOiJjcmVhdGUifSx7InJlc291cmNlcyI6InJlYWQifSx7InJlc291cmNlcyI6InVwZGF0ZSJ9LHsicmVzb3VyY2VzIjoiZGVsZXRlIn0seyJtZSI6InJlYWQifSx7Im1lIjoidXBkYXRlIn1dLCJpYXQiOjE1NzI1NDU3NTQsImV4cCI6MTYwNDEwMzM1NH0.LDyy_s_oBQVcXQA2ktFoC8dJb1OucaZv6vthARfgKdW16SN1YH6DUAv2ZBa0Y32E_P07m8BgmYalejQ6vmbOyA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}:{{port}}/api/inputs_data/1?",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"inputs_data",
+								"1"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "11",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e25e0c43-355b-4b28-a9a5-b7319402d0b8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1bdd754-d2cd-4d21-bed8-6743f24521ec",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "login",
 			"request": {
 				"method": "POST",
@@ -1979,13 +2294,13 @@
 	],
 	"variable": [
 		{
-			"id": "3a48420e-22c0-4732-8443-4e741d18acfd",
+			"id": "af122c0f-08fd-4ed3-be56-23ade8a01a42",
 			"key": "server",
 			"value": "localhost",
 			"type": "string"
 		},
 		{
-			"id": "9a6a1f2b-c981-4e8a-a89a-c325a7e83030",
+			"id": "ca49b89a-455d-4c40-b117-23f9891efd64",
 			"key": "port",
 			"value": "3000",
 			"type": "string"
