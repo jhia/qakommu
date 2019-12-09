@@ -1,45 +1,40 @@
 const base = require('./base');
 const db = require('../models');
 // const sequelize = require('sequelize');
-const { inputs } = db;
+const { inputs_data } = db;
 // const { Op } = sequelize;
 const _ = require('lodash');
 
-class inputs_controller extends base {
+class inputs_data_controller extends base {
 
     initProperties() {
-        this.model = inputs;
+        this.model = inputs_data;
         this.response_fields = [
             'id',
-            'label',
-            'type',
-            'placeholder',
-            'formId',
-            'params',
+            'inputId',
+            'data',
         ];
 
         this.fillables = [
-            'label',
-            'type',
-            'placeholder',
-            'formId',
-            'params',
+            'inputId',
+            'data',
         ];
 
         this.relations = [];
 
         this.pk = 'id';
-        this.not_found_message = 'Input with id <%= record %> Not Found!';
-        this.module_name = 'inputs';
+        this.not_found_message = 'Input Data with id <%= record %> Not Found!';
+        this.module_name = 'inputs_data';
         this.validate_fields = [];
         this._messages = [];
 
         this.search_fields = {
-            "label": {
+            "data": {
                 whereTo: "master",
                 real_name: "description"
             },
         };
+
     }
 
     async getMany(){
@@ -63,4 +58,4 @@ class inputs_controller extends base {
     }
 }
 
-module.exports = inputs_controller;
+module.exports = inputs_data_controller;

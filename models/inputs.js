@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     label: DataTypes.STRING,
     placeholder: DataTypes.STRING,
     type: DataTypes.STRING,
-    form_id: DataTypes.INTEGER
+    params: DataTypes.JSON,
+    formId: DataTypes.INTEGER
   }, {});
   inputs.associate = function(models) {
     // associations can be defined here

@@ -1,36 +1,25 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('inputs', {
+    return queryInterface.createTable('inputs_data', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      label: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      type: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      placeholder: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      params: {
-        type: Sequelize.JSON,
-        allowNull: true,
-      },
-      formId: {
+      inputId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'forms',
+          model: 'inputs',
           key: 'id'
         },
-        allowNull: false,
+      },
+      speakerId: {
+        type: Sequelize.INTEGER,
+      },
+      data: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +32,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('inputs');
+    return queryInterface.dropTable('inputs_data');
   }
 };

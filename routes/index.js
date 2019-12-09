@@ -27,6 +27,8 @@ router.use('/forms', forms_router);
 //Inputs
 const inputs_router = require('./inputs');
 router.use('/inputs', inputs_router);
-
+//Inputs_Data
+const inputs_data_router = require('./inputs_data');
+router.use('/inputs_data', inputs_data_router);
 
 module.exports = router;
