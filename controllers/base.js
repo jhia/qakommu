@@ -6,7 +6,7 @@ const { findRelation, cleanAttributes } = require('../helpers/utilities');
 /**
  * this class help to build endpoints very fast.
  * @author Shamaru Primera <shamaru001@gmail.com>
- * @copyright Kommu 2019.
+ * @copyright Guilty 2019.
  */
 class base {
 
@@ -353,7 +353,6 @@ class base {
      */
     async update(returnData = false, validate_fields = [], messages = []){
         try {
-            const pk = this.pk;
             const id = this.req.params[this.pk];
             const record = await this.model.findByPk(id);
             const fields = this._selectedFields();
@@ -382,14 +381,12 @@ class base {
         } catch (e) {
             this.res.status(500).json({
                 message: e.message
-            })
+            });
         }
-
     }
 
-    /**
-     * validate all fields from this.validate_search_fields.
-     * search if the field exists and match into the validate_search_fields array
+    /**.
+     * search the field & validate.
      * @param {array} fields fields will validate.
      * @param {array<string>} messages it is used when fail validations
      * @param {boolean} update if it is called from update, the value should true
@@ -399,24 +396,42 @@ class base {
     async _validate_fields(fields, messages, update) {
         for (const index in fields) {
             const field = fields[index];
-            const where = {
-                [field]: this.req.body[field] || null
-            };
+            const where = {};
             if (update) {
                 where[this.pk] = {
                     [Op.ne]: this.req.params[this.pk]
                 }
             }
-            const attributes = [field];
-            const record = await this.model.findOne({
-                where,
-                attributes
-            });
-            if (record) {
-                this.res.status(409).json({
-                    message: messages[index]
+            if (_.isString(field)) {
+                where[field] = this.req.body[field] || null;
+                const record = await this.model.count({
+                    where,
+                    limit: 1
                 });
-                return false;
+                if (record) {
+                    this.res.status(409).json({
+                        message: messages[index]
+                    });
+                    return false;
+                }
+            } else if (_.isObject(field)) {
+                switch (field.type) {
+                    case 'multi_field':
+                        for (const value of field.fields) {
+                            where[value] = this.req.body[value];
+                        }
+                        const record = await this.model.count({
+                            where,
+                            limit: 1
+                        });
+                        if (record) {
+                            this.res.status(409).json({
+                                message: messages[index]
+                            });
+                            return false;
+                        }
+                        break;
+                }
             }
         }
         return true;
@@ -475,7 +490,7 @@ class base {
                 message: e.message
             });
         }
-	}
+    }
 
     /**
      * Standard response for many record.
@@ -486,7 +501,7 @@ class base {
      * @param {array} response data
      * @public
      */
-	sendStandardResponseForMany(total, filters, first, last, response) {
+    sendStandardResponseForMany(total, filters, first, last, response) {
         this.res.status(200).json({
             total,
             filters,
@@ -501,7 +516,7 @@ class base {
      * parameters sent in request and established in the class.
      * @public
      */
-	async destroy(){
+    async destroy(){
         const pk = this.pk;
         const id = this.req.params[this.pk];
         try {
@@ -531,12 +546,11 @@ class base {
      */
     async getTotal(where){
         const clean_attributes_of_relations = cleanAttributes(_.cloneDeep(this.relations));
-        const private_field = `${this.model.tableName}.${this.pk}`;
         const total = await this.model.findAll({
             attributes:[this.pk],
             include: clean_attributes_of_relations,
             where,
-            // group: [private_field],
+            group: [this.pk],
         });
 
         return total.length || 0;
@@ -598,11 +612,21 @@ class base {
      * @param {string} search
      * @param {string} search_type search type to search field
      * @param {object} search_data setup data
+     * example:
+     *  "relation.field": {
+            whereTo: "relation",
+            relation: variants,
+            real_name: "field_name"
+        },
+     "field": {
+           whereTo: "master",
+           real_name: "field_name"
+        },
      * @public
      * @return {object}
      */
     makeSearch(field, search, search_type, search_data) {
-        const type = this.getFormatedSearchType(search_type, search);
+        const type = this.getFormattedSearchType(search_type, search);
         switch (search_data.whereTo || '') {
             case 'relation':
                 const relation = findRelation(this.relations, search_data.relation);
@@ -626,7 +650,7 @@ class base {
      * @public
      * @return {object}
      */
-    getFormatedSearchType(searchType, search){
+    getFormattedSearchType(searchType, search){
         if (search == null) {
             return this._getSearchType('eq');
         } else {
@@ -660,10 +684,8 @@ class base {
     getOrderBy() {
         let direction = 'DESC';
         let order_by = this.pk;
-        if (!_.isEmpty(this.req.query.orderby) && this.validate_search_fields){
-            order_by = (this.search_fields.indexOf(this.req.query.orderby) < 0)? this.req.query.orderby : this.pk;
-        } else {
-            order_by = this.req.query.orderby;
+        if (!_.isEmpty(this.req.query.orderby)){
+            order_by = (this.fillables.indexOf(this.req.query.orderby) > -1)? this.req.query.orderby : this.pk;
         }
 
         if (!_.isEmpty(this.req.query.orderdirection) && _.isString(this.req.query.orderdirection)) {

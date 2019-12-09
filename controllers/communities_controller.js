@@ -6,7 +6,7 @@ const { Communities } = db;
 const _ = require('lodash');
 
 class communities_controller extends base {
-    initProperties() {
+    initProperties() {a
         this.model = Communities;
         this.response_fields = [
             'id',

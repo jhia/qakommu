@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const login_controller = require('../controllers/login_controller');
+const forms_controller = require('../controllers/forms_controller');
 
 router.all('/:id?', (req, res) => {
-    new login_controller(req, res);
+    new forms_controller(req, res);
 });
 
 module.exports = router;

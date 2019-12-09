@@ -21,6 +21,12 @@ router.use('/events', events_router);
 //Themes
 const themes_router = require('./themes');
 router.use('/themes', themes_router);
+//Forms
+const forms_router = require('./forms');
+router.use('/forms', forms_router);
+//Inputs
+const inputs_router = require('./inputs');
+router.use('/inputs', inputs_router);
 
 
 module.exports = router;
