@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         admin.password = encrypt_password(admin.password);
       },
       beforeUpdate(admin) {
-        admin.password = encrypt_password(admin.password);
+        //admin.password = encrypt_password(admin.password);
       }
     }
   });

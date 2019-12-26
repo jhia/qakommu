@@ -42,9 +42,17 @@ class login_controller extends base {
         } else {
             const { password }  = this.req.body;
             const hash = await bcrypt.compare(password, user.password);
+
+
+            console.warn(hash)
+            console.warn(password,user.password)
+
             if(!hash){
-                return this.respondUnauthorized(email)
+                return this.respondUnauthorized(password)
+                
             }
+
+
 
             let User = {
                 email,
@@ -55,10 +63,29 @@ class login_controller extends base {
                 last_login: new Date()
             });
 
+
+
+
+/* 
             User.token = jwt.sign(User, keys.secret, {
                 expiresIn: '1y',
                 algorithm: 'HS512',
             });
+ */
+
+// ---------------------------------------------
+    User.token = jwt.sign(
+        User,
+        'secret',
+        {
+            expiresIn: '1y',
+            algorithm: 'HS512',
+        }
+    )            
+// ---------------------------------------------
+    
+
+
 
             return this.res.status(200).send({
                 response: User.token

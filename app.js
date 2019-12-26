@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
-app.use(auth);
+//app.use(auth);
 
 //LOGIN
 const login_router = require('./routes/login');
@@ -26,6 +26,7 @@ app.use('/auth', login_router);
 const register_router = require('./routes/register');
 app.use('/register', register_router);
 //API ROUTES
+app.use(auth);
 app.use('/api', api_router);
 
 
