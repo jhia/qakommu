@@ -6,7 +6,7 @@ const { Communities } = db;
 const _ = require('lodash');
 
 class communities_controller extends base {
-    initProperties() {a
+    initProperties() {
         this.model = Communities;
         this.response_fields = [
             'id',
@@ -35,6 +35,7 @@ class communities_controller extends base {
         this.pk = 'id';
         this.not_found_message = 'Community with id <%= record %> Not Found!';
         this.module_name = 'communities';
+        //this.validate_permissions = true;
         this.validate_permissions = true;
     }
 

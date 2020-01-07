@@ -35,6 +35,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  //const setupAgentModel = require('../models/')
   Users.associate = function(models) {
     // associations can be defined here
     Users.belongsToMany(models.Roles, {
@@ -42,6 +44,13 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'roles'
     });
+
+    Users.belongsToMany(models.Communities, {
+      through: 'UsersCommunities',
+      foreignKey: 'userId',
+      as: 'communities'
+    });
+
   };
   return Users;
 };

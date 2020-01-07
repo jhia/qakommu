@@ -31,17 +31,27 @@ class register_controller extends base {
 
     async post() {
         const email = this.req.body.email || null;
+        const communities = this.req.body.communities || null;
+
         const default_rol = await Roles.findOne({
             where:{
                 default: true
             },
             attributes: ['id']
         });
+        console.log("----------"+communities+"----------")
+        
+        if (communities==null) {
+            return this.res.json({
+                message: "required communities"                
+            })
+        }
 
         const user_created = await this.create(true, ['email'], [`the email [${email}] already exists for a user`]);
         if (user_created) {
             if (!_.isEmpty(this.req.body.roles) || default_rol.id) {
                 user_created.addRoles(this.req.body.roles || default_rol.id);
+                user_created.addCommunities(this.req.body.communities || "");
             }
             //RESPONSE USER CREATED
             this.res.status(201).json({

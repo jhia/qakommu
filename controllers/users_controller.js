@@ -1,53 +1,9 @@
 const base = require('./base');
 const db = require('../models');
-//const sequelize = require('sequelize');
-const { Users, Roles } = db;
-//const { Op } = sequelize;
+const { Users, Roles, Communities } = db;
 const _ = require('lodash');
 
 class users_controller extends base {
-/* 
-    initProperties() {
-        this.model = Users;
-        this.checkAuth = require('../middleware/auth');
-        this.response_fields = [
-            'name',
-            'last_name',
-            'email',
-            'gender',
-            'repositoryId',
-            'last_login',
-            'active',
-            'createdAt',
-            'updatedAt',
-        ];
-
-        this.fillables = [];
-        this.relations = [
-            {  
-                model: Roles,
-                as: 'roles',
-                through: {attributes: []}
-                 
-
-                include:[{
-                     model: permissions,
-                     as: 'permissions',
-                }]
-  
-            }
-        ];
-        
-
- 
-        this.pk = 'id';
-        this.not_found_message = 'Users with id <%= record %> Not Found!';
-        //this.validate_permissions = true;
-        this.validate_permissions = false;
-        this.module_name = 'users';
-    }
- */
-
     initProperties() {
         this.model = Users;
         this.forbidden_message = 'unauthorized <%= record %>!';
@@ -78,31 +34,20 @@ class users_controller extends base {
             'updatedAt'
         ];
 
-
-/*         
-        this.relations = [
-            {  
+        this.relations = [ 
+            {
                 model: Roles,
                 as: 'roles',
                 through: {attributes: []}
-                 
-
-                include:[{
-                     model: permissions,
-                     as: 'permissions',
-                }]
-
-                
+            },
+            {
+                model: Communities,
+                as: 'communities',
+                through: {attributes: []}
             }
         ];
- */
-
-
-
         this.pk = 'id';
     }
-
-
 
     async getMany(){
         this.listMany();
@@ -112,6 +57,7 @@ class users_controller extends base {
         this.listOne();
     }
 
+ 
     async post(){
         const email = this.req.body.email || null;
 
@@ -119,6 +65,7 @@ class users_controller extends base {
         if (user_created) {
             if (!_.isEmpty(this.req.body.roles)) {
                 user_created.addRoles(this.req.body.roles || []);
+                user_created.addCommunities(this.req.body.communities || "");
             }
             //RESPONSE USER CREATED
             this.res.status(201).json({
@@ -128,51 +75,30 @@ class users_controller extends base {
     }
 
 
-
-/*
-    async put(){
- 
+    async put() {
         const email = this.req.body.email || null;
-        const id = this.req.params[this.pk];
-        const user_updated = await this.update(true, ['email'], [`the email [${email}] already for a user`]);
+        const default_rol = await Roles.findOne({
+            where:{
+                default: true
+            },
+            attributes: ['id']
+        });
+        console.log("-----"+(!_.isEmpty(this.req.body.roles) || default_rol.id)+"-----")        
+        const user_updated = await this.update(true, ['email'], [`the email [${email}] already exists for a user`]);
+        console.log("----"+user_updated+"----")
         if (user_updated) {
-            console.log("------------------entro a la funcion-----------------------")
-            if (!_.isEmpty(this.req.body.roles)) {
-                console.log("------roles----"+this.req.body.roles+"----------")
-                user_updated.setRoles(this.req.body.roles || []);
-                
+            if (!_.isEmpty(this.req.body.roles) || default_rol.id) {
+                console.log("------paso-----")
+                user_updated.addRoles(this.req.body.roles);
+                user_updated.addCommunities(this.req.body.communities);
             }
-
-            this.res.status(200).json({
-                pk: id
+            //RESPONSE USER CREATED
+            this.res.status(201).json({
+                pk: user_updated[this.pk]
             });
         }
-        console.log("-------------user_update-----"+user_updated+"------------------")
- 
     }
-*/
-
-async put() {
-    const email = this.req.body.email || null;
-    const default_rol = await Roles.findOne({
-        where:{
-            default: true
-        },
-        attributes: ['id']
-    });
-    console.log("------------------"+email+"------------------")
-    const user_updated = await this.update(true, ['email'], [`the email [${email}] already exists for a user`]);
-    if (user_updated) {
-        if (!_.isEmpty(this.req.body.roles) || default_rol.id) {
-            user_updated.addRoles(this.req.body.roles || default_rol.id);
-        }
-        //RESPONSE USER CREATED
-        this.res.status(201).json({
-            pk: user_updated[this.pk]
-        });
-    }
-}
-
+    
 
 
 

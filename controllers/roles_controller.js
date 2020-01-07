@@ -1,14 +1,12 @@
 const base = require('./base');
 const db = require('../models');
-// const sequelize = require('sequelize');
-const { roles, permissions, resources } = db;
-// const { Op } = sequelize;
+const { Roles, Permissions, Resources } = db;
 const _ = require('lodash');
 
 class roles_controller extends base {
 
     initProperties() {
-        this.model = roles;
+        this.model = Roles;
         this.response_fields = [
             'id',
             'description',
@@ -22,7 +20,8 @@ class roles_controller extends base {
         this.pk = 'id';
         this.not_found_message = 'Rol with id <%= record %> Not Found!';
         this.module_name = 'roles';
-        this.validate_permissions = true;
+        //this.validate_permissions = true;
+        this.validate_permissions = false;
 
         this.search_fields = {
             "description": {
@@ -31,22 +30,22 @@ class roles_controller extends base {
             },
             "resources.module_name": {
                 whereTo: "relation",
-                relation: resources,
+                relation: Resources,
                 real_name: "module_name"
             },
             "permissions.description": {
                 whereTo: "relation",
-                relation: permissions,
+                relation: Permissions,
                 real_name: "description"
             },
         };
 
         this.relations = [{
-            model: permissions,
+            model: Permissions,
             as: 'permissions',
             through: { attributes: [] },
             include: [{
-                model: resources,
+                model: Resources,
                 as:'resource'
             }]
         }];
@@ -74,6 +73,9 @@ class roles_controller extends base {
     }
 
     async put(){
+        //this.update()
+
+         
         const rol_updated = await this.update(true,['description'], ['this description exists']);
         if (rol_updated) {
             if (!_.isEmpty(this.req.body.permissions)) {
@@ -84,6 +86,9 @@ class roles_controller extends base {
                 pk: rol_updated[this.pk]
             });
         }
+
+
+
     }
 
     async delete(){
