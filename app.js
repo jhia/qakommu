@@ -1,9 +1,9 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const api_router = require('./routes/index');
+const api_router = require('./modules/router');
 const cors = require('cors');
-const auth = require('./middleware/auth');
+//const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
 const app = express();
@@ -20,13 +20,13 @@ app.use(fileUpload({
 //app.use(auth);
 
 //LOGIN
-const login_router = require('./routes/login');
-app.use('/auth', login_router);
+//const login_router = require('./modules/login/login.router');
+//app.use('/auth', login_router);
 //Register
-const register_router = require('./routes/register');
-app.use('/register', register_router);
+//const register_router = require('./modules/register/register.router');
+//app.use('/register', register_router);
 //API ROUTES
-app.use(auth);
+//app.use(auth);
 app.use('/api', api_router);
 
 

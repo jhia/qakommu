@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models');
-const { Roles, Permissions, Resources, Users } = db;
+//const { Roles, Permissions, Resources, Users } = db;
 
-
+/* 
 async function permissionsVerification(req, res, decoded, module_name, action) {
     let user = false;
     if (!_.isEmpty(decoded.email) && !_.isEmpty(module_name) && !_.isEmpty(action) ) {
@@ -51,7 +51,7 @@ async function permissionsVerification(req, res, decoded, module_name, action) {
 
     return !!user;
 }
-
+ */
 
 
 module.exports = (req, res, next) => {
@@ -59,7 +59,7 @@ module.exports = (req, res, next) => {
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, 'secret');
         req.userData = decoded;
-        req.verificatePermisssion = permissionsVerification.bind(this, req, res, decoded);//pendiente
+        //req.verificatePermisssion = permissionsVerification.bind(this, req, res, decoded);//pendiente
         console.log("--------------"+decoded.email+"--------------")
         next();
     } catch (error) {
