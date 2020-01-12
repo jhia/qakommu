@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ ! -f /tmp/migration ]; then
+    npm install
+
+    migration=0;
+    while [ $migration -eq 0  ]; do
+        echo "Waiting for database is ready";
+        database_ready=$((echo >/dev/tcp/kommu_db/$KOMMU_DB_PORT) &>/dev/null && echo "1" || echo "0")
+
+        if [ $database_ready -eq "1" ]; then
+            migration=1;
+        fi
+        sleep 10;
+    done
+    npm run migrate
+    npm run seeders
+fi
+
+touch /tmp/migration
+npm run dev
