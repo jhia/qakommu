@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const api_router = require('./modules/router');
+const db = require('./modules/models')
 const cors = require('cors');
 //const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
@@ -17,6 +18,9 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
+
+//db.sequelize.sync({ force: true })
+
 //app.use(auth);
 
 //LOGIN

@@ -6,6 +6,8 @@ RUN apt-get install -y build-essential python
 # use this directory to store files, run npm, and launch our app
 WORKDIR /app
 #Development Mode
-ENTRYPOINT ./docker-entrypoint
+#ENTRYPOINT ./docker-entrypoint
+npm install
+CMD npm run dev
 # expose port 8000 once the container has launched
 EXPOSE 8000

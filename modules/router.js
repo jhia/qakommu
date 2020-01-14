@@ -1,16 +1,16 @@
 const router = require('express').Router();
 
-/* 
+
 //repository_object
 const repository_object = require('./repository_object/repository_object.router');
 router.use('/repository_object', repository_object);
-*/
+
 
 //repository
 const repository = require('./repository/repository.router');
 router.use('/repository', repository);
 
-/*
+
 //object_type
 const object_type = require('./object_type/object_type.router');
 router.use('/object_type', object_type);
@@ -106,5 +106,5 @@ router.use('/type_sponsor', type_sponsor);
 //exhibitor
 const exhibitor = require('./exhibitor/exhibitor.router');
 router.use('/exhibitor', exhibitor);
- */
+
 module.exports = router;
