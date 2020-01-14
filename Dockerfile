@@ -7,7 +7,7 @@ RUN apt-get install -y build-essential python
 WORKDIR /app
 #Development Mode
 #ENTRYPOINT ./docker-entrypoint
-npm install
+RUN npm install
 CMD npm run dev
 # expose port 8000 once the container has launched
 EXPOSE 8000
