@@ -27,6 +27,7 @@ services:
       - type: bind
         source: .
         target: /app
+      - /app/node_modules
     ports:
       - 8000:8000
       - 9228:9228

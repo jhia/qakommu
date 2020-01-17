@@ -1,13 +1,19 @@
 FROM node:12.13.0-slim
-#Update repositories
-RUN apt-get update
-#build essentials
-RUN apt-get install -y build-essential python
-# use this directory to store files, run npm, and launch our app
+
+RUN apt-get update \
+	&& apt-get install -y make g++ python \
+	&& mkdir -p /app/node_modules && chown -R node:node /app
+
 WORKDIR /app
-#Development Mode
-#ENTRYPOINT ./docker-entrypoint
+
+COPY package*.json ./
+
+USER node
+
 RUN npm install
-CMD npm run dev
-# expose port 8000 once the container has launched
+
+COPY --chown=node:node . .
+
 EXPOSE 8000
+
+CMD ["npm","run","dev"]
