@@ -5,14 +5,29 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env =  process.env.NODE_ENV || 'development_local';
-const config = require('../config/config.json')[env];
+const { database } = require('./config/config');
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+let sequelize = new Sequelize(
+                      database.NAME, 
+                      database.USER, 
+                      database.PASSWORD,{
+                         host: database.HOST,
+                         dialect:'postgresql' 
+                    });
+
+let retries = 5;
+while(retries){
+  console.log(`try number ${retries}`);
+  try{
+    sequelize.authenticate();
+    break;
+  }catch(err){
+    console.log(err);
+    retries -= 1;
+    setTimeout(res, 5000);
+  }
+
 }
 
 
@@ -30,7 +45,7 @@ let cosa = fs
  */
 
 let cosa = fs
-  .readdirSync(__dirname)
+  .readdirSync(__dirname+'/modules')
   .filter(file => {
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) !== '.js');
   })

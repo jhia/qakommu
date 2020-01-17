@@ -15,6 +15,9 @@ services:
     environment:
       #DB CONFIGURATION
       DB_HOST: kommu_db
+      DB_NAME: kommu
+      DB_PASSWORD: kommu_password
+      DB_USER: kommu
       NODE_ENV: development_docker
       PORT: 8000
       DEBUG_PORT: 9228
