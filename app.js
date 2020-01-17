@@ -2,9 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const api_router = require('./modules/router');
-const db = require('./modules/models')
 const cors = require('cors');
-//const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
 const app = express();
@@ -19,18 +17,7 @@ app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
 
-//db.sequelize.sync({ force: true })
 
-//app.use(auth);
-
-//LOGIN
-//const login_router = require('./modules/login/login.router');
-//app.use('/auth', login_router);
-//Register
-//const register_router = require('./modules/register/register.router');
-//app.use('/register', register_router);
-//API ROUTES
-//app.use(auth);
 app.use('/api', api_router);
 
 

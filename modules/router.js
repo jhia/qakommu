@@ -2,6 +2,20 @@ const router = require('express').Router();
 
 
 //repository_object
+//const community = require('./community/community.router');
+//router.use('/community', community);
+
+//repository_object
+const permissions = require('./permissions/permissions.router');
+router.use('/permissions', permissions);
+
+
+
+
+
+
+ 
+//repository_object
 const repository_object = require('./repository_object/repository_object.router');
 router.use('/repository_object', repository_object);
 
@@ -108,3 +122,4 @@ const exhibitor = require('./exhibitor/exhibitor.router');
 router.use('/exhibitor', exhibitor);
 
 module.exports = router;
+

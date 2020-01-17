@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "node_modules/.bin/nodemon --inspect=0.0.0.0:$DEBUG_PORT ./bin/www",
-    "migrate": "node_modules/.bin/sequelize db:migrate",
-    "seeders": "node_modules/.bin/sequelize db:seed:all",
+    "dev": " node ./lib/setup.js && node_modules/.bin/nodemon --inspect=0.0.0.0:$DEBUG_PORT ./bin/www",
     "test": "echo 'node'"
   },
   "dependencies": {
