@@ -31,6 +31,8 @@ function cleanAttributes(relations) {
     });
 }
 
+function asd(){}
+
 module.exports = {
     findRelation,
     cleanAttributes,
