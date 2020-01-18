@@ -5,7 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const env =  process.env.NODE_ENV || 'development_local';
 const { database } = require('./config/config');
-const modules = {};
+const db = {};
 
 let sequelize = new Sequelize(
   database.NAME, 
@@ -43,7 +43,7 @@ fs
   .readdirSync(__dirname+'/modules')
   .forEach( moduleName => {
 
-      const modelFile = path.join(__dirname,"modules", moduleName+'.model.js')
+      const modelFile = path.join(__dirname,"modules",moduleName, moduleName+'.model.js')
       const model = sequelize['import'](modelFile);
       db[model.name] = model;
   
