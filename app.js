@@ -4,7 +4,6 @@ const logger = require('morgan');
 const api_router = require('./routes');
 const db = require('./models')
 const cors = require('cors');
-//const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
 
@@ -20,6 +19,7 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
+
 app.use('/api', api_router);
 
 module.exports = app;

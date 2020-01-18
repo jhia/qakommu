@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const db = require('../models/index');
+const db = require('../models');
 
 function findRelation(relations, relation_model) {
     if (typeof relations[Symbol.iterator] === 'function') {
