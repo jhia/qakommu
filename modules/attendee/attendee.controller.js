@@ -1,2 +1,5 @@
-let attendee_controller = () => 'algo aqui'
-module.exports = attendee_controller;
+const Base = require('../../helpers/base.controller');
+
+const controller = new Base('attendee');
+
+module.exports = controller;

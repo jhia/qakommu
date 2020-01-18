@@ -1,29 +1,29 @@
 const router = require('express').Router();
 const attendee_controller = require('./attendee.controller');
 
-router.use((req, res, next) => {
+/*router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
+  next();
+});*/
 
-});
-
-router.get('/',(req, res) => {
+router.get('/',function(req, res){
   //HTTP get route
-  attendee_controller.getFunc();
+  res.status('200').send(attendee_controller.getFunc());
 });
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  attendee_controller.postFunc();
+  res.status('200').send(attendee_controller.postFunc());
 });
 
 router.put('/',(req, res) => {
   //HTTP put route
-  attendee_controller.putFunc();
+  res.status('200').send(attendee_controller.putFunc());
 });
 
 router.delete('/',(req, res) => {
   //HTTP delete route
-  attendee_controller.deleteFunc();
+  res.status('200').send(attendee_controller.deleteFunc());
 });
 
 module.exports = router;
