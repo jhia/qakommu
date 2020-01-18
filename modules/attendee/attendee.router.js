@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const attendee_controller = require('./attendee.controller');
 
-/*router.use((req, res, next) => {
+router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
   next();
-});*/
+});
 
 router.get('/',function(req, res){
   //HTTP get route
