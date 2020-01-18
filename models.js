@@ -3,84 +3,51 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
 const env =  process.env.NODE_ENV || 'development_local';
 const { database } = require('./config/config');
-const db = {};
+const modules = {};
 
 let sequelize = new Sequelize(
-                      database.NAME, 
-                      database.USER, 
-                      database.PASSWORD,{
-                         host: database.HOST,
-                         dialect:'postgresql' 
-                    });
-
-let retries = 5;
-while(retries){
-  console.log(`try number ${retries}`);
-  try{
-    sequelize.authenticate();
-    break;
-  }catch(err){
-    console.log(err);
-    retries -= 1;
-    setTimeout(res, 5000);
-  }
-
-}
-
-
-
-/* 
-let cosa = fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = sequelize['import'](path.join(__dirname, file));
-    db[model.name] = model;
-  });
- */
-
-let cosa = fs
-  .readdirSync(__dirname+'/modules')
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) !== '.js');
-  })
+  database.NAME, 
+  database.USER, 
+  database.PASSWORD,{
+     host: database.HOST,
+     dialect:'postgresql' 
+});
+(function connectionVerify(){
   
-  console.log(cosa)
+  let retries = 5;
+  let verify = function(){
+    console.log(`try number ${retries} to connect to the database`);
+    
+    if(!retries) return;
+
+    sequelize
+      .authenticate()
+      .then(()=>{
+        console.log("Successfully connected to the database");
+        retries = 0;
+      })
+      .catch( async err =>{
+        console.log(err);
+        setTimeout(verify,5000);
+      });
+      retries -= 1;
+  };
+  verify();
+
+})();
+
  
-let ruta = []  
-for (let i = 0; i < cosa.length; i++) {
-  ruta[i] = '/app/modules/'+cosa[i]+"/"+cosa[i]+'.model.js'
-}
-for (let i = 0; i < ruta.length; i++) {
-  try {
-    sequelize.import(ruta[i])
-    sequelize.sync;
-    sequelize.sync({ force: true })        
-  } catch (error) {
-    console.log(error.message)
-  }
+fs
+  .readdirSync(__dirname+'/modules')
+  .forEach( moduleName => {
 
-}
-console.log(ruta[17])
-
-//let model = sequelize['import'](path.join(ruta[0],arc[0])); 
-
-//model.sequelize = sequelize;
-//sequelize.sync;
-
-
-
-/*
-// esta buenisimo
-const model = sequelize['import'](path.join('/app/modules/repository', 'repository.model.js'));
- */
-
-
+      const modelFile = path.join(__dirname,"modules", moduleName+'.model.js')
+      const model = sequelize['import'](modelFile);
+      db[model.name] = model;
+  
+  }) 
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
@@ -88,11 +55,7 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-
-
-//db.sequelize = sequelize;
-//sequelize.sync;
-
-
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 module.exports = db;
