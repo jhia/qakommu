@@ -12,51 +12,55 @@ module.exports = {
 
 	},
 	createRouter(name,modulePath){
-		const data = `const router = require('express').Router();
-	const ${name}Controller = require('./${name}.controller');
+		const data = `'use strict'
 
-	router.use((req, res, next) => {
-	  //Use this to apply a middleware only to this module
-	  next();
-	});
+const router = require('express').Router();
+const ${name}Controller = require('./${name}.controller');
 
-	router.get('/',function(req, res){
-	  //HTTP get route
-	  res.status('200').send(${name}Controller.getFunc());
-	});
+router.use((req, res, next) => {
+  //Use this to apply a middleware only to this module
+  next();
+});
 
-	router.post('/',(req, res) => {
-	  ///HTTP post route
-	  res.status('200').send(${name}Controller.postFunc());
-	});
+router.get('/',function(req, res){
+  //HTTP get route
+  res.status('200').send(${name}Controller.getFunc());
+});
 
-	router.put('/',(req, res) => {
-	  //HTTP put route
-	  res.status('200').send(${name}Controller.putFunc());
-	});
+router.post('/',(req, res) => {
+  ///HTTP post route
+  res.status('200').send(${name}Controller.postFunc());
+});
 
-	router.delete('/',(req, res) => {
-	  //HTTP delete route
-	  res.status('200').send(${name}Controller.deleteFunc());
-	});
+router.put('/',(req, res) => {
+  //HTTP put route
+  res.status('200').send(${name}Controller.putFunc());
+});
 
-	module.exports = router;`
+router.delete('/',(req, res) => {
+  //HTTP delete route
+  res.status('200').send(${name}Controller.deleteFunc());
+});
+
+module.exports = router;`
 
 fs.writeFile(path.join(modulePath,`${name}.router.js`), data,()=>{
 	console.log("Successfully created")
 });
 	},
 	createController(name,modulePath){
-		const data = `const Base = require('../../helpers/base.controller');
+		const data = `'use strict'
 
-	const controller = new Base('${name}');
+const Base = require('../../helpers/base.controller');
 
-	controller.postFunc = () => {
-		//Overwrite the base post function
-		return \`POST to \${this.moduleName} overwritten\`;
-	}
+const controller = new Base('${name}');
 
-	module.exports = controller;`
+controller.postFunc = function () {
+	//Overwrite the base post function
+	return \`POST to \${this.moduleName} overwritten\`;
+}
+
+module.exports = controller;`
 
 fs.writeFile(path.join(modulePath,`${name}.controller.js`), data,()=>{
 	console.log("Successfully created")
@@ -65,14 +69,14 @@ fs.writeFile(path.join(modulePath,`${name}.controller.js`), data,()=>{
 	createModel(name,modulePath){
 		const data = `'use strict'
 
-	module.exports = (sequelize, DataTypes) => {
-	    return sequelize.define('${name}', {
-	        username: {
-	          type: DataTypes.STRING,
-	          allowNull: false
-	        }
-	    })
-	}`
+module.exports = (sequelize, DataTypes) => {
+    return sequelize.define('${name}', {
+        username: {
+          type: DataTypes.STRING,
+          allowNull: false
+        }
+    })
+}`
 
 		fs.writeFile(path.join(modulePath,`${name}.model.js`), data,()=>{
 			console.log("Successfully created")
