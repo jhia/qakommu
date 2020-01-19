@@ -7,13 +7,16 @@ const env =  process.env.NODE_ENV || 'development_local';
 const { database } = require('./config/config');
 const db = {};
 
-let sequelize = new Sequelize(
-  database.NAME, 
-  database.USER, 
-  database.PASSWORD,{
-     host: database.HOST,
-     dialect:'postgresql' 
-});
+let sequelize = null;
+if (!sequelize) {
+  sequelize = new Sequelize(
+    database.NAME, 
+    database.USER, 
+    database.PASSWORD,{
+       host: database.HOST,
+       dialect:'postgresql' 
+  });
+}
 (function connectionVerify(){
   
   let retries = 5;
