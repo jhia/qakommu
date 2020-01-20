@@ -7,7 +7,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 
 
-db.sequelize.sync();
+db.sequelize.sync({ force: true });
 const app = express();
 //MIDDLEWARE
 app.use(logger('dev'));

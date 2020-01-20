@@ -8,6 +8,7 @@ const { database } = require('./config/config');
 const db = {};
 
 let sequelize = null;
+
 if (!sequelize) {
   sequelize = new Sequelize(
     database.NAME, 
@@ -16,9 +17,7 @@ if (!sequelize) {
        host: database.HOST,
        dialect:'postgresql' 
   });
-}
 (function connectionVerify(){
-  
   let retries = 5;
   let verify = function(){
     console.log(`try number ${retries} to connect to the database`);
@@ -40,12 +39,11 @@ if (!sequelize) {
   verify();
 
 })();
-
+}
  
 fs
   .readdirSync(__dirname+'/modules')
   .forEach( moduleName => {
-
       const modelFile = path.join(__dirname,"modules",moduleName, moduleName+'.model.js')
       const model = sequelize['import'](modelFile);
       db[model.name] = model;
