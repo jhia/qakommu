@@ -51,14 +51,16 @@ fs.writeFile(path.join(modulePath,`${name}.router.js`), data,()=>{
 	createController(name,modulePath){
 		const data = `'use strict'
 
+const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
+const { ${name} } = require('../../models.js');
 
 const controller = new Base('${name}');
 
-controller.postFunc = function () {
+/*controller.postFunc = function () {
 	//Overwrite the base post function
 	return \`POST to \${this.moduleName} overwritten\`;
-}
+}*/
 
 module.exports = controller;`
 
@@ -70,12 +72,20 @@ fs.writeFile(path.join(modulePath,`${name}.controller.js`), data,()=>{
 		const data = `'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('${name}', {
-        username: {
-          type: DataTypes.STRING,
-          allowNull: false
-        }
-    })
+    const ${name} = sequelize.define('${name}', {
+        id: {
+			allowNull: false,
+			autoIncrement: true,
+			primaryKey: true,
+			type: Sequelize.INTEGER
+		}
+    });
+
+    ${name}.associate = function(models){
+    	//To create model associations
+    }
+
+    return ${name};
 }`
 
 		fs.writeFile(path.join(modulePath,`${name}.model.js`), data,()=>{
