@@ -36,6 +36,20 @@ controller.getFunc = async function (req, res) {
 	
 }
 
+controller.deleteFunc = async function(req, res){
+	const {id} = req.params;
+	try {
+		let deleterows = await this.delete({id});
+		res.json({
+            count: deleterows
+        });
+	} catch (error) {
+		res.status(500).json({
+            message: 'something went wrong'
+        });
+	}
+}
+
 controller.postFunc = async function (req, res) {
 	//get body 
 	const { name, description, active, blocker } = req.body;
