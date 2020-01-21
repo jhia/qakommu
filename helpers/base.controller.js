@@ -6,8 +6,8 @@ const db = require('../models')
 
 function base(name){
 	//controller constructor
-	this.db = db;	
 	this.moduleName = name;
+	this.db = db;	
 	this.model = this.db[this.moduleName]
 }
 
@@ -32,7 +32,7 @@ base.prototype.deleteFunc = function(req,res){
 
 base.prototype.insert = async function(data){
 	const fillables = _.keys(data) 	
- 	const res = await this.db[this.moduleName].create(data, {
+ 	const res = await this.model.create(data, {
 		retuning:true,
 		fields: fillables
 	});
