@@ -11,11 +11,18 @@ function base(name){
 	this.model = this.db[this.moduleName]
 }
 
-base.prototype.getFunc = function(req,res){
+base.prototype.getFunc = async function(req,res){
+
+	await this.model.findAll().then((result) => res.json(result))
+
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
-base.prototype.postFunc = async function(req,res){
+base.prototype.posFunc = async function(req,res){
+    console.log('--------------')
+    console.log(req.body)
+    console.log('--------------')
+
 	const id = await this.insert(req.body);
 	if (id) {
 		res.status(200).send(id)
@@ -23,7 +30,8 @@ base.prototype.postFunc = async function(req,res){
 }
 
 base.prototype.putFunc = function(req,res){
-	res.status('200').send(`PUT to ${this.moduleName}`);
+	
+	//res.status('200').send(`PUT to ${this.moduleName}`);
 }
 
 base.prototype.deleteFunc = function(req,res){
