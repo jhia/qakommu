@@ -11,8 +11,8 @@ function base(name){
 	this.model = this.db[this.moduleName]
 }
 
-base.prototype.getFunc = function(){
-	return `GET to ${this.moduleName}`;
+base.prototype.getFunc = function(req,res){
+	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
 base.prototype.postFunc = async function(req,res){
@@ -23,11 +23,11 @@ base.prototype.postFunc = async function(req,res){
 }
 
 base.prototype.putFunc = function(){
-	return `PUT to ${this.moduleName}`;
+	res.status('200').send(`PUT to ${this.moduleName}`);
 }
 
 base.prototype.deleteFunc = function(){
-	return `GET to ${this.moduleName}`;
+	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
 base.prototype.insert = async function(data){

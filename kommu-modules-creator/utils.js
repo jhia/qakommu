@@ -24,22 +24,22 @@ router.use((req, res, next) => {
 
 router.get('/',function(req, res){
   //HTTP get route
-  res.status('200').send(${name}Controller.getFunc());
+  ${name}Controller.getFunc();
 });
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  res.status('200').send(${name}Controller.postFunc());
+  ${name}Controller.postFunc();
 });
 
 router.put('/',(req, res) => {
   //HTTP put route
-  res.status('200').send(${name}Controller.putFunc());
+  ${name}Controller.putFunc();
 });
 
 router.delete('/',(req, res) => {
   //HTTP delete route
-  res.status('200').send(${name}Controller.deleteFunc());
+  ${name}Controller.deleteFunc();
 });
 
 module.exports = router;`
@@ -53,14 +53,15 @@ fs.writeFile(path.join(modulePath,`${name}.router.js`), data,()=>{
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-const { ${name} } = require('../../models.js');
 
 const controller = new Base('${name}');
 
-/*controller.postFunc = function () {
-	//Overwrite the base post function
-	return \`POST to \${this.moduleName} overwritten\`;
-}*/
+/*
+*Extend or overwrite the base functions
+*All the controllers already have implicit the models by:
+*this.db -> All models
+*this.model -> Current module model
+*/
 
 module.exports = controller;`
 
