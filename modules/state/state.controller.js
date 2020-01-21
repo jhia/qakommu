@@ -12,31 +12,53 @@ const controller = new Base('state');
 *this.model -> Current module model
 */
 
+controller.getFunc = async function (req, res) {
+
+	const { id } = req.params;
+	const {limit, offset, order, attributes} = req.body;
+	try {
+		const data = await this.getData({
+			id,
+			limit,
+			offset,
+			attributes,
+			order
+		});
+		res.json({
+			data
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'something went wrong',
+			data: {}
+		})
+	}
+	
+}
 
 controller.postFunc = async function (req, res) {
 	//get body 
-	const{ name, description, active, blocker} = req.body;
+	const { name, description, active, blocker } = req.body;
 	try {
-        let newState = await this.model.create({
-            name,
-            description,
-            active,
-            module_name: this.moduleName,
-            blocker
-        }, {
-            fields: ['name', 'description', 'active', 'module_name' ,'blocker']
+		let newState = await this.insert({
+			name,
+			description,
+			active,
+			module_name: this.moduleName,
+			blocker
 		});
-        if(newState){
-             return res.status(200).json({
-                message: 'successful action',
-                date: newState
-            });
+		if (newState) {
+			return res.status(200).json({
+				message: 'successful action',
+				date: newState
+			});
 		}
-    } catch (error) {
-        res.status(500).json({
-            message: 'something went wrong',
-            date: {}
-        });  
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			message: 'something went wrong',
+			date: {}
+		});
 	}
 }
 

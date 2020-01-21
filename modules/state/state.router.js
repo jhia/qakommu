@@ -13,6 +13,12 @@ router.get('/',function(req, res){
   stateController.getFunc(req,res);
 });
 
+router.get('/:id',function(req, res){
+  //HTTP get route
+  stateController.getFunc(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   stateController.postFunc(req,res);
