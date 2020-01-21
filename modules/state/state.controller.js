@@ -15,32 +15,29 @@ const controller = new Base('state');
 
 controller.postFunc = async function (req, res) {
 	//get body 
-	const{ name, description, active, bloker} = req.body;
+	const{ name, description, active, blocker} = req.body;
 	try {
         let newState = await this.model.create({
             name,
             description,
             active,
             module_name: this.moduleName,
-            bloker
+            blocker
         }, {
-            fields: ['name', 'description', 'active', 'module_name' ,'bloker']
+            fields: ['name', 'description', 'active', 'module_name' ,'blocker']
 		});
-		
         if(newState){
-             res.status(200).json({
+             return res.status(200).json({
                 message: 'successful action',
                 date: newState
             });
 		}
-		
     } catch (error) {
         res.status(500).json({
             message: 'something went wrong',
             date: {}
         });  
 	}
-	
 }
 
 module.exports = controller;
