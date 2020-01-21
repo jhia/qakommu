@@ -10,23 +10,25 @@ router.use((req, res, next) => {
 
 router.get('/',function(req, res){
   //HTTP get route
-  res.status('200').send(stateController.getFunc());
+  stateController.getFunc(req,res);
 });
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  stateController.postFunc(req, res);
-});
+  console.log(req.body);
+  console.log("punto1");
 
+  stateController.postFunc(req,res);
+});
 
 router.put('/',(req, res) => {
   //HTTP put route
-  res.status('200').send(stateController.putFunc());
+  stateController.putFunc(req,res);
 });
 
 router.delete('/',(req, res) => {
   //HTTP delete route
-  res.status('200').send(stateController.deleteFunc());
+  stateController.deleteFunc(req,res);
 });
 
 module.exports = router;
