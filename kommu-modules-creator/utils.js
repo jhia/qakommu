@@ -24,22 +24,22 @@ router.use((req, res, next) => {
 
 router.get('/',function(req, res){
   //HTTP get route
-  ${name}Controller.getFunc();
+  ${name}Controller.getFunc(req,res);
 });
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  ${name}Controller.postFunc();
+  ${name}Controller.postFunc(req,res);
 });
 
 router.put('/',(req, res) => {
   //HTTP put route
-  ${name}Controller.putFunc();
+  ${name}Controller.putFunc(req,res);
 });
 
 router.delete('/',(req, res) => {
   //HTTP delete route
-  ${name}Controller.deleteFunc();
+  ${name}Controller.deleteFunc(req,res);
 });
 
 module.exports = router;`
