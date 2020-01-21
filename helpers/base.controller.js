@@ -12,31 +12,41 @@ function base(name){
 }
 
 base.prototype.getFunc = async function(req,res){
-
 	await this.model.findAll().then((result) => res.json(result))
-
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
-base.prototype.posFunc = async function(req,res){
-    console.log('--------------')
-    console.log(req.body)
-    console.log('--------------')
-
+base.prototype.postFunc = async function(req,res){
 	const id = await this.insert(req.body);
 	if (id) {
 		res.status(200).send(id)
 	}
 }
 
-base.prototype.putFunc = function(req,res){
-	
-	//res.status('200').send(`PUT to ${this.moduleName}`);
+base.prototype.putFunc = async function(req,res){
+	const id = await this.update(req)
+	if (id) {
+		res.status(200).send('updated')
+	}
 }
 
 base.prototype.deleteFunc = function(req,res){
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
+
+base.prototype.update = async function(req){
+	const {id} = req.params;
+	const fillables = _.keys(req.body) 		
+	const result = await this.model.update(req.body, {
+        where: {
+            id
+		},
+		fields: fillables
+	});
+	return result
+}
+
+
 
 base.prototype.insert = async function(data){
 	const fillables = _.keys(data) 	
