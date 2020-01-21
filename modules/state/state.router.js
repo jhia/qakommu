@@ -29,7 +29,7 @@ router.put('/',(req, res) => {
   stateController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   stateController.deleteFunc(req,res);
 });

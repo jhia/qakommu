@@ -40,6 +40,18 @@ base.prototype.insert = async function(data){
 	return res;
 }
 
+
+base.prototype.delete = async function(data){
+	const { id } = data;
+	const row = await this.model.destroy({
+		where: {
+			id
+		}
+	});
+	return row;
+}
+
+
 base.prototype.getData = async function(data){
 	const { id, limit, offset, order, attributes} = data;
 	if (id) {
@@ -61,4 +73,5 @@ base.prototype.getData = async function(data){
 		return list;
 	}
 }
+
 module.exports = base;
