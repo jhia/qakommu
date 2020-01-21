@@ -22,11 +22,11 @@ base.prototype.postFunc = async function(req,res){
 	}
 }
 
-base.prototype.putFunc = function(){
+base.prototype.putFunc = function(req,res){
 	res.status('200').send(`PUT to ${this.moduleName}`);
 }
 
-base.prototype.deleteFunc = function(){
+base.prototype.deleteFunc = function(req,res){
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
