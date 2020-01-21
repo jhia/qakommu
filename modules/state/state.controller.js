@@ -35,29 +35,12 @@ controller.postFunc = async function (req, res) {
 		}
 		
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             message: 'something went wrong',
             date: {}
         });  
 	}
-	 //Overwrite the base post function
-
-	/*
-	console.log(name);
-	console.log(description);
-	console.log(active);
-	console.log(module_name);
-	console.log(bloker);
-	console.log("punto2");
-	console.log(this.moduleName);
-	console.log("punto3");
-
-	console.log(req.body);
-	console.log("punto4");
-	console.log();
-	*/
-	//return `POST mariquito to ${this.moduleName} overwritten`;
+	
 }
 
 module.exports = controller;

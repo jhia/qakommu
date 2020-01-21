@@ -15,9 +15,6 @@ router.get('/',function(req, res){
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  console.log(req.body);
-  console.log("punto1");
-
   stateController.postFunc(req,res);
 });
 
