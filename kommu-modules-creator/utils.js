@@ -2,13 +2,25 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = {
-	createModule(name){
+	createModule(name,param){
 		const modulePath = path.join('./modules',name);
+		console.log(param);
 
 		fs.mkdirSync(modulePath);
-		this.createRouter(name,modulePath);
-		this.createController(name,modulePath);
-		this.createModel(name,modulePath);
+		switch(param){
+			case '--no-model':
+				this.createRouter(name,modulePath);
+				this.createController(name,modulePath);
+			break;
+			case '--only-model':
+				this.createModel(name,modulePath);
+			break;
+			default:
+				this.createRouter(name,modulePath);
+				this.createController(name,modulePath);
+				this.createModel(name,modulePath);
+			break;
+		}
 
 	},
 	createRouter(name,modulePath){
