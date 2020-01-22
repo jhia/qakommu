@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         },
         active: {
-            type: DataTypes.TEXT
+            type: DataTypes.BOOLEAN
         },
         module_name:{
             type: DataTypes.TEXT

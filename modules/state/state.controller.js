@@ -15,7 +15,7 @@ const controller = new Base('state');
 controller.getFunc = async function (req, res) {
 
 	const { id } = req.params;
-	const {limit, offset, order, attributes} = req.body;
+	const { limit, offset, order, attributes } = req.body;
 	try {
 		const data = await this.getData({
 			id,
@@ -33,25 +33,11 @@ controller.getFunc = async function (req, res) {
 			data: {}
 		})
 	}
-	
-}
 
-controller.deleteFunc = async function(req, res){
-	const {id} = req.params;
-	try {
-		let deleterows = await this.delete({id});
-		res.json({
-            count: deleterows
-        });
-	} catch (error) {
-		res.status(500).json({
-            message: 'something went wrong'
-        });
-	}
 }
 
 controller.postFunc = async function (req, res) {
-	//get body 
+
 	const { name, description, active, blocker } = req.body;
 	try {
 		let newState = await this.insert({
@@ -68,10 +54,51 @@ controller.postFunc = async function (req, res) {
 			});
 		}
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({
 			message: 'something went wrong',
 			date: {}
+		});
+	}
+}
+
+controller.putFunc = async function (req, res) {
+	const { id } = req.params;
+	const { name, description, active, blocker } = req.body;
+	try {
+		let StateUpdated = await this.update(
+			{
+				id
+			},
+			{
+				name,
+				description,
+				active,
+				blocker
+			});
+			if(StateUpdated)
+			{
+				res.status(200).json({
+					message: "successful action"
+				});
+			}
+	} catch (error) {
+		res.status(500).json({
+			message: 'something went wrong',
+			date: {}
+		});
+	}
+}
+
+controller.deleteFunc = async function (req, res) {
+	const { id } = req.params;
+	try {
+		let deleterows = await this.delete({ id });
+		res.json({
+			count: deleterows
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'something went wrong'
 		});
 	}
 }

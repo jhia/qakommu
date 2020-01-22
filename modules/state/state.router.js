@@ -24,7 +24,7 @@ router.post('/',(req, res) => {
   stateController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   stateController.putFunc(req,res);
 });
