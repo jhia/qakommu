@@ -9,7 +9,7 @@ function base(name){
 	this.db = db;	
 	this.moduleName = name;
 
-	if( __.has(this.db,name) )
+	if( _.has(this.db,name) )
 		this.model = this.db[this.moduleName];
 	
 	this.response = utils.response;
