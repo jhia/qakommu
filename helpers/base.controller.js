@@ -18,14 +18,14 @@ base.prototype.getFunc = function(req,res){
 base.prototype.postFunc = async function(req,res){
 	const id = await this.insert(req.body);
 	if (id) {
-		res.status(200).send(id)
+		res.status(200).send(id);
 	}
 }
 
 base.prototype.putFunc = async function(req,res){
-	const id = await this.update(req)
+	const id = await this.update(req.body);
 	if (id) {
-		res.status(200).send('updated')
+		res.status(200).send(id);
 	}
 }
 
@@ -33,10 +33,10 @@ base.prototype.deleteFunc = function(req,res){
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
 
-base.prototype.update = async function(req){
-	const {id} = req.params;
-	const fillables = _.keys(req.body) 		
-	const result = await this.model.update(req.body, {
+base.prototype.update = async function(identity, data){
+	const{ id } = identity;
+	const fillables = _.keys(data) 		
+	const result = await this.model.update(data, {
         where: {
             id
 		},
@@ -44,8 +44,6 @@ base.prototype.update = async function(req){
 	});
 	return result
 }
-
-
 
 base.prototype.insert = async function(data){
 	const fillables = _.keys(data) 	
