@@ -38,19 +38,19 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, blocker } = req.body;
+	const { name, description, active, module_name, blocker  } = req.body;
 	try {
-		let newState = await this.insert({
+		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			module_name: this.moduleName,
+			module_name,
 			blocker
 		});
-		if (newState) {
+		if (newdate) {
 			return res.status(200).json({
 				message: 'successful action',
-				date: newState
+				date: newdate
 			});
 		}
 	} catch (error) {
@@ -63,9 +63,9 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, blocker } = req.body;
+	const { name, description, active, module_name ,blocker } = req.body;
 	try {
-		let StateUpdated = await this.update(
+		let result = await this.update(
 			{
 				id
 			},
@@ -73,9 +73,10 @@ controller.putFunc = async function (req, res) {
 				name,
 				description,
 				active,
+				module_name,
 				blocker
 			});
-			if(StateUpdated)
+			if(result)
 			{
 				res.status(200).json({
 					message: "successful action"
