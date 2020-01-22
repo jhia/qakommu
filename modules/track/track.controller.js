@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
-const controller = new Base('state');
+const controller = new Base('track');
 
 /*
 *Extend or overwrite the base functions
@@ -36,16 +36,16 @@ controller.getFunc = async function (req, res) {
 
 }
 
+
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, module_name, blocker  } = req.body;
+	const { name, description, active, module_name } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			module_name,
-			blocker
+			module_name
 		});
 		if (newdate) {
 			return res.status(200).json({
@@ -63,7 +63,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, module_name ,blocker } = req.body;
+	const { name, description, active, module_name  } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -73,8 +73,7 @@ controller.putFunc = async function (req, res) {
 				name,
 				description,
 				active,
-				module_name,
-				blocker
+				module_name
 			});
 			if(result)
 			{
