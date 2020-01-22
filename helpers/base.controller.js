@@ -8,7 +8,10 @@ function base(name){
 	//controller constructor
 	this.db = db;	
 	this.moduleName = name;
-	this.model = this.db[this.moduleName];
+
+	if( __.has(this.db,name) )
+		this.model = this.db[this.moduleName];
+	
 	this.response = utils.response;
 }
 
