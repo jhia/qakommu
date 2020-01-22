@@ -39,13 +39,13 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, blocker } = req.body;
+	const { name, description, active, module_name } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			module_name: this.moduleName
+			module_name
 		});
 		if (newdate) {
 			return res.status(200).json({
@@ -63,7 +63,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active } = req.body;
+	const { name, description, active, module_name  } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -72,7 +72,8 @@ controller.putFunc = async function (req, res) {
 			{
 				name,
 				description,
-				active
+				active,
+				module_name
 			});
 			if(result)
 			{
@@ -101,6 +102,5 @@ controller.deleteFunc = async function (req, res) {
 		});
 	}
 }
-
 
 module.exports = controller;
