@@ -24,12 +24,12 @@ module.exports = ()=>{
 				return;
 			}
 			fs.mkdirSync('./modules');
-			utils.createModule(process.argv.slice(2)[0]);
+			utils.createModule(process.argv.slice(2)[0],process.argv.slice(2)[1]);
 			rl.close();
 		});
 
 	}else{
-		utils.createModule(process.argv.slice(2)[0]);
+		utils.createModule(process.argv.slice(2)[0],process.argv.slice(2)[1]);
 		rl.close();
 	}
 }

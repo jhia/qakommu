@@ -1,18 +1,25 @@
 'use strict';
 
 const _ = require('lodash');
-
+const utils = require('./utilities');
 const db = require('../models')
 
 function base(name){
 	//controller constructor
 	this.db = db;	
 	this.moduleName = name;
-	this.model = this.db[this.moduleName]
+
+	if( _.has(this.db,name) )
+		this.model = this.db[this.moduleName];
+	
+	this.response = utils.response;
 }
 
 base.prototype.getFunc = function(req,res){
-	res.status('200').send(`GET to ${this.moduleName}`);
+	this.response({
+		res,
+		message: 'Everything is ok!'
+	});
 }
 
 base.prototype.postFunc = async function(req,res){
