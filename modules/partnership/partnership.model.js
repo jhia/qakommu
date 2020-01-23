@@ -1,39 +1,45 @@
 'use strict'
 
+
 module.exports = (sequelize, DataTypes) => {
     const partnership = sequelize.define('partnership', {
         id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
         },
-        name:{
+        name: {
             allowNull: false,
             type: DataTypes.TEXT
         },
-        description:{
+        description: {
             type: DataTypes.TEXT
         },
-        registry_number:{
+        registry_number: {
             type: DataTypes.TEXT
         },
-        logo:{
+        logo: {
             type: DataTypes.BLOB
         },
-        url:{
+        url: {
             type: DataTypes.TEXT
         },
-        active:{
+        active: {
             allowNull: false,
             type: DataTypes.BOOLEAN
         }
 
     });
 
-    partnership.associate = function(models){
-    	//To create model associations
-    }
+    partnership.associate = function (models) {
+        //To create model associations
+        // associations can be defined here
+        partnership.hasMany(models.partnership_position, {
+            foreignKey: 'id_partnership',
+            as: 'Partnership_position'
+        });
+    };
 
     return partnership;
 }
