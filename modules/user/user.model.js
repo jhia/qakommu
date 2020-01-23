@@ -21,18 +21,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-
     active: {
       type: Sequelize.BOOLEAN,
       allowNull: true,
       defaultValue: true
     },
-
     gender: DataTypes.STRING,
     id_repository: DataTypes.INTEGER,
     last_login: DataTypes.DATE
   }, {
-    hooks: {
+     hooks: {
       beforeCreate: function (admin) {
         admin.password = encrypt_password(admin.password);
       },
