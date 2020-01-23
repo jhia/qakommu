@@ -50,9 +50,17 @@ module.exports = (sequelize, DataTypes) => {
 
     event.associate = function(models){
         //To create model associations
+        
+        //evento to state
         event.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        //event to sponsor
+        event.hasMany(models.sponsor, {
+            foreignKey: 'id_event',
+            as: 'event_sponsor'
         });
     }
 

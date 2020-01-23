@@ -30,7 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     type_sponsor.associate = function(models){
-    	//To create model associations
+        //To create model associations
+        type_sponsor.hasMany(models.sponsor, {
+            foreignKey: 'id_type_sponsor',
+            as: 'type_sponsor_sponsor'
+        });
     }
 
     return type_sponsor;

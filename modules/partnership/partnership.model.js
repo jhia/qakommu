@@ -34,10 +34,17 @@ module.exports = (sequelize, DataTypes) => {
 
     partnership.associate = function (models) {
         //To create model associations
-        // associations can be defined here
+
+        //partnership to partnership_position
         partnership.hasMany(models.partnership_position, {
             foreignKey: 'id_partnership',
             as: 'Partnership_position'
+        });
+
+        //partnership to sponsor
+        partnership.hasMany(models.sponsor, {
+            foreignKey: 'id_partnership',
+            as: 'partnership_sponsor'
         });
     };
 
