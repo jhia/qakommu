@@ -31,8 +31,29 @@ function cleanAttributes(relations) {
     });
 }
 
+function response(obj){
+
+    const {
+        res,
+        statusCode,
+        success,
+        message,
+        payload
+    } = obj;
+
+    res.
+        status(statusCode || 200).
+        json({
+            success: success || true,
+            message: message || "Successfull request",
+            payload: payload || []
+        })
+
+}
+
 module.exports = {
     findRelation,
     cleanAttributes,
-    setGlobalSQLMode
+    setGlobalSQLMode,
+    response
 };

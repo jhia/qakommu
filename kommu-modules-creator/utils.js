@@ -2,13 +2,24 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = {
-	createModule(name){
+	createModule(name,param){
 		const modulePath = path.join('./modules',name);
 
 		fs.mkdirSync(modulePath);
-		this.createRouter(name,modulePath);
-		this.createController(name,modulePath);
-		this.createModel(name,modulePath);
+		switch(param){
+			case '--no-model':
+				this.createRouter(name,modulePath);
+				this.createController(name,modulePath);
+			break;
+			case '--only-model':
+				this.createModel(name,modulePath);
+			break;
+			default:
+				this.createRouter(name,modulePath);
+				this.createController(name,modulePath);
+				this.createModel(name,modulePath);
+			break;
+		}
 
 	},
 	createRouter(name,modulePath){
@@ -45,7 +56,7 @@ router.delete('/',(req, res) => {
 module.exports = router;`
 
 fs.writeFile(path.join(modulePath,`${name}.router.js`), data,()=>{
-	console.log("Successfully created")
+	console.log(`Successfully created ${name} router`);
 });
 	},
 	createController(name,modulePath){
@@ -66,7 +77,7 @@ const controller = new Base('${name}');
 module.exports = controller;`
 
 fs.writeFile(path.join(modulePath,`${name}.controller.js`), data,()=>{
-	console.log("Successfully created")
+	console.log(`Successfully created ${name} controller`);
 });
 	},
 	createModel(name,modulePath){
@@ -90,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
 }`
 
 		fs.writeFile(path.join(modulePath,`${name}.model.js`), data,()=>{
-			console.log("Successfully created")
+			console.log(`Successfully created ${name} model`);
 		});
 	}
 }

@@ -45,9 +45,10 @@ fs
   .readdirSync(__dirname+'/modules')
   .forEach( moduleName => {
       const modelFile = path.join(__dirname,"modules",moduleName, moduleName+'.model.js')
-      const model = sequelize['import'](modelFile);
-      db[model.name] = model;
-  
+      if(fs.existsSync(modelFile)){
+        const model = sequelize['import'](modelFile);
+        db[model.name] = model;
+      }
   }) 
 
 Object.keys(db).forEach(modelName => {
