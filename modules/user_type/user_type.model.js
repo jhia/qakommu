@@ -4,23 +4,23 @@ module.exports = (sequelize, DataTypes) => {
     const user_type = sequelize.define('user_type', {
     });
 
-
     user_type.associate = function(models){
-
-        user_type.belongsTo(models.users,{
-            as: 'users',
-            foreignKey: 'userId'
+        user_type.belongsTo(models.user,{
+            foreignKey: 'id_user',
+            as: 'user'
         });
 
-        
-        user_type.belongsTo(models.roles,{
-            as: 'rolId',
-            foreignKey: 'roles'
+        user_type.belongsTo(models.rol,{
+            foreignKey: 'id_rol',
+            as: 'rol'
         });
-        user_type.belongsTo(models.communities,{
-            as: 'communityId',
-            foreignKey: 'communities'
+
+
+        user_type.belongsTo(models.community,{
+            foreignKey: 'id_community',
+            as: 'community'
         });
+ 
     }
     
     return user_type;
