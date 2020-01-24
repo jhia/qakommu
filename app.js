@@ -7,8 +7,7 @@ const cors = require('cors');
 const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
-
-//db.sequelize.sync();
+db.sequelize.sync( {force: true} );
 const app = express();
 //MIDDLEWARE
 app.use(logger('dev'));
@@ -20,7 +19,6 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
-
 
 const user = require('./modules/user/user.router')
 app.use('/user', user);
