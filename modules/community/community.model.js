@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     id_repository: DataTypes.INTEGER
   });
   
-
   community.associate = function(models) {
     // associations can be defined here
     community.hasMany(models.user_type, {
@@ -21,9 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'user_type'
     });
   };
-
-
-
 
   return community;
 };
