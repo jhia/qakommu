@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           allowNull: false,
           unique: {
-              msg: 'Name exist'
+              msg: 'Rol exist'
           }
       },
         description: DataTypes.STRING,
@@ -26,8 +26,5 @@ module.exports = (sequelize, DataTypes) => {
        as: 'permission'
      });
    }
-
-
-    
     return rol;
 }
