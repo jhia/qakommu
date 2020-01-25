@@ -2,9 +2,14 @@
 
 module.exports = (sequelize, DataTypes) => {
     const action = sequelize.define('action', {
-        name: DataTypes.STRING,
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: {
+              msg: 'Action exist'
+          }
+        },
         description: DataTypes.STRING,
-
     });
 
     action.associate = function(models) {
@@ -14,8 +19,5 @@ module.exports = (sequelize, DataTypes) => {
           as: 'permission'
         });
       };
-  
-
-
     return action;
 }
