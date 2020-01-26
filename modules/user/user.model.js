@@ -12,20 +12,21 @@ const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define('user', {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: {
-          msg: 'User exist'
-      }
-    },
-
-
-
+    name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     username: DataTypes.STRING,
     address: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isEmail:true
+      },
+      unique: {
+          args: true,
+          msg: 'Email address already in use!'
+      }
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false
