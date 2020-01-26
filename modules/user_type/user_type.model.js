@@ -1,7 +1,20 @@
 'use strict'
-
+const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     const user_type = sequelize.define('user_type', {
+        id_user: DataTypes.INTEGER,
+        id_rol: DataTypes.INTEGER,
+        id_community: DataTypes.INTEGER,
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+          },
+          updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+          }
     });
 
     user_type.associate = function(models){

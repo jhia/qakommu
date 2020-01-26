@@ -12,7 +12,16 @@ const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define('user', {
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+          msg: 'User exist'
+      }
+    },
+
+
+
     last_name: DataTypes.STRING,
     username: DataTypes.STRING,
     address: DataTypes.STRING,
