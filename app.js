@@ -7,7 +7,10 @@ const cors = require('cors');
 const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
-db.sequelize.sync( {force: true} );
+
+
+db.sequelize.sync( {force: true} )
+
 const app = express();
 //MIDDLEWARE
 app.use(logger('dev'));
@@ -23,10 +26,16 @@ app.use(fileUpload({
 const user = require('./modules/user/user.router')
 app.use('/user', user);
 
+
+const register = require('./modules/register/register.router')
+app.use('/register', register);
+
 const login = require('./modules/login/login.router')
 app.use('/auth', login);
 
 app.use(auth)
+
 app.use('/api', api_router);
 
 module.exports = app;
+
