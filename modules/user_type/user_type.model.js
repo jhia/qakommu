@@ -20,18 +20,18 @@ module.exports = (sequelize, DataTypes) => {
     user_type.associate = function(models){
         user_type.belongsTo(models.user,{
             foreignKey: 'id_user',
-            as: 'user'
+            as: 'users'
         });
 
         user_type.belongsTo(models.rol,{
             foreignKey: 'id_rol',
-            as: 'rol'
+            as: 'rols'
         });
 
 
         user_type.belongsTo(models.community,{
             foreignKey: 'id_community',
-            as: 'community'
+            as: 'communities'
         });
  
     }

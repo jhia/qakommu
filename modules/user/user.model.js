@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     user.hasMany(models.user_type, {
       foreignKey: 'id_user',
-      as: 'user_type'
+      as: 'user_types'
     });
   };
   return user;

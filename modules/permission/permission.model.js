@@ -20,17 +20,17 @@ module.exports = (sequelize, DataTypes) => {
   permission.associate = function(models) {
     // associations can be defined here
     permission.belongsTo(models.rol, {
-      as: 'rol',
+      as: 'rols',
       foreignKey: 'id_rol',
     });
 
     permission.belongsTo(models.resource, {
-      as: 'resource',
+      as: 'resources',
       foreignKey:'id_resource'
     });
 
     permission.belongsTo(models.action, {
-      as: 'action',
+      as: 'actions',
       foreignKey:'id_action'
     });
     

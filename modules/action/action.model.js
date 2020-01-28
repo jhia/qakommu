@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         // associations can be defined here
         action.hasMany(models.permission, {
           foreignKey: 'id_action',
-          as: 'permission'
+          as: 'permissions'
         });
       };
     return action;
