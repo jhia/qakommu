@@ -2,13 +2,20 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models');
 
-const {user,user_type,rol,permission,resource,action} = db
+const {user,user_type,role,permission,resource} = db
 
 const permissionsVerification = async function (req, res, next){
+// para saltarse el auth
+if (req.headers.skip) {
+    next();
+}
+
 
 try {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
+    const name_action = req.method
+    const name_module = (req.url).split("/")    
 
     const result = await user.findOne({
         where: {
@@ -18,49 +25,73 @@ try {
             model: user_type,
             as: 'user_types',
             include: [{
-                model: rol,
-                as: 'rols',
+                model: role,
+                as: 'roles',
                 include: [{
                     model: permission,
                     as: 'permissions',
-                    include: [
-                        {
-                            model: resource,
-                            as: 'resources'
-                        },
-                        {
-                            model: action,
-                            as: 'actions'
+                    include: [{
+                        model: resource,
+                        as: 'resources',
+                        where: {
+                            name: name_module
                         }
-    
-                    ]
-                }]
-            }]
+                    }]
+                        
+                }],
+                
+            }],            
+
         }]
     });    
- 
-    const actions_name = new Array()
-    let resources_name = new Array()
-    result.user_types[0].rols.permissions.forEach(element => {
 
-        console.log(element.resources.module_name+'--'+element.actions.name);
-        actions_name.push(element.actions.name);
-        resources_name.push(element.resources.module_name);
-    });
-     
-    const name_action = req.method
-    const name_module = (req.url).split("/")
-    console.log(typeof(resources_name))
-    console.log(name_module[2]+'---'+name_action)
- 
-    if ( !(resources_name.includes(name_module[2]) && actions_name.includes(name_action)) ) {
-        console.log('paso1')
-        return url==req.baseUrl            
+
+//console.log(result.user_types[0].roles.permissions[0])
+//console.log(result.user_types[0].roles.permissions[0]._delete)
+
+function validate(){
+
+    const { _create, _read, _update, _delete } = result.user_types[0].roles.permissions[0]
+
+
+    switch (name_action.toUpperCase()) {
+        case 'POST':
+            console.log('paso1')
+            return _create;
+            break;
+    
+        case 'GET':
+                console.log('paso2')
+                return _read;
+            break;
+   
+        case 'READ':
+                console.log('paso3')
+                return _update;
+            break;
+
+        case 'DELETE':
+                console.log('paso4')
+                return _delete;
+            break;
+                 
+
+
+    }
+
+}
+
+    if (!validate()) {
+
+        console("---------------")
+        console(req.baseUrl)
+        console("---------------")
+        return url==req.baseUrl;
     }
     else{
-        console.log('paso2')
         req.userData = decoded;
     }
+
     next();
     } catch (error) {
         return res.status(401).json({
@@ -68,4 +99,5 @@ try {
         });
     }
 }
+
 module.exports = permissionsVerification;

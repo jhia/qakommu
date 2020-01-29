@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const controller = new Base('login');
 const db = require('../../models')
-const {user,user_type,rol,permission,resource,action} = db
+const {user,user_type,role,permission,resource} = db
 
 controller.postFunc = async function(req,res){
 
@@ -22,8 +22,8 @@ controller.postFunc = async function(req,res){
             model: user_type,
             as: 'user_types',
             include: [{
-                model: rol,
-                as: 'rols',
+                model: role,
+                as: 'roles',
                 include: [{
                     model: permission,
                     as: 'permissions',
@@ -31,10 +31,6 @@ controller.postFunc = async function(req,res){
                         {
                             model: resource,
                             as: 'resources'
-                        },
-                        {
-                            model: action,
-                            as: 'actions'
                         }
 
                     ]

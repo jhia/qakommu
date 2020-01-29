@@ -3,9 +3,12 @@
 const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   const permission = sequelize.define('permission', {
-    id_action: Sequelize.INTEGER,
-    id_rol: Sequelize.INTEGER,
+    id_role: Sequelize.INTEGER,
     id_resource: Sequelize.INTEGER,
+    _create: Sequelize.BOOLEAN,
+    _read: Sequelize.BOOLEAN,
+    _update: Sequelize.BOOLEAN,
+    _delete: Sequelize.BOOLEAN,
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
@@ -18,22 +21,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   permission.associate = function(models) {
-    // associations can be defined here
-    permission.belongsTo(models.rol, {
-      as: 'rols',
+    permission.belongsTo(models.role, {
+      as: 'roles',
       foreignKey: 'id_rol',
     });
 
     permission.belongsTo(models.resource, {
       as: 'resources',
       foreignKey:'id_resource'
-    });
-
-    permission.belongsTo(models.action, {
-      as: 'actions',
-      foreignKey:'id_action'
-    });
-    
+    });    
   };
   return permission;
 };

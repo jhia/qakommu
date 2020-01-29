@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     const resource = sequelize.define('resource', {
-      module_name: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'Module exist!'
         }
       },
-      description: DataTypes.STRING
+      url_resource: DataTypes.STRING
     })
   
       resource.associate = function(models) {

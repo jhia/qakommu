@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     const user_type = sequelize.define('user_type', {
         id_user: DataTypes.INTEGER,
-        id_rol: DataTypes.INTEGER,
+        id_role: DataTypes.INTEGER,
         id_community: DataTypes.INTEGER,
         createdAt: {
             allowNull: false,
@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             as: 'users'
         });
 
-        user_type.belongsTo(models.rol,{
-            foreignKey: 'id_rol',
-            as: 'rols'
+        user_type.belongsTo(models.role,{
+            foreignKey: 'id_role',
+            as: 'roles'
         });
 
 
