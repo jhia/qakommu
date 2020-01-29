@@ -33,6 +33,18 @@ function cleanAttributes(relations) {
 
 function response(obj){
 
+    const httpStatusCode = {
+        "200": "Everything is OK",
+        "201": "Created Successfully",
+        "202": "Accepted",
+        "204": "No Content",
+        "301": "Moved Permanently",
+        "400": "Bad Request",
+        "401": "Unauthorized",
+        "404": "Not Found",
+        "500": "Internal Server Error",
+    };
+
     const {
         res,
         statusCode,
@@ -42,10 +54,12 @@ function response(obj){
     } = obj;
 
     res.
-        status(statusCode || 200).
+        status(statusCode ? statusCode : typeof obj == 'string' ? obj : 200).
         json({
             success: success || true,
-            message: message || "Successfull request",
+            message: message ? 
+                        message : typeof obj == 'string' ?
+                        httpStatusCode[obj] : "Successfull request",
             payload: payload || []
         })
 
