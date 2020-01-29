@@ -31,7 +31,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository } = req.body;
+    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository , code} = req.body;
     try {
         let newdate = await this.insert({
             name,
@@ -41,7 +41,8 @@ controller.postFunc = async function (req, res) {
             web,
             prefix,
             member_verification,
-            id_repository
+            id_repository,
+            code
         });
         if (newdate) {
             return res.status(200).json({
@@ -59,7 +60,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository } = req.body;
+    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
     try {
         let result = await this.update(
             {
@@ -74,10 +75,8 @@ controller.putFunc = async function (req, res) {
                 web,
                 prefix,
                 member_verification,
-                id_repository
-    
-
-
+                id_repository,
+                code
             });
         if (result) {
             res.status(200).json({
