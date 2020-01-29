@@ -13,17 +13,13 @@ module.exports = (sequelize, DataTypes) => {
     id_repository: DataTypes.INTEGER
   });
   
-
   community.associate = function(models) {
     // associations can be defined here
     community.hasMany(models.user_type, {
       foreignKey: 'id_community',
-      as: 'user_type'
+      as: 'user_types'
     });
   };
-
-
-
 
   return community;
 };

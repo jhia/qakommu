@@ -3,7 +3,15 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
-const controller = new Base('action');
+const controller = new Base('type_booth');
+
+/*
+*Extend or overwrite the base functions
+*All the controllers already have implicit the models by:
+*this.db -> All models
+*this.model -> Current module model
+*/
+
 
 controller.getFunc = async function (req, res) {
 
@@ -31,11 +39,15 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description } = req.body;
+    const { name, description, cost, size_width, size_height, active } = req.body;
     try {
         let newdate = await this.insert({
             name,
-            description
+            description,
+            cost,
+            size_width,
+            size_height,
+            active
         });
         if (newdate) {
             return res.status(200).json({
@@ -53,7 +65,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, cost, size_width, size_height, active } = req.body;
     try {
         let result = await this.update(
             {
@@ -61,7 +73,11 @@ controller.putFunc = async function (req, res) {
             },
             {
                 name,
-                description    
+                description,
+                cost,
+                size_width,
+                size_height,
+                active
             });
         if (result) {
             res.status(200).json({

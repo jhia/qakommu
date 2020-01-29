@@ -16,7 +16,17 @@ module.exports = (sequelize, DataTypes) => {
     last_name: DataTypes.STRING,
     username: DataTypes.STRING,
     address: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isEmail:true
+      },
+      unique: {
+          args: true,
+          msg: 'Email address already in use!'
+      }
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false
@@ -45,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     user.hasMany(models.user_type, {
       foreignKey: 'id_user',
-      as: 'user_type'
+      as: 'user_types'
     });
   };
   return user;

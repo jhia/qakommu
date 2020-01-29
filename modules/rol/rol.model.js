@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           allowNull: false,
           unique: {
-              msg: 'Name exist'
+              msg: 'Rol exist'
           }
       },
         description: DataTypes.STRING,
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     rol.associate = function(models) {
        rol.hasOne(models.user_type, {
         foreignKey: 'id_rol',
-        as: 'user_type'
+        as: 'user_types'
       });
     }
 
@@ -23,11 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     rol.associate = function(models) {
       rol.hasMany(models.permission, {
        foreignKey: 'id_rol',
-       as: 'permission'
+       as: 'permissions'
      });
    }
-
-
-    
     return rol;
 }
