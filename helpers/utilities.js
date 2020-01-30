@@ -57,7 +57,7 @@ function response(obj,resp = null){
         res.
             status(statusCode ? statusCode : typeof obj == 'string' ? obj : 200).
             json({
-                success: success || true,
+                success: success != 'undefined' ? success : true,
                 message: message ? 
                             message : typeof obj == 'string' ?
                             httpStatusCode[obj] : "Successfull request",
@@ -69,7 +69,7 @@ function response(obj,resp = null){
      resp.
         status(statusCode ? statusCode : typeof obj == 'string' ? obj : 200).
         json({
-            success: success || true,
+            success: success != 'undefined' ? success : true,,
             message: message ? 
                         message : typeof obj == 'string' ?
                         httpStatusCode[obj] : "Successfull request",
