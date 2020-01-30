@@ -17,16 +17,19 @@ controller.getFunc = async function (req, res) {
             attributes,
             order
         });
-        res.json({
-            data
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'something went wrong',
-            data: {}
-        })
-    }
 
+		this.response({
+			res,
+			payload: [data]
+		});
+    } catch (error) {
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong',
+		});
+    }
 }
 
 controller.postFunc = async function (req, res) {
@@ -44,17 +47,21 @@ controller.postFunc = async function (req, res) {
             id_repository,
             code
         });
-        if (newdate) {
-            return res.status(200).json({
-                message: 'successful action',
-                date: newdate
-            });
+        if (newdate) 
+        {
+			return this.response({
+				res,
+				statusCode: 201,
+				payload: [newdate]
+			});
         }
     } catch (error) {
-        res.status(500).json({
-            message: 'something went wrong',
-            date: {}
-        });
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong',
+		});
     }
 }
 
@@ -67,7 +74,6 @@ controller.putFunc = async function (req, res) {
                 id
             },
             {
-
                 name,
                 description,
                 id_type_of_account,
@@ -78,31 +84,59 @@ controller.putFunc = async function (req, res) {
                 id_repository,
                 code
             });
-        if (result) {
-            res.status(200).json({
-                message: "successful action"
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            message: 'something went wrong',
-            date: {}
-        });
+
+            if (result) {
+                return this.response({
+                    res,
+                    statusCode: 200
+                });
+            } else {
+                this.response({
+                    res,
+                    success: false,
+                    statusCode: 202,
+                    message: 'Could not update this element, possibly does not exist'
+                });
+            }
+        } catch (error) {
+
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong'
+		});
     }
 }
 
 controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-    try {
-        let deleterows = await this.delete({ id });
-        res.json({
-            count: deleterows
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'something went wrong'
-        });
-    }
+	const { id } = req.params;
+	try {
+		let deleterows = await this.delete({ id });
+		console.log(deleterows);
+		if (deleterows > 0) {
+			return this.response({
+				res,
+				success: true,
+				statusCode: 200
+			});
+		} else {
+			this.response({
+				res,
+				success: false,
+				statusCode: 202,
+				message: 'it was not possible to delete the item because it does not exist'
+			});
+		}
+
+	} catch (error) {
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong'
+		});
+	}
 }
 
 module.exports = controller;
