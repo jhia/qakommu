@@ -91,7 +91,9 @@ controller.putFunc = async function (req, res) {
 		} else {
 			this.response({
 				res,
-				statusCode: 204
+				success: false,
+				statusCode: 202,
+				message: 'Could not update this element, possibly does not exist'
 			});
 		}
 	} catch (error) {
@@ -99,7 +101,7 @@ controller.putFunc = async function (req, res) {
 			res,
 			success: false,
 			statusCode: 500,
-			message: 'something went wrong',
+			message: 'something went wrong'
 		});
 	}
 }
@@ -112,6 +114,7 @@ controller.deleteFunc = async function (req, res) {
 		if (deleterows > 0) {
 			return this.response({
 				res,
+				success: true,
 				statusCode: 200
 			});
 		} else {
