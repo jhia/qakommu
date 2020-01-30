@@ -14,15 +14,18 @@ controller.getFunc = async function (req, res) {
 			offset,
 			attributes,
 			order
-        });
-		res.json({
-			data
+		});
+		this.response({
+			res,
+			payload: [data]
 		});
 	} catch (error) {
-		res.status(500).json({
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong',
-			data: {}
-		})
+		});
 	}
 }
 
@@ -45,34 +48,33 @@ controller.postFunc = async function (req, res) {
 				id_community
 			});
 
-			await user_type.create(
-				{
+			await user_type.create({
 					id_user: result.id,
 					id_rol: id_rol,
 					id_community: id_community
 				});
 
-			if(result)
-			{
-				console.log(id_rol)
-
-				res.status(200).json({
-					message: "successful action"
+				if (newdate) {
+					return this.response({
+						res,
+						statusCode: 201,
+						payload: [newdate]
+					});
+				}
+			} catch (error) {
+		
+				this.response({
+					res,
+					success: false,
+					statusCode: 500,
+					message: 'something went wrong',
 				});
 			}
-	
-		} catch (error) {
-			console.log(error)
-			res.status(500).json({
-				message: 'something went wrong',
-				date: {}
-			});
-		}
 }
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, module_name ,blocker } = req.body;
+	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -80,37 +82,69 @@ controller.putFunc = async function (req, res) {
 			},
 			{
 				name,
-				description,
-				active,
-				module_name,
-				blocker
+				last_name,
+				username,
+				address,
+				email,
+				password,
+				gender,
+				id_repository,
+				id_rol,
+				id_community
+
 			});
-			if(result)
-			{
-				res.status(200).json({
-					message: "successful action"
+			if (result) {
+				return this.response({
+					res,
+					statusCode: 200
+				});
+			} else {
+				this.response({
+					res,
+					success: false,
+					statusCode: 202,
+					message: 'Could not update this element, possibly does not exist'
 				});
 			}
-	} catch (error) {
-		res.status(500).json({
-			message: 'something went wrong',
-			date: {}
-		});
-	}
+		} catch (error) {
+			this.response({
+				res,
+				success: false,
+				statusCode: 500,
+				message: 'something went wrong'
+			});
+		}
 }
 
 controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
 	try {
 		let deleterows = await this.delete({ id });
-		res.json({
-			count: deleterows
-		});
+		console.log(deleterows);
+		if (deleterows > 0) {
+			return this.response({
+				res,
+				success: true,
+				statusCode: 200
+			});
+		} else {
+			this.response({
+				res,
+				success: false,
+				statusCode: 202,
+				message: 'it was not possible to delete the item because it does not exist'
+			});
+		}
+
 	} catch (error) {
-		res.status(500).json({
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong'
 		});
 	}
 }
+
 
 module.exports = controller;
