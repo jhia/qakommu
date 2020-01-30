@@ -27,14 +27,23 @@ module.exports = (sequelize, DataTypes) => {
 
     state.associate = function(models){
         //To create model associations
+
+        //state to coupon
         state.hasMany(models.coupon ,{
             foreignKey: 'id_state',
             as: 'state_coupon'
         });
 
+        //state to event
         state.hasMany(models.event, {
             foreignKey: 'id_state',
             as: 'state_event'
+        });
+
+        //state to ticket
+        state.hasMany(models.ticket, {
+            foreignKey: 'id_state',
+            as: 'state_ticket'
         });
     }
 
