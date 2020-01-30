@@ -7,7 +7,7 @@ const {user,user_type,role,permission,resource} = db
 const permissionsVerification = async function (req, res, next){
 // para saltarse el auth
 if (req.headers.skip) {
-    next();
+    return next();
 }
 
 
