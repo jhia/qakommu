@@ -48,6 +48,10 @@ controller.postFunc = async function(req,res){
         const { password }  = req.body;
         const hash = await bcrypt.compare(password, result.password);
     }
+
+
+
+    
     let User = {
         email
     };
