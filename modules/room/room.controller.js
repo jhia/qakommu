@@ -35,7 +35,7 @@ controller.getFunc = async function (req, res) {
 			success: false,
 			statusCode: 500,
 			message: 'something went wrong',
-		})
+		});
 	}
 
 }
@@ -47,20 +47,24 @@ controller.postFunc = async function (req, res) {
 	try {
 		let newdate = await this.insert({
 			name,
-            description,
-            max_capacity,
+			description,
+			max_capacity,
 			active
 		});
 		if (newdate) {
-			return res.status(200).json({
-				message: 'successful action',
-				date: newdate
+			return this.response({
+				res,
+				statusCode: 201,
+				payload: [newdate]
 			});
 		}
 	} catch (error) {
-		res.status(500).json({
+
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong',
-			date: {}
 		});
 	}
 }
@@ -75,20 +79,27 @@ controller.putFunc = async function (req, res) {
 			},
 			{
 				name,
-                description,
-                max_capacity,
+				description,
+				max_capacity,
 				active
 			});
-			if(result)
-			{
-				res.status(200).json({
-					message: "successful action"
-				});
-			}
+		if (result) {
+			return this.response({
+				res,
+				statusCode: 200
+			});
+		} else {
+			this.response({
+				res,
+				statusCode: 204
+			});
+		}
 	} catch (error) {
-		res.status(500).json({
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong',
-			date: {}
 		});
 	}
 }
@@ -97,11 +108,26 @@ controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
 	try {
 		let deleterows = await this.delete({ id });
-		res.json({
-			count: deleterows
-		});
+		console.log(deleterows);
+		if (deleterows > 0) {
+			return this.response({
+				res,
+				statusCode: 200
+			});
+		} else {
+			this.response({
+				res,
+				success: false,
+				statusCode: 202,
+				message: 'it was not possible to delete the item because it does not exist'
+			});
+		}
+
 	} catch (error) {
-		res.status(500).json({
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong'
 		});
 	}
