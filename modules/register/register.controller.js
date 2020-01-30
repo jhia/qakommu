@@ -6,11 +6,22 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('register');
 
 controller.postFunc = async function (req, res) {
-	const {user_type,user} = this.db
+	const {user_type,user,community} = this.db
 
-	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body
+	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community,code } = req.body
+
 		try {
-			const result = await user.create(
+
+			const data = await community.findOne({
+				attributes: ['name'],
+			},{
+				where: {
+					code
+				}
+
+			});
+
+			let result = await user.create(
 			{
 				name,
 				last_name,
@@ -20,23 +31,26 @@ controller.postFunc = async function (req, res) {
 				password,
 				gender,
 				id_repository,
-				id_rol,
-				id_community
+				id_role,
+				id_community,
+				data
 			});
 
 			await user_type.create(
 				{
 					id_user: result.id,
-					id_rol: id_rol,
+					id_role: id_role,
 					id_community: id_community
 				});
 
 			if(result)
 			{
-				console.log(id_rol)
-
 				res.status(200).json({
-					message: "successful action"
+					message: "successful action",
+
+					result,
+					your_community: data
+
 				});
 			}
 	
