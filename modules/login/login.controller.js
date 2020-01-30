@@ -40,7 +40,7 @@ controller.postFunc = async function(req,res){
     });
 
     if (!result) {
-        this.res.status(404).json({
+        res.status(404).json({
             message: 'User Not Found'
         })
     } else {
