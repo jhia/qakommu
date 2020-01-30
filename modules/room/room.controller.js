@@ -37,9 +37,7 @@ controller.getFunc = async function (req, res) {
 			message: 'something went wrong',
 		});
 	}
-
 }
-
 
 controller.postFunc = async function (req, res) {
 
@@ -59,7 +57,6 @@ controller.postFunc = async function (req, res) {
 			});
 		}
 	} catch (error) {
-
 		this.response({
 			res,
 			success: false,
@@ -110,7 +107,6 @@ controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
 	try {
 		let deleterows = await this.delete({ id });
-		console.log(deleterows);
 		if (deleterows > 0) {
 			return this.response({
 				res,
