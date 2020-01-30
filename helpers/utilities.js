@@ -31,7 +31,7 @@ function cleanAttributes(relations) {
     });
 }
 
-function response(obj){
+function response(obj,resp = null){
 
     const httpStatusCode = {
         "200": "Everything is OK",
@@ -53,7 +53,20 @@ function response(obj){
         payload
     } = obj;
 
-    res.
+    if(res){
+        res.
+            status(statusCode ? statusCode : typeof obj == 'string' ? obj : 200).
+            json({
+                success: success || true,
+                message: message ? 
+                            message : typeof obj == 'string' ?
+                            httpStatusCode[obj] : "Successfull request",
+                payload: payload || []
+            })
+        return;
+    }
+
+     resp.
         status(statusCode ? statusCode : typeof obj == 'string' ? obj : 200).
         json({
             success: success || true,
@@ -62,6 +75,7 @@ function response(obj){
                         httpStatusCode[obj] : "Successfull request",
             payload: payload || []
         })
+
 
 }
 

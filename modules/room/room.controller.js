@@ -25,13 +25,16 @@ controller.getFunc = async function (req, res) {
 			attributes,
 			order
 		});
-		res.json({
-			data
+		this.response({
+			res,
+			payload: [data]
 		});
 	} catch (error) {
-		res.status(500).json({
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
 			message: 'something went wrong',
-			data: {}
 		})
 	}
 
