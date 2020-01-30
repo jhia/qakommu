@@ -38,7 +38,7 @@ controller.postFunc = async function(req,res){
     });
 
     if (!result) {
-        this.response({
+        return this.response({
             res,
             success: false,
             statusCode: 500,
