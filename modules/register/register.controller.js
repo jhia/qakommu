@@ -2,16 +2,13 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
 const controller = new Base('register');
 
 controller.postFunc = async function (req, res) {
 	const {user_type,user,community} = this.db
-
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community,code } = req.body
 
 		try {
-
 			const data = await community.findOne({
 				attributes: ['name'],
 			},{
@@ -45,10 +42,11 @@ controller.postFunc = async function (req, res) {
 
 			if(result)
 			{
-				res.status(200).json({
-					message: "successful action",
-
-					result,
+				res.status(201).json({
+					message: "Created Successfully",
+					result: {
+						attributes: [ 'name', 'last_name', 'username', 'address', 'email', 'gender', 'id_repository', 'id_role', 'id_community' ]
+					},
 					your_community: data
 
 				});
