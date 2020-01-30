@@ -10,9 +10,7 @@ const db = require('../../models')
 const {user,user_type,role,permission,resource} = db
 
 controller.postFunc = async function(req,res){
-
     const email = req.body.email || '';
-    
     const result = await user.findOne({
         where: {
             email,
@@ -40,9 +38,12 @@ controller.postFunc = async function(req,res){
     });
 
     if (!result) {
-        res.status(404).json({
-            message: 'User Not Found'
-        })
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
     } else {
         const { password }  = req.body;
         const hash = await bcrypt.compare(password, result.password);
@@ -59,8 +60,11 @@ controller.postFunc = async function(req,res){
             algorithm: 'HS512',
         }
     );            
-    return res.status(200).send({      
-        response: User.token
+
+    return this.response({
+        res,
+        statusCode: 200,
+        payload: User.token
     });
 };
 
