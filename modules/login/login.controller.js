@@ -38,20 +38,26 @@ controller.postFunc = async function(req,res){
     });
 
     if (!result) {
-        this.response({
+        return this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong',
+            message: 'Incorrect login',
         });
     } else {
         const { password }  = req.body;
         const hash = await bcrypt.compare(password, result.password);
+
+        if (!hash) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'Password error',
+            });
+        }
     }
 
-
-
-    
     let User = {
         email
     };
