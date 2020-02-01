@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
+const { makeid } = require('../../helpers/utilities')
 const controller = new Base('community');
 
 controller.getFunc = async function (req, res) {
@@ -45,22 +45,22 @@ controller.postFunc = async function (req, res) {
             prefix,
             member_verification,
             id_repository,
-            code
+            code: makeid(6)
         });
         if (newdate) 
         {
 			return this.response({
 				res,
 				statusCode: 201,
-				payload: [newdate]
+				payload: newdate
 			});
         }
-    } catch (error) {
+    } catch (err) {
 		this.response({
 			res,
 			success: false,
 			statusCode: 500,
-			message: 'something went wrong',
+			message: err.message,
 		});
     }
 }
