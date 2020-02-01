@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+router.get('/:id?',function(req, res){
   //HTTP get route
   resourceController.getFunc(req,res);
 });
@@ -23,7 +23,7 @@ router.put('/:id',(req, res) => {
   resourceController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   resourceController.deleteFunc(req,res);
 });
