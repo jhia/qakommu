@@ -1,6 +1,18 @@
 const _ = require('lodash');
 const db = require('../models');
 
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+
 function findRelation(relations, relation_model) {
     if (typeof relations[Symbol.iterator] === 'function') {
         for (const object of relations) {
@@ -83,5 +95,6 @@ module.exports = {
     findRelation,
     cleanAttributes,
     setGlobalSQLMode,
-    response
+    response,
+    makeid
 };
