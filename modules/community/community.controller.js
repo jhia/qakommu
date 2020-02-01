@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
+const { makeid } = require('../../helpers/utilities')
 const controller = new Base('community');
 
 controller.getFunc = async function (req, res) {
@@ -18,12 +18,12 @@ controller.getFunc = async function (req, res) {
             order
         });
 
-		this.response({
+		return this.response({
 			res,
 			payload: [data]
 		});
     } catch (error) {
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
@@ -45,22 +45,22 @@ controller.postFunc = async function (req, res) {
             prefix,
             member_verification,
             id_repository,
-            code
+            code: makeid(6)
         });
         if (newdate) 
         {
 			return this.response({
 				res,
 				statusCode: 201,
-				payload: [newdate]
+				payload: newdate
 			});
         }
-    } catch (error) {
-		this.response({
+    } catch (err) {
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
-			message: 'something went wrong',
+			message: err.message,
 		});
     }
 }
@@ -91,7 +91,7 @@ controller.putFunc = async function (req, res) {
                     statusCode: 200
                 });
             } else {
-                this.response({
+                return this.response({
                     res,
                     success: false,
                     statusCode: 202,
@@ -100,7 +100,7 @@ controller.putFunc = async function (req, res) {
             }
         } catch (error) {
 
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
@@ -121,7 +121,7 @@ controller.deleteFunc = async function (req, res) {
 				statusCode: 200
 			});
 		} else {
-			this.response({
+			return this.response({
 				res,
 				success: false,
 				statusCode: 202,
@@ -130,7 +130,7 @@ controller.deleteFunc = async function (req, res) {
 		}
 
 	} catch (error) {
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,

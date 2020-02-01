@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+router.get('/:id?',function(req, res){
   //HTTP get route
   roleController.getFunc(req,res);
 });
@@ -18,12 +18,12 @@ router.post('/',(req, res) => {
   roleController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   roleController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   roleController.deleteFunc(req,res);
 });

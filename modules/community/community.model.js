@@ -2,7 +2,14 @@
 
 module.exports = (sequelize, DataTypes) => {
   const community = sequelize.define('community', {
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+          args: true,
+          msg: 'this name already exists!'
+      }
+    },
     description: DataTypes.STRING,
     id_type_of_account: DataTypes.INTEGER,
     user_acount: DataTypes.INTEGER,
