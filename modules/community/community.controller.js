@@ -18,12 +18,12 @@ controller.getFunc = async function (req, res) {
             order
         });
 
-		this.response({
+		return this.response({
 			res,
 			payload: [data]
 		});
     } catch (error) {
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
@@ -56,7 +56,7 @@ controller.postFunc = async function (req, res) {
 			});
         }
     } catch (err) {
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
@@ -91,7 +91,7 @@ controller.putFunc = async function (req, res) {
                     statusCode: 200
                 });
             } else {
-                this.response({
+                return this.response({
                     res,
                     success: false,
                     statusCode: 202,
@@ -100,7 +100,7 @@ controller.putFunc = async function (req, res) {
             }
         } catch (error) {
 
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
@@ -121,7 +121,7 @@ controller.deleteFunc = async function (req, res) {
 				statusCode: 200
 			});
 		} else {
-			this.response({
+			return this.response({
 				res,
 				success: false,
 				statusCode: 202,
@@ -130,7 +130,7 @@ controller.deleteFunc = async function (req, res) {
 		}
 
 	} catch (error) {
-		this.response({
+		return this.response({
 			res,
 			success: false,
 			statusCode: 500,
