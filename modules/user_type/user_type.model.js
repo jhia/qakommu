@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.DATE,
             defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           },
-          updatedAt: {
+        updatedAt: {
             allowNull: false,
             type: Sequelize.DATE,
             defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-          }
+        }
     });
 
     user_type.associate = function(models){
