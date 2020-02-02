@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: {
           args: true,
-          msg: 'this name already exists!'
+          msg: 'name community  exists!'
       }
     },
     description: DataTypes.STRING,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: {
           args: true,
-          msg: 'this code already exists!'
+          msg: 'code community exists!'
       }
     },
   });

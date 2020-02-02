@@ -1,8 +1,10 @@
 'use strict'
 
+const { makeid } = require('../../helpers/utilities')
+
+
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-const { makeid } = require('../../helpers/utilities')
 const controller = new Base('community');
 
 controller.getFunc = async function (req, res) {
