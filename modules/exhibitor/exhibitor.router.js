@@ -13,17 +13,22 @@ router.get('/',function(req, res){
   exhibitorController.getFunc(req,res);
 });
 
+router.get('/:id',function(req, res){
+  //HTTP get route
+  exhibitorController.getFunc(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   exhibitorController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   exhibitorController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   exhibitorController.deleteFunc(req,res);
 });

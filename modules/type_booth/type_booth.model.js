@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     type_booth.associate = function(models){
         //To create model associations
         
+        // type_booth to exhibitor
         type_booth.hasMany(models.exhibitor, {
             foreignKey: 'id_type_booth',
             as: 'type_booth_exhibitor'
