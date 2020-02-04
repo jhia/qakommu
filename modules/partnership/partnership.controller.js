@@ -42,13 +42,14 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, registry_number, logo, url, active } = req.body;
+    const { name, description, registry_number, logo, host, url, active } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
             registry_number,
             logo,
+            host,
             url,
             active
         });
@@ -71,7 +72,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, logo, url, active } = req.body;
+    const { name, description, registry_number, logo, host, url, active } = req.body;
     try {
         let result = await this.update(
             {
@@ -82,6 +83,7 @@ controller.putFunc = async function (req, res) {
                 description,
                 registry_number,
                 logo,
+                host,
                 url,
                 active
             });
