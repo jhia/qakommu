@@ -58,6 +58,28 @@ base.prototype.update = async function(identity, data){
 	return result
 }
 
+
+base.prototype.update_test = async function(identity, data){
+	const{ id } = identity;
+	const fillables = _.keys(data)
+	const result = await this.model.update(data,		
+		{
+			fields: fillables,
+			where: {
+				id
+			}
+
+		})
+	if (!result[0]) {
+		throw new Error("Error")
+	}
+	console.log(result[0])
+	return result
+}
+
+
+
+
 base.prototype.insert = async function(data){
 	const fillables = _.keys(data) 	
  	const res = await this.db[this.moduleName].create(data, {

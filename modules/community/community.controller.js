@@ -7,6 +7,8 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('community');
 
+const db = require('../../models')
+
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
@@ -70,6 +72,43 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
+
+
+
+     
+        await this.update_test(
+            {
+                id
+            },
+            {
+                name,
+                description,
+                id_type_of_account,
+                user_acount,
+                web,
+                prefix,
+                member_verification,
+                id_repository,
+                code                
+            }            
+          )
+          .then(()=>{
+            this.response({
+                res,
+                statusCode: 200
+            })
+          }).catch(()=>{
+            this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'Something went wrong'
+            })             
+          })
+ 
+
+
+/*     
     try {
         let result = await this.update(
             {
@@ -109,6 +148,13 @@ controller.putFunc = async function (req, res) {
 			message: 'something went wrong'
 		});
     }
+ */
+
+
+
+
+
+
 }
 
 controller.deleteFunc = async function (req, res) {
