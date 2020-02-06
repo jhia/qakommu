@@ -72,10 +72,7 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
-
-
-
-     
+    
         await this.update_test(
             {
                 id
@@ -92,10 +89,11 @@ controller.putFunc = async function (req, res) {
                 code                
             }            
           )
-          .then(()=>{
+          .then((result)=>{
             this.response({
                 res,
-                statusCode: 200
+                statusCode: 200,
+                payload: req.body
             })
           }).catch(()=>{
             this.response({
@@ -103,58 +101,8 @@ controller.putFunc = async function (req, res) {
                 success: false,
                 statusCode: 500,
                 message: 'Something went wrong'
-            })             
+            })
           })
- 
-
-
-/*     
-    try {
-        let result = await this.update(
-            {
-                id
-            },
-            {
-                name,
-                description,
-                id_type_of_account,
-                user_acount,
-                web,
-                prefix,
-                member_verification,
-                id_repository,
-                code
-            });
-
-            if (result) {
-                return this.response({
-                    res,
-                    statusCode: 200
-                });
-            } else {
-                return this.response({
-                    res,
-                    success: false,
-                    statusCode: 202,
-                    message: 'Could not update this element, possibly does not exist'
-                });
-            }
-        } catch (error) {
-
-		return this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
-    }
- */
-
-
-
-
-
-
 }
 
 controller.deleteFunc = async function (req, res) {

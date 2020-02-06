@@ -32,6 +32,7 @@ base.prototype.postFunc = async function(req,res){
 	}
 }
 
+
 base.prototype.putFunc = async function(req,res){
 	const id = await this.update(req.body);
 	if (id) {
@@ -41,6 +42,10 @@ base.prototype.putFunc = async function(req,res){
 		})
 	}
 }
+
+
+
+
 
 base.prototype.deleteFunc = function(req,res){
 	res.status('200').send(`GET to ${this.moduleName}`);
@@ -61,7 +66,7 @@ base.prototype.update = async function(identity, data){
 
 base.prototype.update_test = async function(identity, data){
 	const{ id } = identity;
-	const fillables = _.keys(data)
+	const fillables = _.keys(data);
 	const result = await this.model.update(data,		
 		{
 			fields: fillables,
@@ -69,11 +74,10 @@ base.prototype.update_test = async function(identity, data){
 				id
 			}
 
-		})
+		});
 	if (!result[0]) {
 		throw new Error("Error")
-	}
-	console.log(result[0])
+	};
 	return result
 }
 
