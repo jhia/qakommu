@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         },
         logo: {
-            type: DataTypes.BLOB
+            type: DataTypes.TEXT
+        },
+        host:{
+            type: DataTypes.TEXT
         },
         url: {
             type: DataTypes.TEXT
