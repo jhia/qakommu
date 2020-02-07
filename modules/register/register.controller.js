@@ -7,38 +7,33 @@ const { makeid } = require('../../helpers/utilities')
 controller.postFunc = async function (req, res) {
 	const {user_type,user,community} = this.db
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, community_code, community_name} = req.body
-	const community_data = {community_code, community_name}
-
-
 
 	try {
+
 		let data = []
-		for (const element of _.keys(community_data)) {
-			console.log(element);
-			if(community_data[element])if(element.split('_')[1]=='code'){
-				data = await community.findOne({
-					where: { code: community_data[element] },
-					attributes: ['id', 'name']
-				});		
-			}
+		if (!community_name && !community_code) throw new Error("needs community")
 
-			if(community_data[element]) if(element.split('_')[1]=='name'){
-				let query_user = await user.findOne({
-					where: { email }
-				});
-
-				if (query_user) {
-					throw new Error("Email exist")
-				}
- 
-				data = await community.create({
-					name: community_data[element],
-					code: makeid(6)
-				});
- 			
-			}
+		if (community_code) {
+			data = await community.findOne({
+				where: { code: community_code },
+				attributes: ['id', 'name']
+			});				
+		}
+		
+		let query_user = await user.findOne({
+			where: { email }
+		});
+	
+		if (query_user) {
+			throw new Error("Email exist")
 		}
 
+		if(community_name){
+			data = await community.create({
+				name: community_name,
+				code: makeid(6)
+			}); 			
+		}		
 		
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
