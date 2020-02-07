@@ -71,36 +71,38 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
+    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code, return_data } = req.body;
     
         await this.update_test(
+
             {
-                id
-            },
-            {
-                name,
-                description,
-                id_type_of_account,
-                user_acount,
-                web,
-                prefix,
-                member_verification,
-                id_repository,
-                code                
+                id,
+                data: {
+                    name,
+                    description,
+                    id_type_of_account,
+                    user_acount,
+                    web,
+                    prefix,
+                    member_verification,
+                    id_repository,
+                    code                
+                },
+                return_data
             }            
           )
-          .then((result)=>{
+          .then(( result )=>{
             this.response({
                 res,
                 statusCode: 200,
-                payload: req.body
+                payload: return_data ? req.body : []
             })
-          }).catch(()=>{
+          }) .catch((err)=>{
             this.response({
                 res,
                 success: false,
                 statusCode: 500,
-                message: 'Something went wrong'
+                message: err.message
             })
           })
 }
@@ -109,7 +111,6 @@ controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
 	try {
 		let deleterows = await this.delete({ id });
-		console.log(deleterows);
 		if (deleterows > 0) {
 			return this.response({
 				res,

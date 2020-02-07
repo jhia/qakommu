@@ -47,9 +47,6 @@ const permissionsVerification = async function (req, res, next){
         });    
 
 
-    //console.log(result.user_types[0].roles.permissions[0])
-    //console.log(result.user_types[0].roles.permissions[0]._delete)
-
     function validate(){
 
         const { _create, _read, _update, _delete } = result.user_types[0].roles.permissions[0]
@@ -57,36 +54,25 @@ const permissionsVerification = async function (req, res, next){
 
         switch (name_action.toUpperCase()) {
             case 'POST':
-                console.log('paso1')
                 return _create;
                 break;
         
             case 'GET':
-                    console.log('paso2')
-                    return _read;
-                break;
+                return _read;
+                    break;
        
-            case 'READ':
-                    console.log('paso3')
-                    return _update;
-                break;
+            case 'PUT':
+                return _update;
+                    break;
 
             case 'DELETE':
-                    console.log('paso4')
-                    return _delete;
-                break;
-                     
-
-
+                return _delete;
+                    break;
         }
 
     }
 
     if (!validate()) {
-
-        console("---------------")
-        console(req.baseUrl)
-        console("---------------")
         return url==req.baseUrl;
     }
     else{

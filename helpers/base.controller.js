@@ -1,5 +1,5 @@
-'use strict';
 
+'use strict';
 const _ = require('lodash');
 const utils = require('./utilities');
 const db = require('../models')
@@ -62,27 +62,34 @@ base.prototype.update = async function(identity, data){
 	});
 	return result
 }
+/* {
+	id: int,
+	data: json,
+	return_data: bool
+} 
+*/
 
+base.prototype.update_test = async function(data){
+	const{ id } = data;
+	if (!id) throw new Error("id is needed");
 
-base.prototype.update_test = async function(identity, data){
-	const{ id } = identity;
-	const fillables = _.keys(data);
-	const result = await this.model.update(data,		
+	const fillables = _.keys(data.data);
+	const result = await this.model.update(data.data,		
 		{
 			fields: fillables,
 			where: {
 				id
 			}
-
 		});
 	if (!result[0]) {
-		throw new Error("Error")
+		throw new Error("this user does not exist")
 	};
-	return result
+
+	if (data.return_data) {
+		return data.data
+	};	
+	return true;
 }
-
-
-
 
 base.prototype.insert = async function(data){
 	const fillables = _.keys(data) 	
