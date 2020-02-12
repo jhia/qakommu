@@ -22,23 +22,23 @@ controller.getFunc = async function (req, res) {
             order
         });
 
-		return this.response({
-			res,
-			payload: [data]
-		});
+        return this.response({
+            res,
+            payload: [data]
+        });
     } catch (error) {
-		return this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong',
-		});
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
     }
 }
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository , code} = req.body;
+    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
     try {
         let newdate = await this.insert({
             name,
@@ -51,89 +51,88 @@ controller.postFunc = async function (req, res) {
             id_repository,
             code: makeid(6)
         });
-        if (newdate) 
-        {
-			return this.response({
-				res,
-				statusCode: 201,
-				payload: newdate
-			});
+        if (newdate) {
+            return this.response({
+                res,
+                statusCode: 201,
+                payload: newdate
+            });
         }
     } catch (err) {
-		return this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: err.message,
-		});
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: err.message,
+        });
     }
 }
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code, return_data } = req.body;
-    
-        await this.update_test(
 
-            {
-                id,
-                data: {
-                    name,
-                    description,
-                    id_type_of_account,
-                    user_acount,
-                    web,
-                    prefix,
-                    member_verification,
-                    id_repository,
-                    code                
-                },
-                return_data
-            }            
-          )
-          .then(( result )=>{
+    await this.update_test(
+
+        {
+            id,
+            data: {
+                name,
+                description,
+                id_type_of_account,
+                user_acount,
+                web,
+                prefix,
+                member_verification,
+                id_repository,
+                code
+            },
+            return_data
+        }
+    )
+        .then((result) => {
             this.response({
                 res,
                 statusCode: 200,
                 payload: return_data ? req.body : []
-            })
-          }) .catch((err)=>{
+            });
+        }).catch((err) => {
             this.response({
                 res,
                 success: false,
                 statusCode: 500,
                 message: err.message
-            })
-          })
+            });
+        });
 }
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
-	try {
-		let deleterows = await this.delete({ id });
-		if (deleterows > 0) {
-			return this.response({
-				res,
-				success: true,
-				statusCode: 200
-			});
-		} else {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'it was not possible to delete the item because it does not exist'
-			});
-		}
+    const { id } = req.params;
+    try {
+        let deleterows = await this.delete({ id });
+        if (deleterows > 0) {
+            return this.response({
+                res,
+                success: true,
+                statusCode: 200
+            });
+        } else {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'it was not possible to delete the item because it does not exist'
+            });
+        }
 
-	} catch (error) {
-		return this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
-	}
+    } catch (error) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
 }
 
 module.exports = controller;
