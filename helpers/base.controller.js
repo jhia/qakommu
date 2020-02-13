@@ -50,7 +50,7 @@ base.prototype.putFunc = async function(req,res){
 base.prototype.deleteFunc = function(req,res){
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
-
+/* 
 base.prototype.update = async function(identity, data){
 	const{ id } = identity;
 	const fillables = _.keys(data) 		
@@ -62,6 +62,7 @@ base.prototype.update = async function(identity, data){
 	});
 	return result
 }
+ */
 /* {
 	id: int,
 	data: json,
@@ -69,7 +70,7 @@ base.prototype.update = async function(identity, data){
 } 
 */
 
-base.prototype.update_test = async function(data){
+base.prototype.update = async function(data){
 	const{ id } = data;
 	if (!id) throw new Error("id is needed");
 
