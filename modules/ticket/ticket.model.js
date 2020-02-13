@@ -23,9 +23,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.INTEGER
         },
-        is_private: {
-            type: DataTypes.BOOLEAN
-        },
         base_price: {
             type: DataTypes.FLOAT
         },
