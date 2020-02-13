@@ -52,7 +52,8 @@ let tickets = [
     "quantity_current": 100,
     "reserved": 0,
     "max_ticket_sell": 0,
-    "min_ticket_sell": 0
+    "min_ticket_sell": 0,
+    "id_coupon": 2
   }
 ]
 
