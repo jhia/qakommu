@@ -33,6 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_community',
       as: 'user_types'
     });
+
+    community.hasMany(models.post, {
+      foreignKey: 'id_community',
+      as: 'posts'
+    });
+    
   };
 
   return community;

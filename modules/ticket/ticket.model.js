@@ -23,9 +23,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.INTEGER
         },
-        is_private: {
-            type: DataTypes.BOOLEAN
-        },
         base_price: {
             type: DataTypes.FLOAT
         },
@@ -43,8 +40,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         min_ticket_sell: {
             type: DataTypes.INTEGER
+        },
+        id_coupon: {
+            type: DataTypes.INTEGER
         }
-
     });
 
     ticket.associate = function (models) {
