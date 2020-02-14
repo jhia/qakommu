@@ -1,8 +1,7 @@
 'use strict'
 const db = require('./models')
-const { resource, role, permission, community, user, user_type, state, track, event, ticket } = db
+const { resource,role,permission,community,user,user_type } = db
 
-//seeders edixon
 let resources = [
   { "name": "community", "url_resource": "/api/community" }
 ];
@@ -19,6 +18,7 @@ let communities = [
   { "name": "node", "description": "description to node", "id_type_of_account": 1, "user_acount": 3, "web": "www.node.org", "prefix": "node", "member_verification": true, "id_repository": 4, "code": "8OTUHR" }
 ];
 
+
 let users = [
   { "name": "user01", "last_name": "user01", "username": "user01", "address": "micasa", "email": "user01@email.com", "password": "user01", "gender": "M", "id_repository": 0 }
 ]
@@ -26,6 +26,7 @@ let users = [
 let user_types = [
   { "id_user": 1, "id_role": 1, "id_community": 1 }
 ]
+
 
 
 //seeders carlos
@@ -69,6 +70,7 @@ let loadtables = async () => {
   await track.bulkCreate(tracks, { returning: true });
   await event.bulkCreate(events, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
+
 }
 
 module.exports = loadtables;

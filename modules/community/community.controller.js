@@ -71,9 +71,8 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code, return_data } = req.body;
-
-    await this.update_test(
-
+    
+    await this.update(
         {
             id,
             data: {
@@ -85,24 +84,24 @@ controller.putFunc = async function (req, res) {
                 prefix,
                 member_verification,
                 id_repository,
-                code
+                code                
             },
             return_data
-        }
-    )
-        .then((result) => {
-            this.response({
-                res,
-                statusCode: 200,
-                payload: return_data ? req.body : []
-            });
-        }).catch((err) => {
-            this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: err.message
-            });
+        }            
+        )
+        .then(( result )=>{
+        this.response({
+            res,
+            statusCode: 200,
+            payload: return_data ? req.body : []
+        })
+        }).catch((err)=>{
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: err.message
+        })
         });
 }
 
