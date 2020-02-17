@@ -32,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         applicable_total_amount:{
             type: DataTypes.BOOLEAN
-        },/*
-        id_user:{
+        },
+        id_user_creator:{
             //this is user creator
             //allowNull: false,
             type: DataTypes.INTEGER 
-        },*/
+        },
         active:{
             type: DataTypes.BOOLEAN
         }

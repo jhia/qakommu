@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount,id_user, active} = req.body;
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active} = req.body;
     try {
         let newdate = await this.insert({
             name,
@@ -51,7 +51,7 @@ controller.postFunc = async function (req, res) {
             id_state,
             applicable_amount,
             applicable_total_amount,
-            //id_user,
+            id_user_creator,
             active,
         });
         if (newdate) {
@@ -73,7 +73,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount,id_user, active} = req.body;
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount,id_user_creator, active} = req.body;
     try {
         let result = await this.update(
             {
@@ -86,7 +86,7 @@ controller.putFunc = async function (req, res) {
                 id_state, 
                 applicable_amount, 
                 applicable_total_amount,
-                //id_user, 
+                id_user_creator, 
                 active
             });
             if (result) {

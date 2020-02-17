@@ -28,13 +28,49 @@ let user_types = [
 ]
 
 
-let loadtables = async  () => {
-  await resource.bulkCreate(resources, {returning: true});
-  await role.bulkCreate(roles, {returning: true});
-  await permission.bulkCreate(permissions, {returning: true});
-  await community.bulkCreate(communities, {returning: true});
-  await user.bulkCreate(users, {returning: true});
-  await user_type.bulkCreate(user_types, {returning: true});
+
+//seeders carlos
+let states = [
+  { "name": "available", "description": "represents an availability status", "active": true, "module_name": "coupon", "blocker": false }
+]
+
+let tracks = [
+  { "name": "back-end", "description": "is the logic that is processed on the server side", "active": true, "module_name": "community" }
+]
+
+let events = [
+  { "name": "python for everyone", "description": "This is one of the most important conferences for python language lovers", "online": false, "start": "2020-02-10", "end": "2020-02-11", "active": true, "prom_rate": 89.8, "id_repository": 1, "id_state": 1 }
+]
+
+let tickets = [
+  {
+    "name": "Early Bird",
+    "description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
+    "id_state": 1,
+    "id_event": 1,
+    "base_price": 56.66,
+    "quantity_total": 100,
+    "quantity_current": 100,
+    "reserved": 0,
+    "max_ticket_sell": 0,
+    "min_ticket_sell": 0,
+    "id_coupon": 2
+  }
+]
+
+
+let loadtables = async () => {
+  await resource.bulkCreate(resources, { returning: true });
+  await role.bulkCreate(roles, { returning: true });
+  await permission.bulkCreate(permissions, { returning: true });
+  await community.bulkCreate(communities, { returning: true });
+  await user.bulkCreate(users, { returning: true });
+  await user_type.bulkCreate(user_types, { returning: true });
+  await state.bulkCreate(states, { returning: true });
+  await track.bulkCreate(tracks, { returning: true });
+  await event.bulkCreate(events, { returning: true });
+  await ticket.bulkCreate(tickets, { returning: true });
+
 }
 
 module.exports = loadtables;
