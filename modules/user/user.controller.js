@@ -75,12 +75,11 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
 	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body;
-	try {
-		let result = await this.update(
-			{
-				id
-			},
-			{
+
+    await this.update(
+        {
+            id,
+            data: {
 				name,
 				last_name,
 				username,
@@ -92,28 +91,24 @@ controller.putFunc = async function (req, res) {
 				id_rol,
 				id_community
 
-			});
-			if (result) {
-				return this.response({
-					res,
-					statusCode: 200
-				});
-			} else {
-				this.response({
-					res,
-					success: false,
-					statusCode: 202,
-					message: 'Could not update this element, possibly does not exist'
-				});
-			}
-		} catch (error) {
-			this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong'
-			});
-		}
+
+			},
+            return_data
+        })
+        .then(( result )=>{
+        this.response({
+            res,
+            statusCode: 200,
+            payload: return_data ? req.body : []
+        })
+        }).catch((err)=>{
+            this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: err.message
+            })
+        });
 }
 
 controller.deleteFunc = async function (req, res) {
@@ -145,6 +140,5 @@ controller.deleteFunc = async function (req, res) {
 		});
 	}
 }
-
 
 module.exports = controller;

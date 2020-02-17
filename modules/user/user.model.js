@@ -50,13 +50,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  //const setupAgentModel = require('../models/')
   user.associate = function(models) {
     // associations can be defined here
     user.hasMany(models.user_type, {
       foreignKey: 'id_user',
       as: 'user_types'
     });
+    user.hasMany(models.post, {
+      foreignKey: 'id_user',
+      as: 'posts'
+    });
+    
   };
   return user;
 };
