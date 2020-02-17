@@ -69,23 +69,25 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, module_name, blocker } = req.body;
+	const { name, description, active, module_name, blocker, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
-				id
-			},
-			{
-				name,
-				description,
-				active,
-				module_name,
-				blocker
+				id,
+				data: {
+					name,
+					description,
+					active,
+					module_name,
+					blocker
+				},
+				return_data
 			});
 		if (result) {
 			return this.response({
 				res,
-				statusCode: 200
+				statusCode: 200,
+				payload: return_data ? req.body : []
 			});
 		} else {
 			this.response({

@@ -1,6 +1,6 @@
 'use strict'
 const db = require('./models')
-const { resource,role,permission,community,user,user_type } = db
+const { resource, role, permission, community, user, user_type, state, track, event, ticket } = db
 
 let resources = [
   { "name": "community", "url_resource": "/api/community" }
@@ -31,15 +31,36 @@ let user_types = [
 
 //seeders carlos
 let states = [
-  { "name": "available", "description": "represents an availability status", "active": true, "module_name": "coupon", "blocker": false }
+  {
+    "name": "available",
+    "description": "represents an availability status",
+    "active": true,
+    "module_name": "coupon",
+    "blocker": false
+  }
 ]
 
 let tracks = [
-  { "name": "back-end", "description": "is the logic that is processed on the server side", "active": true, "module_name": "community" }
+  {
+    "name": "back-end",
+    "description": "is the logic that is processed on the server side",
+    "active": true,
+    "module_name": "community"
+  }
 ]
 
 let events = [
-  { "name": "python for everyone", "description": "This is one of the most important conferences for python language lovers", "online": false, "start": "2020-02-10", "end": "2020-02-11", "active": true, "prom_rate": 89.8, "id_repository": 1, "id_state": 1 }
+  {
+    "name": "python for everyone",
+    "description": "This is one of the most important conferences for python language lovers",
+    "online": false,
+    "start": "2020-02-10",
+    "end": "2020-02-11",
+    "active": true,
+    "prom_rate": 89.8,
+    "id_repository": 1,
+    "id_state": 1
+  }
 ]
 
 let tickets = [
