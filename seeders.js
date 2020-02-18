@@ -53,10 +53,17 @@ let events = [
   {
     "name": "python for everyone",
     "description": "This is one of the most important conferences for python language lovers",
+    //"id_community": 1, 
+    "type": "w",
     "online": false,
+    "no_cfp": true,
+    "url_code": "www.test.python.com/event/12",
+    "id_webside": 1,
+    "is_private": false,
     "start": "2020-02-10",
     "end": "2020-02-11",
     "active": true,
+    //"id_call_for_paper": 1, 
     "prom_rate": 89.8,
     "id_repository": 1,
     "id_state": 1
@@ -104,7 +111,7 @@ let loadtables = async () => {
   await track.bulkCreate(tracks, { returning: true });
   await event.bulkCreate(events, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
-  await coupon.bulkCreate(coupons, { returning: true});
+  await coupon.bulkCreate(coupons, { returning: true });
 
 }
 
