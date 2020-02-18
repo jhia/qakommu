@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const db = require('./models')
 const { resource, role, permission, community, user, user_type, state, track, event, ticket, coupon } = db
 

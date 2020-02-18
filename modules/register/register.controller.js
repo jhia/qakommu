@@ -6,16 +6,16 @@ const controller = new Base('register');
 const { makeid } = require('../../helpers/utilities')
 controller.postFunc = async function (req, res) {
 	const {user_type,user,community} = this.db
-	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, community_code, community_name} = req.body
+	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, codeCommunity, nameCommunity} = req.body
 
 	try {
 
 		let data = []
-		if (!community_name && !community_code) throw new Error("needs community")
+		if (!nameCommunity && !codeCommunity) throw new Error("needs community")
 
-		if (community_code) {
+		if (codeCommunity) {
 			data = await community.findOne({
-				where: { code: community_code },
+				where: { code: codeCommunity },
 				attributes: ['id', 'name']
 			});				
 		}
@@ -28,9 +28,9 @@ controller.postFunc = async function (req, res) {
 			throw new Error("Email exist")
 		}
 
-		if(community_name){
+		if(nameCommunity){
 			data = await community.create({
-				name: community_name,
+				name: nameCommunity,
 				code: makeid(6)
 			}); 			
 		}		
@@ -90,7 +90,7 @@ controller.postFunc = async function (req, res) {
 		}
 
 	} catch (err) {
-
+		
 		return this.response({
 			res,
 			success: false,
