@@ -1,6 +1,6 @@
 'use strict'
 const db = require('./models')
-const { resource, role, permission, community, user, user_type, state, track, event, ticket } = db
+const { resource, role, permission, community, user, user_type, state, track, event, ticket, coupon } = db
 
 let resources = [
   { "name": "community", "url_resource": "/api/community" }
@@ -79,6 +79,19 @@ let tickets = [
   }
 ]
 
+let coupons = [
+  {
+    "name": "early bird",
+    "description": "coupon available for morning purchases",
+    "free": false,
+    "percentage": 40,
+    "id_state": 1,
+    "applicable_amount": 1,
+    "applicable_total_amount": false,
+    "id_user_creator": 1,
+    "active": true,
+  }
+]
 
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
@@ -91,6 +104,7 @@ let loadtables = async () => {
   await track.bulkCreate(tracks, { returning: true });
   await event.bulkCreate(events, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
+  await coupon.bulkCreate(coupons, { returning: true});
 
 }
 
