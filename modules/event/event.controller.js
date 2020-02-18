@@ -42,13 +42,18 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_community, online, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
+    const { name, description, id_community,type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
             //id_community, 
+            type,
             online,
+            no_cfp,
+            url_code,
+            id_webside,
+            is_private,
             start,
             end,
             active,
@@ -76,29 +81,37 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_community, online, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
+    const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state, return_data } = req.body;
     try {
         let result = await this.update(
             {
-                id
-            },
-            {
-                name,
-                description,
-                //id_community, 
-                online,
-                start,
-                end,
-                active,
-                //id_call_for_paper, 
-                prom_rate,
-                //id_repository, 
-                id_state
+                id,
+                data:
+                {
+                    name,
+                    description,
+                    //id_community, 
+                    type,
+                    online,
+                    no_cfp,
+                    url_code,
+                    id_webside,
+                    is_private,
+                    start,
+                    end,
+                    active,
+                    //id_call_for_paper, 
+                    prom_rate,
+                    //id_repository, 
+                    id_state
+                },
+                return_data
             });
         if (result) {
             return this.response({
                 res,
-                statusCode: 200
+                statusCode: 200,
+                payload: return_data ? result : []
             });
         } else {
             this.response({
@@ -110,11 +123,11 @@ controller.putFunc = async function (req, res) {
         }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 
@@ -123,26 +136,26 @@ controller.deleteFunc = async function (req, res) {
     try {
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {
-			return this.response({
-				res,
-				success: true,
-				statusCode: 200
-			});
-		} else {
-			this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'it was not possible to delete the item because it does not exist'
-			});
-		}
+            return this.response({
+                res,
+                success: true,
+                statusCode: 200
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'it was not possible to delete the item because it does not exist'
+            });
+        }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 

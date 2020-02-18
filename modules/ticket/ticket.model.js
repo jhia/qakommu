@@ -43,7 +43,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         id_coupon: {
             type: DataTypes.INTEGER
-        }
+        },
+        
     });
 
     ticket.associate = function (models) {

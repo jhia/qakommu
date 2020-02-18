@@ -14,12 +14,29 @@ module.exports = (sequelize, DataTypes) => {
         },
         description: {
             type: DataTypes.TEXT
+        },
+        type:{
+            allowNull: false,
+            type: DataTypes.ENUM('c', 'w', 'm')
+
         },/*
         id_community:{
             allowNull: false,
             type: DataTypes.INTEGER
         },*/
         online:{
+            type: DataTypes.BOOLEAN
+        },
+        no_cfp:{
+            type: DataTypes.BOOLEAN
+        },
+        url_code:{
+            type: DataTypes.TEXT
+        },
+        id_webside:{
+            type: DataTypes.INTEGER
+        },
+        is_private:{
             type: DataTypes.BOOLEAN
         },
         start: {

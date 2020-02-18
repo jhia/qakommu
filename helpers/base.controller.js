@@ -83,11 +83,11 @@ base.prototype.update = async function(data){
 			}
 		});
 	if (!result[0]) {
-		throw new Error("this item does not exist")
+		throw new Error("I cannot perform the action successfully");
 	};
 
 	if (data.return_data) {
-		return data.data
+		return data.data;
 	};	
 	return true;
 }
