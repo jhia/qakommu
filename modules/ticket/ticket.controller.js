@@ -42,10 +42,10 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon } = req.body;
+	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon, start, end } = req.body;
 	try {
 		let newdate = await this.insert({
-			name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon
+			name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon, start, end
 		});
 		if (newdate) {
 			return this.response({
@@ -67,19 +67,21 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon } = req.body;
+	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon, start, end, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
-				id
-			},
-			{
-				name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon
+				id,
+				data: {
+					name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, id_coupon, start, end
+				},
+				return_data
 			});
 		if (result) {
 			return this.response({
 				res,
-				statusCode: 200
+				statusCode: 200,
+				payload: return_data ? result : []
 			});
 		} else {
 			this.response({

@@ -44,7 +44,13 @@ module.exports = (sequelize, DataTypes) => {
         id_coupon: {
             type: DataTypes.INTEGER
         },
-        
+        start:{
+            type: DataTypes.DATE
+        },
+        end:{
+            type: DataTypes.DATE
+        }
+
     });
 
     ticket.associate = function (models) {

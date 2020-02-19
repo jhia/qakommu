@@ -82,7 +82,9 @@ let tickets = [
     "reserved": 0,
     "max_ticket_sell": 0,
     "min_ticket_sell": 0,
-    "id_coupon": 2
+    "id_coupon": 2,
+    "start":"2020-05-05",
+    "end": "2020-05-15"
   }
 ]
 
