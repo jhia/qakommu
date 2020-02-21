@@ -19,11 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.ENUM('c', 'w', 'm')
 
-        },/*
+        },
         id_community:{
             allowNull: false,
             type: DataTypes.INTEGER
-        },*/
+        },
         online:{
             type: DataTypes.BOOLEAN
         },
@@ -72,6 +72,11 @@ module.exports = (sequelize, DataTypes) => {
         event.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        event.belongsTo(models.community, {
+            foreignKey: 'id_community',
+            as: 'community'
         });
 
         //event to sponsor

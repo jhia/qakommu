@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-          args: true,
-          msg: 'name community  exists!'
+        args: true,
+        msg: 'name community  exists!'
       }
     },
     description: DataTypes.STRING,
@@ -21,13 +21,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(6),
       allowNull: false,
       unique: {
-          args: true,
-          msg: 'code community exists!'
+        args: true,
+        msg: 'code community exists!'
       }
     },
   });
-  
-  community.associate = function(models) {
+
+  community.associate = function (models) {
     // associations can be defined here
     community.hasMany(models.user_type, {
       foreignKey: 'id_community',
@@ -38,7 +38,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_community',
       as: 'posts'
     });
-    
+
+    community.hasMany(models.event, {
+      foreignKey: 'id_community',
+      as: 'community_event'
+    });
+
   };
 
   return community;

@@ -53,7 +53,7 @@ let events = [
   {
     "name": "python for everyone",
     "description": "This is one of the most important conferences for python language lovers",
-    //"id_community": 1, 
+    "id_community": 1, 
     "type": "w",
     "online": false,
     "no_cfp": true,

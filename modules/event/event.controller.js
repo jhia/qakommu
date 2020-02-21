@@ -47,7 +47,7 @@ controller.postFunc = async function (req, res) {
         let newdate = await this.insert({
             name,
             description,
-            //id_community, 
+            id_community, 
             type,
             online,
             no_cfp,
@@ -90,7 +90,7 @@ controller.putFunc = async function (req, res) {
                 {
                     name,
                     description,
-                    //id_community, 
+                    id_community, 
                     type,
                     online,
                     no_cfp,
