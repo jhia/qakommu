@@ -38,14 +38,14 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
             id_type_of_account,
-            user_acount,
-            web,
+            users_count,
+            id_website,
             prefix,
             member_verification,
             id_repository,
@@ -70,7 +70,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_type_of_account, user_acount, web, prefix, member_verification, id_repository, code, return_data } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, return_data } = req.body;
     
     await this.update(
         {
@@ -79,8 +79,8 @@ controller.putFunc = async function (req, res) {
                 name,
                 description,
                 id_type_of_account,
-                user_acount,
-                web,
+                users_count,
+                id_website,
                 prefix,
                 member_verification,
                 id_repository,
@@ -90,6 +90,7 @@ controller.putFunc = async function (req, res) {
         }            
         )
         .then(( result )=>{
+            console.log(result)
         this.response({
             res,
             statusCode: 200,
