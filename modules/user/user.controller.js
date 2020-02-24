@@ -99,7 +99,7 @@ controller.putFunc = async function (req, res) {
         this.response({
             res,
             statusCode: 200,
-            payload: return_data ? req.body : []
+            payload: return_data ? result : []
         })
         }).catch((err)=>{
             this.response({
