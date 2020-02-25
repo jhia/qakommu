@@ -26,7 +26,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     track.associate = function(models){
-    	//To create model associations
+        track.hasMany(models.track_post, {
+            foreignKey: 'id_track',
+            as: 'track_posts'
+          });
     }
 
     return track;
