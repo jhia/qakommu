@@ -5,11 +5,11 @@ module.exports = (sequelize, DataTypes) => {
         id_community: DataTypes.INTEGER,
         id_user: DataTypes.INTEGER,        
         title: DataTypes.STRING,
-        sub_title: DataTypes.INTEGER,
+        sub_title: DataTypes.STRING,
         content: DataTypes.TEXT,
         active: DataTypes.BOOLEAN,
         value: DataTypes.INTEGER,
-        fixed: DataTypes.INTEGER
+        fixed: DataTypes.BOOLEAN
     });
 
     post.associate = function(models){
@@ -25,7 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             as: 'users'
         });
 
-
+        post.hasMany(models.track_post, {
+            foreignKey: 'id_post',
+            as: 'track_posts'
+          });
+      
 
     }
 
