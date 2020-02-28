@@ -13,17 +13,23 @@ router.get('/',function(req, res){
   repository_objectController.getFunc(req,res);
 });
 
+
+router.get('/:id',function(req, res){
+  //HTTP get route
+  repository_objectController.getFunc(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   repository_objectController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   repository_objectController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   repository_objectController.deleteFunc(req,res);
 });

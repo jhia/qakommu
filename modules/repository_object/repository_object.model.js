@@ -7,7 +7,21 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true,
 			type: DataTypes.INTEGER
-		}
+        },
+        name: {
+            allowNull: false,
+            type: DataTypes.TEXT
+        },
+        location: {
+            allowNull: false,
+            type: DataTypes.TEXT
+        },
+        id_repository: {
+            type: DataTypes.INTEGER
+        },
+        id_object_type: {
+            type: DataTypes.INTEGER
+        }
     });
 
     repository_object.associate = function(models){

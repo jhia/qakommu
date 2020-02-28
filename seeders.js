@@ -1,6 +1,23 @@
 'use strict';
 const db = require('./models')
-const { resource, role, permission, community, user, user_type, state, track, event, ticket, coupon } = db
+const {
+  resource,
+  role,
+  permission,
+  community,
+  user,
+  user_type,
+  //generics  
+  state,
+  track,
+  //event module
+  event,
+  ticket,
+  coupon,
+  //repository module
+  object_type,
+  repository_object
+} = db
 
 let resources = [
   { "name": "community", "url_resource": "/api/community" }
@@ -53,7 +70,7 @@ let events = [
   {
     "name": "python for everyone",
     "description": "This is one of the most important conferences for python language lovers",
-    "id_community": 1, 
+    "id_community": 1,
     "type": "w",
     "online": false,
     "no_cfp": true,
@@ -83,7 +100,7 @@ let tickets = [
     "max_ticket_sell": 0,
     "min_ticket_sell": 0,
     "id_coupon": 2,
-    "start":"2020-05-05",
+    "start": "2020-05-05",
     "end": "2020-05-15"
   }
 ]
@@ -102,6 +119,23 @@ let coupons = [
   }
 ]
 
+let object_types = [
+  {
+    "name": "file",
+    "active": true
+  }
+]
+
+let repository_objects = [
+  {
+    "name": "document",
+    "location": "www/kommu/ejemplo/",
+    "id_repository": 1,
+    "id_object_type": 1
+  }
+]
+
+
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
   await role.bulkCreate(roles, { returning: true });
@@ -114,7 +148,8 @@ let loadtables = async () => {
   await event.bulkCreate(events, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
-
+  await object_type.bulkCreate(object_types, { returning: true });
+  await repository_object.bulkCreate(repository_objects, {returning: true});
 }
 
 module.exports = loadtables;
