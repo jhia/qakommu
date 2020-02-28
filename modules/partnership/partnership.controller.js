@@ -70,27 +70,32 @@ controller.postFunc = async function (req, res) {
     }
 }
 
+
+
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, logo, host, url, active } = req.body;
+    const { name, description, registry_number, logo, host, url, active, return_data } = req.body;
+
     try {
         let result = await this.update(
             {
-                id
-            },
-            {
-                name,
-                description,
-                registry_number,
-                logo,
-                host,
-                url,
-                active
+                id,
+                data: {
+                    name,
+                    description,
+                    registry_number,
+                    logo,
+                    host,
+                    url,
+                    active
+                },
+                return_data
             });
         if (result) {
             return this.response({
                 res,
-                statusCode: 200
+                statusCode: 200,
+                payload: return_data ? result : []
             });
         } else {
             this.response({
@@ -109,6 +114,7 @@ controller.putFunc = async function (req, res) {
         });
     }
 }
+
 
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;

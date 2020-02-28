@@ -17,7 +17,10 @@ const {
   //repository module
   object_type,
   repository_object,
-  repository
+  repository,
+  //partnership module
+  partnership,
+  partnership_position
 } = db
 
 let resources = [
@@ -144,7 +147,30 @@ let repository_objects = [
   }
 ]
 
+//  partnership model
+let partnerships = [
+  {
+    "name": "google company",
+    "description": "test descrioption facebook", 
+    "registry_number": "c26174178",
+    "logo": "/images/company/123/logo.png",
+    "host": "35.122.343.2:871",
+    "url": "google.com",
+    "active": true
+  }
+]
 
+let partnership_positions = [
+  {
+    "job_title": "empleado",
+    "description": "something", 
+    "name_contact": "carlos",
+    "email": "pnfi.carlos@gmail.com",
+    "phone":"04146825919",
+    "active": true, 
+    "id_partnership": 1
+  }
+]
 
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
@@ -161,6 +187,8 @@ let loadtables = async () => {
   await object_type.bulkCreate(object_types, { returning: true });
   await repository.bulkCreate(repositories, {returning: true});
   await repository_object.bulkCreate(repository_objects, { returning: true });
+  await partnership.bulkCreate(partnerships, {returning: true });
+  await partnership_position.bulkCreate(partnership_positions, {returning: true });
 }
 
 module.exports = loadtables;
