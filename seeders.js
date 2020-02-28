@@ -16,7 +16,8 @@ const {
   coupon,
   //repository module
   object_type,
-  repository_object
+  repository_object,
+  repository
 } = db
 
 let resources = [
@@ -126,6 +127,14 @@ let object_types = [
   }
 ]
 
+let repositories = [
+  {
+    "name": "repository test",
+    "location": "test/www/122322/",
+    "active": true
+  }
+]
+
 let repository_objects = [
   {
     "name": "document",
@@ -134,6 +143,7 @@ let repository_objects = [
     "id_object_type": 1
   }
 ]
+
 
 
 let loadtables = async () => {
@@ -149,7 +159,8 @@ let loadtables = async () => {
   await ticket.bulkCreate(tickets, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
   await object_type.bulkCreate(object_types, { returning: true });
-  await repository_object.bulkCreate(repository_objects, {returning: true});
+  await repository.bulkCreate(repositories, {returning: true});
+  await repository_object.bulkCreate(repository_objects, { returning: true });
 }
 
 module.exports = loadtables;
