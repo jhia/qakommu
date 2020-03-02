@@ -23,7 +23,10 @@ const {
   partnership_position,
   //sponsor module
   type_sponsor,
-  sponsor
+  sponsor,
+  //exhibitor modulee
+  type_booth,
+  exhibitor
 } = db
 
 let resources = [
@@ -194,6 +197,26 @@ let sponsors = [
   }
 ]
 
+//exibitor
+let type_booths = [
+  {
+    "name": "booth standard",
+    "description": "generic size",
+    "cost": 887.12,
+    "size_width": 5,
+    "size_height": 5,
+    "active": true,
+  }
+]
+
+let exhibitors = [
+  {
+    "id_partnership": 1,
+    "id_type_booth": 1,
+    "id_event": 1
+  }
+]
+
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
   await role.bulkCreate(roles, { returning: true });
@@ -211,8 +234,10 @@ let loadtables = async () => {
   await repository_object.bulkCreate(repository_objects, { returning: true });
   await partnership.bulkCreate(partnerships, { returning: true });
   await partnership_position.bulkCreate(partnership_positions, { returning: true });
-  await type_sponsor.bulkCreate(type_sponsors, {returning: true});
-  await sponsor.bulkCreate(sponsors, {returning: true});
+  await type_sponsor.bulkCreate(type_sponsors, { returning: true });
+  await sponsor.bulkCreate(sponsors, { returning: true });
+  await type_booth.bulkCreate(type_booths, {returning:true});
+  await exhibitor.bulkCreate(exhibitors, {returning: true});
 }
 
 module.exports = loadtables;

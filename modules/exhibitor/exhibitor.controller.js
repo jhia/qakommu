@@ -12,7 +12,6 @@ const controller = new Base('exhibitor');
 *this.model -> Current module model
 */
 
-
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
@@ -68,21 +67,24 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_partnership, id_type_booth, id_event } = req.body;
+    const { id_partnership, id_type_booth, id_event, return_data } = req.body;
+
     try {
         let result = await this.update(
             {
-                id
-            },
-            {
-                id_partnership,
-                id_type_booth,
-                id_event
+                id,
+                data: {
+                    id_partnership,
+                    id_type_booth,
+                    id_event
+                },
+                return_data
             });
         if (result) {
             return this.response({
                 res,
-                statusCode: 200
+                statusCode: 200,
+                payload: return_data ? result : []
             });
         } else {
             this.response({
