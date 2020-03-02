@@ -25,23 +25,23 @@ controller.getFunc = async function (req, res) {
             order
         });
         this.response({
-			res,
-			payload: [data]
-		});
+            res,
+            payload: [data]
+        });
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 
 }
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active} = req.body;
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active } = req.body;
     try {
         let newdate = await this.insert({
             name,
@@ -55,60 +55,63 @@ controller.postFunc = async function (req, res) {
             active,
         });
         if (newdate) {
-			return this.response({
-				res,
-				statusCode: 201,
-				payload: [newdate]
-			});
-		}
+            return this.response({
+                res,
+                statusCode: 201,
+                payload: [newdate]
+            });
+        }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong',
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
     }
 }
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount,id_user_creator, active} = req.body;
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, return_data } = req.body;
     try {
         let result = await this.update(
             {
-                id
-            },
-            {
-                name, 
-                description, 
-                free, percentage, 
-                id_state, 
-                applicable_amount, 
-                applicable_total_amount,
-                id_user_creator, 
-                active
+                id,
+                data: {
+                    name,
+                    description,
+                    free,
+                    percentage,
+                    id_state,
+                    applicable_amount,
+                    applicable_total_amount,
+                    id_user_creator,
+                    active
+                },
+                return_data
             });
-            if (result) {
-                return this.response({
-                    res,
-                    statusCode: 200
-                });
-            } else {
-                this.response({
-                    res,
-                    success: false,
-                    statusCode: 202,
-                    message: 'Could not update this element, possibly does not exist'
-                });
-            }
+        if (result) {
+            return this.response({
+                res,
+                statusCode: 200,
+                payload: return_data ? result : []
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'Could not update this element, possibly does not exist'
+            });
+        }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 
@@ -117,26 +120,26 @@ controller.deleteFunc = async function (req, res) {
     try {
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {
-			return this.response({
-				res,
-				success: true,
-				statusCode: 200
-			});
-		} else {
-			this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'it was not possible to delete the item because it does not exist'
-			});
-		}
+            return this.response({
+                res,
+                success: true,
+                statusCode: 200
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'it was not possible to delete the item because it does not exist'
+            });
+        }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 
