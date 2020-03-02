@@ -67,23 +67,25 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, contribution_value, currency, active } = req.body;
+    const { name, description, contribution_value, currency, active, return_data } = req.body;
     try {
         let result = await this.update(
             {
-                id
-            },
-            {
-                name,
-                description,
-                contribution_value,
-                currency,
-                active
+                id,
+                data: {
+                    name,
+                    description,
+                    contribution_value,
+                    currency,
+                    active
+                },
+                return_data
             });
         if (result) {
             return this.response({
                 res,
-                statusCode: 200
+                statusCode: 200,
+                payload: return_data ? result : []
             });
         } else {
             this.response({
@@ -95,11 +97,11 @@ controller.putFunc = async function (req, res) {
         }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 
@@ -108,26 +110,26 @@ controller.deleteFunc = async function (req, res) {
     try {
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {
-			return this.response({
-				res,
-				success: true,
-				statusCode: 200
-			});
-		} else {
-			this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'it was not possible to delete the item because it does not exist'
-			});
-		}
+            return this.response({
+                res,
+                success: true,
+                statusCode: 200
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'it was not possible to delete the item because it does not exist'
+            });
+        }
     } catch (error) {
         this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 }
 

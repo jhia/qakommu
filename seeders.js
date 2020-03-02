@@ -20,7 +20,10 @@ const {
   repository,
   //partnership module
   partnership,
-  partnership_position
+  partnership_position,
+  //sponsor module
+  type_sponsor,
+  sponsor
 } = db
 
 let resources = [
@@ -151,7 +154,7 @@ let repository_objects = [
 let partnerships = [
   {
     "name": "google company",
-    "description": "test descrioption facebook", 
+    "description": "test descrioption facebook",
     "registry_number": "c26174178",
     "logo": "/images/company/123/logo.png",
     "host": "35.122.343.2:871",
@@ -163,12 +166,31 @@ let partnerships = [
 let partnership_positions = [
   {
     "job_title": "empleado",
-    "description": "something", 
+    "description": "something",
     "name_contact": "carlos",
     "email": "pnfi.carlos@gmail.com",
-    "phone":"04146825919",
-    "active": true, 
+    "phone": "04146825919",
+    "active": true,
     "id_partnership": 1
+  }
+]
+
+// sponsor module
+let type_sponsors = [
+  {
+    "name": "general",
+    "description": "standard fee for sponsors",
+    "contribution_value": 0.00005685,
+    "currency": "btc",
+    "active": true
+  }
+]
+
+let sponsors = [
+  {
+    "id_partnership": 1,
+    "id_type_sponsor": 1,
+    "id_event": 1
   }
 ]
 
@@ -185,10 +207,12 @@ let loadtables = async () => {
   await ticket.bulkCreate(tickets, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
   await object_type.bulkCreate(object_types, { returning: true });
-  await repository.bulkCreate(repositories, {returning: true});
+  await repository.bulkCreate(repositories, { returning: true });
   await repository_object.bulkCreate(repository_objects, { returning: true });
-  await partnership.bulkCreate(partnerships, {returning: true });
-  await partnership_position.bulkCreate(partnership_positions, {returning: true });
+  await partnership.bulkCreate(partnerships, { returning: true });
+  await partnership_position.bulkCreate(partnership_positions, { returning: true });
+  await type_sponsor.bulkCreate(type_sponsors, {returning: true});
+  await sponsor.bulkCreate(sponsors, {returning: true});
 }
 
 module.exports = loadtables;
