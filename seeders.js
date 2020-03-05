@@ -30,7 +30,13 @@ const {
 } = db
 
 let resources = [
-  { "name": "community", "url_resource": "/api/community" }
+  { "name": "community", "url_resource": "/api/community" },
+  { "name": "role", "url_resource": "/api/role" },
+  { "name": "resource", "url_resource": "/api/resource" },
+  { "name": "post", "url_resource": "/api/post" },
+  { "name": "comment", "url_resource": "/api/comment" },
+  { "name": "message", "url_resource": "/api/message" },
+  { "name": "channel", "url_resource": "/api/channel" }
 ];
 
 let roles = [
@@ -38,7 +44,13 @@ let roles = [
 ];
 
 let permissions = [
-  { "id_role": 1, "id_resource": 1, "_create": true, "_read": true, "_update": true, "_delete": true }
+  { "id_role": 1, "id_resource": 1, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 2, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 3, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 4, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true }
 ];
 
 let communities = [

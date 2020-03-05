@@ -56,6 +56,13 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_user',
       as: 'user_types'
     });
+
+    user.hasMany(models.user_channel, {
+      foreignKey: 'id_user',
+      as: 'user_channels'
+    });
+    
+
     user.hasMany(models.post, {
       foreignKey: 'id_user',
       as: 'posts'

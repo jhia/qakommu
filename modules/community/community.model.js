@@ -44,6 +44,15 @@ module.exports = (sequelize, DataTypes) => {
       as: 'community_event'
     });
 
+
+    community.hasMany(models.channel, {
+      foreignKey: 'id_community',
+      as: 'channels'
+    });
+
+
+
+
   };
 
   return community;
