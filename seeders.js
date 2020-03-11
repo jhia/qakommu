@@ -13,6 +13,7 @@ const {
   //event module
   event,
   ticket,
+  ticket_sale,
   coupon,
   //repository module
   object_type,
@@ -26,7 +27,7 @@ const {
   sponsor,
   //exhibitor modulee
   type_booth,
-  exhibitor
+  exhibitor,
 } = db
 
 let resources = [
@@ -141,6 +142,21 @@ let coupons = [
   }
 ]
 
+let ticket_sales=[
+  {
+    "id_ticket": 1,
+    "id_user": 1,
+    "id_coupon": null,
+    "count": 1,
+    "total_amount": 150,
+    "amount_paid": 75,
+    "paying_name": "john smith",
+    "paying_address": "Cartagena street, number 25, 66534",
+    "dni_payer": "E25331234"
+  }
+ 
+]
+
 let object_types = [
   {
     "name": "file",
@@ -241,6 +257,7 @@ let loadtables = async () => {
   await event.bulkCreate(events, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
+  await ticket_sale.bulkCreate(ticket_sales, {returning: true});
   await object_type.bulkCreate(object_types, { returning: true });
   await repository.bulkCreate(repositories, { returning: true });
   await repository_object.bulkCreate(repository_objects, { returning: true });
