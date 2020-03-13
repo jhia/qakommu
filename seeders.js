@@ -12,9 +12,10 @@ const {
   track,
   //event module
   event,
+  coupon,
   ticket,
   ticket_sale,
-  coupon,
+  ticket_sale_detail,
   //repository module
   object_type,
   repository_object,
@@ -110,6 +111,22 @@ let events = [
   }
 ]
 
+
+let coupons = [
+  {
+    "name": "early bird",
+    "description": "coupon available for morning purchases",
+    "free": false,
+    "percentage": 40,
+    "id_state": 1,
+    "applicable_amount": 1,
+    "applicable_total_amount": false,
+    "id_user_creator": 1,
+    "active": true,
+  }
+]
+
+
 let tickets = [
   {
     "name": "Early Bird",
@@ -128,20 +145,6 @@ let tickets = [
   }
 ]
 
-let coupons = [
-  {
-    "name": "early bird",
-    "description": "coupon available for morning purchases",
-    "free": false,
-    "percentage": 40,
-    "id_state": 1,
-    "applicable_amount": 1,
-    "applicable_total_amount": false,
-    "id_user_creator": 1,
-    "active": true,
-  }
-]
-
 let ticket_sales=[
   {
     "id_ticket": 1,
@@ -154,7 +157,14 @@ let ticket_sales=[
     "paying_address": "Cartagena street, number 25, 66534",
     "dni_payer": "E25331234"
   }
- 
+]
+
+let ticket_sale_details = [
+  {
+    "code_ticket": "54ce99fa85c92b1d87678436e956a2e8", 
+    "id_ticket_sale":1,
+    "deactived": false
+  }
 ]
 
 let object_types = [
@@ -255,9 +265,10 @@ let loadtables = async () => {
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
   await event.bulkCreate(events, { returning: true });
-  await ticket.bulkCreate(tickets, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
+  await ticket.bulkCreate(tickets, { returning: true });
   await ticket_sale.bulkCreate(ticket_sales, {returning: true});
+  await ticket_sale_detail.bulkCreate(ticket_sale_details, {returning: true});
   await object_type.bulkCreate(object_types, { returning: true });
   await repository.bulkCreate(repositories, { returning: true });
   await repository_object.bulkCreate(repository_objects, { returning: true });

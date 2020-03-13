@@ -3,11 +3,11 @@
 module.exports = (sequelize, DataTypes) => {
     const ticket_sale = sequelize.define('ticket_sale', {
         id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
-		},
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
+        },
         id_ticket:
         {
             allowNull: false,
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         count: {
             type: DataTypes.INTEGER
         },
-        total_amount:{
+        total_amount: {
             type: DataTypes.FLOAT
         },
         amount_paid: {
@@ -34,16 +34,23 @@ module.exports = (sequelize, DataTypes) => {
         paying_name: {
             type: DataTypes.TEXT
         },
-        paying_address:{
+        paying_address: {
             type: DataTypes.TEXT
         },
-        dni_payer:{
+        dni_payer: {
             type: DataTypes.TEXT
         }
     });
 
-    ticket_sale.associate = function(models){
-    	//To create model associations
+    ticket_sale.associate = function (models) {
+        //To create model associations
+
+        //ticket_sale to ticket_sale_detail
+        ticket_sale.hasMany(models.ticket_sale_detail, {
+            foreignKey: 'id_ticket_sale',
+            as: 'ticket_sale_detail'
+        });
+
     }
 
     return ticket_sale;
