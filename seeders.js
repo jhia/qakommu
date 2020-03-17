@@ -163,7 +163,7 @@ let ticket_sale_details = [
   {
     "code_ticket": "54ce99fa85c92b1d87678436e956a2e8", 
     "id_ticket_sale":1,
-    "deactived": false
+    "deactivated": false
   }
 ]
 
