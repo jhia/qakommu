@@ -16,6 +16,7 @@ const {
   ticket,
   ticket_sale,
   ticket_sale_detail,
+  attendee,
   //repository module
   object_type,
   repository_object,
@@ -145,7 +146,7 @@ let tickets = [
   }
 ]
 
-let ticket_sales=[
+let ticket_sales = [
   {
     "id_ticket": 1,
     "id_user": 1,
@@ -161,12 +162,23 @@ let ticket_sales=[
 
 let ticket_sale_details = [
   {
-    "code_ticket": "54ce99fa85c92b1d87678436e956a2e8", 
-    "id_ticket_sale":1,
+    "code_ticket": "54ce99fa85c92b1d87678436e956a2e8",
+    "id_ticket_sale": 1,
     "deactivated": false
   }
 ]
 
+let attendees = [
+  {
+    "id_user": null,
+    "name": "carlos",
+    "dni": "x127665254",
+    "present": true,
+    "id_ticket_sale_detail": 1,
+    "rate": null,
+    "id_state": 1
+  }
+]
 let object_types = [
   {
     "name": "file",
@@ -267,8 +279,9 @@ let loadtables = async () => {
   await event.bulkCreate(events, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
-  await ticket_sale.bulkCreate(ticket_sales, {returning: true});
-  await ticket_sale_detail.bulkCreate(ticket_sale_details, {returning: true});
+  await ticket_sale.bulkCreate(ticket_sales, { returning: true });
+  await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
+  await attendee.bulkCreate(attendees, {returning: true});
   await object_type.bulkCreate(object_types, { returning: true });
   await repository.bulkCreate(repositories, { returning: true });
   await repository_object.bulkCreate(repository_objects, { returning: true });
@@ -276,8 +289,8 @@ let loadtables = async () => {
   await partnership_position.bulkCreate(partnership_positions, { returning: true });
   await type_sponsor.bulkCreate(type_sponsors, { returning: true });
   await sponsor.bulkCreate(sponsors, { returning: true });
-  await type_booth.bulkCreate(type_booths, {returning:true});
-  await exhibitor.bulkCreate(exhibitors, {returning: true});
+  await type_booth.bulkCreate(type_booths, { returning: true });
+  await exhibitor.bulkCreate(exhibitors, { returning: true });
 }
 
 module.exports = loadtables;
