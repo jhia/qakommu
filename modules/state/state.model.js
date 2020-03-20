@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_state',
             as: 'state_attendee'
         });
+
+        //state to speaker
+        state.hasMany(models.speaker, {
+            foreignKey: 'id_state',
+            as: 'state_speaker'
+        });
     }
 
     return state;

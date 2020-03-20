@@ -17,6 +17,7 @@ const {
   ticket_sale,
   ticket_sale_detail,
   attendee,
+  speaker,
   //repository module
   object_type,
   repository_object,
@@ -179,6 +180,15 @@ let attendees = [
     "id_state": 1
   }
 ]
+
+let speakers = [
+  {
+    "id_user":1,
+    "id_event":1,
+    "id_state":1
+  }
+]
+
 let object_types = [
   {
     "name": "file",
@@ -282,6 +292,7 @@ let loadtables = async () => {
   await ticket_sale.bulkCreate(ticket_sales, { returning: true });
   await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
   await attendee.bulkCreate(attendees, {returning: true});
+  await speaker.bulkCreate(speakers, {returning: true});
   await object_type.bulkCreate(object_types, { returning: true });
   await repository.bulkCreate(repositories, { returning: true });
   await repository_object.bulkCreate(repository_objects, { returning: true });

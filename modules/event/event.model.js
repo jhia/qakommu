@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'state'
         });
 
+        //event to community
         event.belongsTo(models.community, {
             foreignKey: 'id_community',
             as: 'community'
@@ -95,6 +96,12 @@ module.exports = (sequelize, DataTypes) => {
         event.hasMany(models.ticket, {
             foreignKey: 'id_event',
             as: 'event_ticket'
+        });
+
+        //event to speaker
+        event.hasMany(models.speaker, {
+            foreignKey: 'id_event',
+            as: 'event_speaker'
         });
     }
 

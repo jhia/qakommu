@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
-function encrypt_password(password){
+function encrypt_password(password) {
   const saltRounds = 10;
   const newPassword = password || 'admin';
   return bcrypt.hashSync(newPassword, saltRounds);
@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
-        isEmail:true
+        isEmail: true
       },
       unique: {
-          args: true,
-          msg: 'Email address already in use!'
+        args: true,
+        msg: 'Email address already in use!'
       }
     },
     password: {
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     id_repository: DataTypes.INTEGER,
     last_login: DataTypes.DATE
   }, {
-     hooks: {
+    hooks: {
       beforeCreate: function (admin) {
         admin.password = encrypt_password(admin.password);
       },
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  user.associate = function(models) {
+  user.associate = function (models) {
     // associations can be defined here
     user.hasMany(models.user_type, {
       foreignKey: 'id_user',
@@ -61,13 +61,19 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_user',
       as: 'user_channels'
     });
-    
+
 
     user.hasMany(models.post, {
       foreignKey: 'id_user',
       as: 'posts'
     });
-    
+
+    //user to speaker
+    user.hasMany(models.speaker, {
+      foreignKey: 'id_user',
+      as: 'user_speaker'
+    });
+
   };
   return user;
 };
