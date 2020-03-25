@@ -49,13 +49,13 @@ controller.postFunc = async function (req, res) {
         let newdate = await this.insert({
             message,
         });
+        
         let newdate2 = await user_channel.create({
-            //id_channel: 1,
-            id_message: 1,
+            id_channel: 1,
+            id_message: newdate['id'],
             id_user: query['id']
         });
         if (newdate) {
-            console.log(query['id']+"-------------------------------------")
             return this.response({
                 res,
                 statusCode: 201,
