@@ -54,11 +54,11 @@ module.exports = (sequelize, DataTypes) => {
         },*/
         prom_rate: {
             type: DataTypes.FLOAT
-        },/*
+        },
         id_repository:{
             allowNull: false,
             type: DataTypes.INTEGER
-        },*/
+        },
         id_state:{
             allowNull: false,
             type: DataTypes.INTEGER
@@ -78,6 +78,12 @@ module.exports = (sequelize, DataTypes) => {
         event.belongsTo(models.community, {
             foreignKey: 'id_community',
             as: 'community'
+        });
+
+        //event to repository
+        event.belongsTo(models.repository, {
+            foreignKey: 'id_repository',
+            as: 'repository'
         });
 
         //event to sponsor

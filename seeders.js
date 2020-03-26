@@ -189,6 +189,7 @@ let speakers = [
   }
 ]
 
+//repository 
 let object_types = [
   {
     "name": "file",
@@ -284,8 +285,14 @@ let loadtables = async () => {
   await community.bulkCreate(communities, { returning: true });
   await user.bulkCreate(users, { returning: true });
   await user_type.bulkCreate(user_types, { returning: true });
+  
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
+  
+  await object_type.bulkCreate(object_types, { returning: true });
+  await repository.bulkCreate(repositories, { returning: true });
+  await repository_object.bulkCreate(repository_objects, { returning: true });
+
   await event.bulkCreate(events, { returning: true });
   await coupon.bulkCreate(coupons, { returning: true });
   await ticket.bulkCreate(tickets, { returning: true });
@@ -293,13 +300,13 @@ let loadtables = async () => {
   await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
   await attendee.bulkCreate(attendees, {returning: true});
   await speaker.bulkCreate(speakers, {returning: true});
-  await object_type.bulkCreate(object_types, { returning: true });
-  await repository.bulkCreate(repositories, { returning: true });
-  await repository_object.bulkCreate(repository_objects, { returning: true });
+  
   await partnership.bulkCreate(partnerships, { returning: true });
   await partnership_position.bulkCreate(partnership_positions, { returning: true });
+
   await type_sponsor.bulkCreate(type_sponsors, { returning: true });
   await sponsor.bulkCreate(sponsors, { returning: true });
+
   await type_booth.bulkCreate(type_booths, { returning: true });
   await exhibitor.bulkCreate(exhibitors, { returning: true });
 }

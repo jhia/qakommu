@@ -59,7 +59,7 @@ controller.postFunc = async function (req, res) {
             active,
             //id_call_for_paper, 
             prom_rate,
-            //id_repository, 
+            id_repository, 
             id_state
         });
         if (newdate) {
@@ -102,7 +102,7 @@ controller.putFunc = async function (req, res) {
                     active,
                     //id_call_for_paper, 
                     prom_rate,
-                    //id_repository, 
+                    id_repository, 
                     id_state
                 },
                 return_data
