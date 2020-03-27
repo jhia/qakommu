@@ -32,7 +32,8 @@ const {
   type_booth,
   exhibitor,
   //session module
-  session
+  session,
+  session_attendee
 } = db
 
 let resources = [
@@ -294,6 +295,15 @@ let sessions = [
   }
 ]
 
+let session_attendees = [
+  {
+    "id_session":1, 
+    "id_attendee":1, 
+    "rate":76.2, 
+    "is_present": true
+  }
+]
+
 
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
@@ -328,6 +338,7 @@ let loadtables = async () => {
   await exhibitor.bulkCreate(exhibitors, { returning: true });
   
   await session.bulkCreate(sessions, {returning: true});
+  await session_attendee.bulkCreate(session_attendees, {returning:true});
 }
 
 module.exports = loadtables;
