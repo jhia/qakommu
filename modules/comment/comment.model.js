@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         multimedia: DataTypes.TEXT,        
         value: DataTypes.INTEGER,
         fixed: DataTypes.BOOLEAN,
+        reference: DataTypes.INTEGER
     });
 
     comment.associate = function(models){

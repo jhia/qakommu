@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('comment');
+const jwt = require('jsonwebtoken');
 
 controller.getFunc = async function (req, res) {
     const { id } = req.params;
@@ -30,16 +31,26 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { id_user, id_post, active, content, multimedia, value, fixed } = req.body;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, 'secret');
+    const { user } = this.db
+    const email = decoded.email
+ 
+    let query = await user.findOne({
+        where: { email }
+    });
+
+    const { id_post, active, content, multimedia, value, fixed, reference } = req.body;
     try {
         let newdate = await this.insert({
-            id_user, 
+            id_user: query['id'], 
             id_post, 
             active, 
             content, 
             multimedia, 
             value, 
-            fixed
+            fixed,
+            reference
         });
         if (newdate) {
             return this.response({
@@ -60,7 +71,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, id_post, active, content, multimedia, value, fixed } = req.body;
+    const { id_user, id_post, active, content, multimedia, value, fixed, reference } = req.body;
 
     await this.update(
         {
@@ -72,7 +83,8 @@ controller.putFunc = async function (req, res) {
                 content, 
                 multimedia, 
                 value, 
-                fixed
+                fixed,
+                reference
             },
             return_data
         })
