@@ -33,6 +33,7 @@ const {
   exhibitor,
   //session module
   session,
+  track_session,
   session_attendee
 } = db
 
@@ -295,6 +296,13 @@ let sessions = [
   }
 ]
 
+let track_sessions = [
+  {
+    "id_session": 1,
+    "id_track":1
+  }
+]
+
 let session_attendees = [
   {
     "id_session":1, 
@@ -338,6 +346,7 @@ let loadtables = async () => {
   await exhibitor.bulkCreate(exhibitors, { returning: true });
   
   await session.bulkCreate(sessions, {returning: true});
+  await track_session.bulkCreate(track_sessions, {returning:true});
   await session_attendee.bulkCreate(session_attendees, {returning:true});
 }
 
