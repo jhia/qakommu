@@ -8,10 +8,15 @@ controller.postFunc = async function (req, res) {
 	const {user_type,user,community} = this.db
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, codeCommunity, nameCommunity} = req.body
 
-	try {
 
+    const { code_community, code_invitation } = req.params;
+
+	const jwt = require('jsonwebtoken');
+	try {
 		let data = []
-		if (!nameCommunity && !codeCommunity) throw new Error("needs community")
+        const decoded = jwt.verify(code_invitation, 'secret');
+
+		if (!nameCommunity && !codeCommunity) throw new Error("needs community"+" token invitation: "+ decoded.data)
 
 		if (codeCommunity) {
 			data = await community.findOne({
@@ -95,7 +100,7 @@ controller.postFunc = async function (req, res) {
 			res,
 			success: false,
 			statusCode: 500,
-			message: err.message,
+			message: err.message
 		});
 	}
 }

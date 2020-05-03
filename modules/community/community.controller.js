@@ -9,10 +9,29 @@ const controller = new Base('community');
 
 const db = require('../../models')
 
-controller.getFunc = async function (req, res) {
+const jwt = require('jsonwebtoken');
 
-    const { id } = req.params;
+function llama(invitation_code,time) {
+    let t = time+"d";
+    if (time){ 
+        let t = time+"d";
+        console.log(t) 
+    }else{ 
+        let t = "30d";
+        console.log(t)
+    };
+    let tk = jwt.sign({
+        data: invitation_code
+    }, 'secret', { expiresIn: 60 });    
+    return tk;
+}
+
+
+controller.getFunc = async function (req, res) {
+    
+    const { id, time } = req.params;
     const { limit, offset, order, attributes } = req.body;
+    let invitation_code = makeid(6)
     try {
         const data = await this.getData({
             id,
@@ -21,10 +40,24 @@ controller.getFunc = async function (req, res) {
             attributes,
             order
         });
-
         return this.response({
             res,
-            payload: [data]
+            payload: {
+                id: data.id,
+                name: data.name,
+                descripcion: data.description,
+                id_type_of_account: data.id_type_of_account,
+                id_website: data.id_website,
+                prefix: data.prefix,
+                member_verification: data.member_verification,
+                id_repository: data.id_repository,
+                code: data.code,
+                invitation: invitation_code,
+                url_invitation: "http://localhost:8000/register/"+data.code+"/"+llama(invitation_code, time),
+                //url_invitation: "http://kommu.io/signup/"+data.code+"/"+llama(invitation_code, time),
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt
+            }
         });
     } catch (error) {
         return this.response({
