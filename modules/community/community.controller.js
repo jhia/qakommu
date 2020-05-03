@@ -53,8 +53,7 @@ controller.getFunc = async function (req, res) {
                 id_repository: data.id_repository,
                 code: data.code,
                 invitation: invitation_code,
-                url_invitation: "http://localhost:8000/register/"+data.code+"/"+llama(invitation_code, time),
-                //url_invitation: "http://kommu.io/signup/"+data.code+"/"+llama(invitation_code, time),
+                url_invitation: "http://kommu.io/signup/"+data.code+"/"+llama(invitation_code, time),
                 createdAt: data.createdAt,
                 updatedAt: data.updatedAt
             }
