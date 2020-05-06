@@ -5,6 +5,14 @@ module.exports = (sequelize, DataTypes) => {
         id_user: DataTypes.INTEGER,
         id_role: DataTypes.INTEGER,
         id_community: DataTypes.INTEGER,
+        invitation_code: {
+            type: DataTypes.STRING,
+            unique: {
+                args: true,
+                msg: 'Invitation code used!'
+              }
+        
+        },
         createdAt: {
             allowNull: false,
             type: Sequelize.DATE,

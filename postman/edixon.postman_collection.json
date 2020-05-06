@@ -604,7 +604,7 @@
 					"enabled": false
 				}
 			],
-			"url": "{{server}}:{{port}}/api/community/1",
+			"url": "{{server}}:{{port}}/api/community/1/1",
 			"folder": "2ee000e7-5db6-a475-abc4-1dbf7340eacb",
 			"queryParams": [
 				{
@@ -622,7 +622,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1581368126742,
+			"time": 1588683882668,
 			"name": "get One",
 			"description": "",
 			"collectionId": "e17e8520-7265-fcb0-b927-2dbcab2cb2c4",
@@ -1050,7 +1050,7 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:8000/register",
+			"url": "{{server}}:{{port}}/register",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -1061,12 +1061,12 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1585147250352,
+			"time": 1588750761599,
 			"name": "Register",
 			"description": "",
 			"collectionId": "e17e8520-7265-fcb0-b927-2dbcab2cb2c4",
 			"responses": [],
-			"rawModeData": "{\n    \"name\": \"user03\",\n    \"last_name\": \"user03\",\n    \"username\": \"user03\",\n    \"address\": \"micasa\",\n    \"email\": \"user03@email.com\",\n    \"password\": \"user03\",\n    \"gender\": \"M\",\n    \"id_repository\": 0,\n    \"id_role\": 1,\n    \"codeCommunity\": \"8OTUHR\"\n}"
+			"rawModeData": "{\n    \"name\": \"user03\",\n    \"last_name\": \"user03\",\n    \"username\": \"user03\",\n    \"address\": \"micasa\",\n    \"email\": \"user03@email.com\",\n    \"password\": \"user03\",\n    \"gender\": \"M\",\n    \"id_repository\": 0,\n    \"id_role\": 1,\n    \"nameCommunity\": \"Python\"\n}"
 		},
 		{
 			"id": "419b82c6-7e35-2252-67db-048cbe3fed3f",

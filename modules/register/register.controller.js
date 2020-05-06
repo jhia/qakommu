@@ -6,23 +6,41 @@ const controller = new Base('register');
 const { makeid } = require('../../helpers/utilities')
 controller.postFunc = async function (req, res) {
 	const {user_type,user,community} = this.db
-	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, codeCommunity, nameCommunity} = req.body
-
-
-    const { code_community, code_invitation } = req.params;
+	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
+	let {codeCommunity} = req.body;
+    const { comunity_code,invitation_code } = req.params;
 
 	const jwt = require('jsonwebtoken');
 	try {
 		let data = []
-        const decoded = jwt.verify(code_invitation, 'secret');
+		let decoded
+		if (invitation_code) {
+			decoded = jwt.verify(invitation_code, 'secret');
+			codeCommunity = comunity_code;
 
-		if (!nameCommunity && !codeCommunity) throw new Error("needs community"+" token invitation: "+ decoded.data)
+
+
+			let query_invitation_code = await user_type.findOne({
+				where: { invitation_code: decoded.data.invitation_code }
+			});
+	
+			if (query_invitation_code) {
+				throw new Error("Invitation code used!")
+			}
+	
+
+		}
+
+
+
+
+		if (!nameCommunity && !codeCommunity) throw new Error("needs community")
 
 		if (codeCommunity) {
 			data = await community.findOne({
 				where: { code: codeCommunity },
 				attributes: ['id', 'name']
-			});				
+			});
 		}
 		
 		let query_user = await user.findOne({
@@ -61,7 +79,8 @@ controller.postFunc = async function (req, res) {
 			{
 				id_user: result.id,
 				id_role: id_role,
-				id_community: data['id']
+				id_community: invitation_code ? decoded.data.community_id : data['id'],
+				invitation_code: invitation_code ? decoded.data.invitation_code : null
 			});
 
 		if(result)

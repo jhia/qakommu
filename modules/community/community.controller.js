@@ -11,18 +11,18 @@ const db = require('../../models')
 
 const jwt = require('jsonwebtoken');
 
-function llama(invitation_code,time) {
+function llama(invitation_code, community_id ,time) {
     let t = time+"d";
+
+
     if (time){ 
         let t = time+"d";
-        console.log(t) 
     }else{ 
         let t = "30d";
-        console.log(t)
     };
     let tk = jwt.sign({
-        data: invitation_code
-    }, 'secret', { expiresIn: 60 });    
+        data: { invitation_code, community_id}
+    }, 'secret', { expiresIn: 60 * 4 });    
     return tk;
 }
 
@@ -53,7 +53,8 @@ controller.getFunc = async function (req, res) {
                 id_repository: data.id_repository,
                 code: data.code,
                 invitation: invitation_code,
-                url_invitation: "http://kommu.io/signup/"+data.code+"/"+llama(invitation_code, time),
+                url_invitation: "http://localhost:8000/register/"+data.code+"/"+llama(invitation_code,data.id, time),
+                //url_invitation: "http://kommu.io/signup/"+data.code+"/"+llama(invitation_code, time),
                 createdAt: data.createdAt,
                 updatedAt: data.updatedAt
             }

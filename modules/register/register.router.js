@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post('/:code_comunity?/:code_invitation?',(req, res) => {
+router.post('/:comunity_code?/:invitation_code?',(req, res) => {
   ///HTTP post route
   registerController.postFunc(req,res);
 });
