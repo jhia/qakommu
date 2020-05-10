@@ -16,14 +16,17 @@ const controller = new Base('speaker');
 controller.getFunc = async function (req, res) {
 
 	const { id } = req.params;
-	const { limit, offset, order, attributes } = req.body;
+	const { limit, offset, order, attributes, extended_data } = req.body;
+	let modelstoextended = extended_data ? "[{model: this.db.user, as: 'user'},{ model: this.db.event, as: 'event' }, { model: this.db.state, as: 'state'}]" : "";
 	try {
 		const data = await this.getData({
 			id,
 			limit,
 			offset,
 			attributes,
-			order
+			order,
+			modelstoextended,
+			
 		});
 		this.response({
 			res,

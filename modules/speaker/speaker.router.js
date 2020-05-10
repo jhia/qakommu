@@ -18,7 +18,6 @@ router.get('/:id',function(req, res){
   speakerController.getFunc(req,res);
 });
 
-
 router.post('/',(req, res) => {
   ///HTTP post route
   speakerController.postFunc(req,res);
