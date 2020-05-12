@@ -4,50 +4,47 @@ const _ = require('lodash');
 const utils = require('./utilities');
 const db = require('../models')
 
-function base(name){
+function base(name) {
 	//controller constructor
-	this.db = db;	
+	this.db = db;
 	this.moduleName = name;
 
-	if( _.has(this.db,name) )
+	if (_.has(this.db, name))
 		this.model = this.db[this.moduleName];
-	
+
 	this.response = utils.response;
 }
 
-base.prototype.getFunc = function(req,res){
+base.prototype.getFunc = function (req, res) {
 	this.response({
 		res,
 		message: 'Everything is ok!'
 	});
 }
 
-base.prototype.postFunc = async function(req,res){
+base.prototype.postFunc = async function (req, res) {
 	const id = await this.insert(req.body);
 	if (id) {
 		this.response({
 			res,
-			payload:[id]
+			payload: [id]
 		})
 	}
 }
 
 
-base.prototype.putFunc = async function(req,res){
+base.prototype.putFunc = async function (req, res) {
 	const id = await this.update(req.body);
 	if (id) {
 		this.response({
 			res,
-			payload:[id]
+			payload: [id]
 		})
 	}
 }
 
 
-
-
-
-base.prototype.deleteFunc = function(req,res){
+base.prototype.deleteFunc = function (req, res) {
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
 /* 
@@ -70,12 +67,12 @@ base.prototype.update = async function(identity, data){
 } 
 */
 
-base.prototype.update = async function(data){
-	const{ id } = data;
+base.prototype.update = async function (data) {
+	const { id } = data;
 	if (!id) throw new Error("id is needed");
 
 	const fillables = _.keys(data.data);
-	const result = await this.model.update(data.data,		
+	const result = await this.model.update(data.data,
 		{
 			fields: fillables,
 			where: {
@@ -88,43 +85,47 @@ base.prototype.update = async function(data){
 
 	if (data.return_data) {
 		return data.data;
-	};	
+	};
 	return true;
 }
 
-base.prototype.insert = async function(data){
-	const fillables = _.keys(data) 	
- 	const res = await this.db[this.moduleName].create(data, {
-		retuning:true,
+base.prototype.insert = async function (data) {
+	const fillables = _.keys(data)
+	const res = await this.db[this.moduleName].create(data, {
+		retuning: true,
 		fields: fillables
 	});
 	return res;
 }
 
 
-base.prototype.getData = async function(data){
-	const { id, limit, offset, order, attributes} = data;
+base.prototype.getData = async function (data) {
+	const { id, limit, offset, order, attributes, modelstoextended } = data;
+	
 	if (id) {
 		const one = await this.model.findOne({
 			where: {
 				id
 			},
 			attributes,
-			order
+			order,
+			//include: modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
 		});
-		 return one;
+		return one;
 	} else {
 		const list = await this.model.findAll({
 			limit,
 			offset,
 			attributes,
-			order
+			order,
+			//include:  modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
 		});
 		return list;
 	}
 }
 
-base.prototype.delete = async function(data){
+
+base.prototype.delete = async function (data) {
 	const { id } = data;
 	const row = await this.model.destroy({
 		where: {

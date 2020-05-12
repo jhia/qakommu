@@ -13,11 +13,15 @@ router.get('/',function(req, res){
   speakerController.getFunc(req,res);
 });
 
+router.get('/event/:id_event',function(req, res){
+  //HTTP get route
+  speakerController.getSpeakersByEvent(req,res);
+});
+
 router.get('/:id',function(req, res){
   //HTTP get route
   speakerController.getFunc(req,res);
 });
-
 
 router.post('/',(req, res) => {
   ///HTTP post route

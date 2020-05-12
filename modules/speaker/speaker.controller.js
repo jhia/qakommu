@@ -16,14 +16,16 @@ const controller = new Base('speaker');
 controller.getFunc = async function (req, res) {
 
 	const { id } = req.params;
-	const { limit, offset, order, attributes } = req.body;
+	const { limit, offset, order, attributes, extended_data } = req.body;
+	let modelstoextended = extended_data ? "[{model: this.db.user, as: 'user'},{ model: this.db.event, as: 'event' }, { model: this.db.state, as: 'state'}]" : "";
 	try {
 		const data = await this.getData({
 			id,
 			limit,
 			offset,
 			attributes,
-			order
+			order,
+			modelstoextended,
 		});
 		this.response({
 			res,
@@ -40,12 +42,52 @@ controller.getFunc = async function (req, res) {
 
 }
 
+controller.getSpeakersByEvent = async function (req, res) {
+	const { id_event } = req.params;
+
+	try {
+		const data  = await this.model.findAll({
+			attributes: ['id'],
+			where: { id_event },
+			include: [{
+				attributes:['name', 'last_name'],
+				model: this.db.user,
+				as: 'user'
+			},
+			{
+				attributes: ['name', 'description', 'blocker'],
+				model: this.db.state,
+				as: 'state',
+				where: {
+					active : true
+				}
+			}
+		]
+		});
+		console.log(data);
+		this.response({
+			res,
+			payload: [data]
+		});
+
+	} catch (error) {
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong',
+		});
+
+	}
+	
+}
+
 controller.postFunc = async function (req, res) {
 
 	const { id_user, id_event, id_state } = req.body;
 	try {
 		let newdate = await this.insert({
-            id_user, id_event, id_state 
+			id_user, id_event, id_state
 		});
 		if (newdate) {
 			return this.response({
@@ -64,15 +106,17 @@ controller.postFunc = async function (req, res) {
 	}
 }
 
+
+
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const {  id_user, id_event, id_state , return_data } = req.body;
+	const { id_user, id_event, id_state, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
 				id,
 				data: {
-                    id_user, id_event, id_state 
+					id_user, id_event, id_state
 				},
 				return_data
 			});
