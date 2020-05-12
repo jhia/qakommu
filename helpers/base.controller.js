@@ -44,9 +44,6 @@ base.prototype.putFunc = async function (req, res) {
 }
 
 
-
-
-
 base.prototype.deleteFunc = function (req, res) {
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
@@ -104,6 +101,7 @@ base.prototype.insert = async function (data) {
 
 base.prototype.getData = async function (data) {
 	const { id, limit, offset, order, attributes, modelstoextended } = data;
+	
 	if (id) {
 		const one = await this.model.findOne({
 			where: {
@@ -111,7 +109,7 @@ base.prototype.getData = async function (data) {
 			},
 			attributes,
 			order,
-			include: modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
+			//include: modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
 		});
 		return one;
 	} else {
@@ -120,7 +118,7 @@ base.prototype.getData = async function (data) {
 			offset,
 			attributes,
 			order,
-			include:  modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
+			//include:  modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
 		});
 		return list;
 	}
