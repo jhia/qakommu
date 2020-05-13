@@ -18,6 +18,12 @@ router.get('/:id',function(req, res){
   eventController.getFunc(req,res);
 });
 
+router.get('/:id_event/speaker/all/',function(req, res){
+  //HTTP get route
+  eventController.getEventBySpeakers(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   eventController.postFunc(req,res);

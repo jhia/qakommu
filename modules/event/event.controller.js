@@ -40,6 +40,50 @@ controller.getFunc = async function (req, res) {
 
 }
 
+controller.getEventBySpeakers = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+
+	try {
+		const data  = await this.db.speaker.findAll({
+            limit,
+			offset,
+			attributes: ['id'],
+			order,
+			where: { id_event },
+			include: [{
+				attributes:['name', 'last_name'],
+				model: this.db.user,
+				as: 'user'
+			},
+			{
+				attributes: ['name', 'blocker'],
+				model: this.db.state,
+				as: 'state',
+				where: {
+					active : true
+				}
+			}
+		]
+		});
+		this.response({
+			res,
+			payload: [data]
+		});
+
+	} catch (error) {
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong',
+		});
+
+	}
+	
+}
+
+
 controller.postFunc = async function (req, res) {
 
     const { name, description, id_community,type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
