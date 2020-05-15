@@ -45,7 +45,8 @@ let resources = [
   { "name": "comment", "url_resource": "/api/comment" },
   { "name": "message", "url_resource": "/api/message" },
   { "name": "channel", "url_resource": "/api/channel" },
-  { "name": "event", "url_resource": "/api/event" }
+  { "name": "event", "url_resource": "/api/event" },
+  { "name": "user", "url_resource": "/api/user" }
 
   
 
@@ -63,7 +64,8 @@ let permissions = [
   { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true }
+  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }
 ];
 
 let communities = [

@@ -4,14 +4,31 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('register');
 const { makeid } = require('../../helpers/utilities')
+
 controller.postFunc = async function (req, res) {
+
 	const {user_type,user,community} = this.db
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
-
+    let avatar;
+ 
 	const jwt = require('jsonwebtoken');
 	try {
+
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            avatar = req.files.avatar;
+            
+            //Use the mv() method to place the file in upload directory (i.e. "uploads")
+            avatar.mv('./community_name/' + avatar.name);
+         }
+
 		let data = []
 		let decoded
 		if (invitation_code) {
@@ -31,11 +48,7 @@ controller.postFunc = async function (req, res) {
 
 		}
 
-
-
-
 		if (!nameCommunity && !codeCommunity) throw new Error("needs community")
-
 		if (codeCommunity) {
 			data = await community.findOne({
 				where: { code: codeCommunity },
@@ -61,12 +74,14 @@ controller.postFunc = async function (req, res) {
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
+        let profile_photo = "http://"+req.host+":8000/uploads/"+ avatar.name;
 
 		let result = await user.create(
 		{
 			name,
 			last_name,
-			username,
+            username,
+            profile_photo,
 			address,
 			email,
 			password,
@@ -95,6 +110,7 @@ controller.postFunc = async function (req, res) {
 						name,
 						last_name,
 						username,
+                        profile_photo,
 						address,
 						email,
 						password,
@@ -109,8 +125,6 @@ controller.postFunc = async function (req, res) {
 					}
 				}
 			});
-
-
 		}
 
 	} catch (err) {

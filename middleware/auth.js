@@ -16,6 +16,7 @@ const permissionsVerification = async function (req, res, next){
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, 'secret');
         const name_action = req.method
+        let community_id
 
     
         if (name_module[2]=="community") {
@@ -30,6 +31,21 @@ const permissionsVerification = async function (req, res, next){
             community_id = query_event.id_community;
         }
 
+
+
+        if (name_module[2]=="user" && name_module[3]) {
+            const result2 = await user.findOne({
+				where: { id: name_module[3] },
+                include: [{
+                    model: user_type,
+                    as: 'user_types'
+                }]
+            });
+            community_id = result2.user_types[0].id_community
+        }
+
+
+
         const result2 = await user.findOne({
             where: {
                 email: decoded.email
@@ -40,7 +56,10 @@ const permissionsVerification = async function (req, res, next){
                 as: 'user_types'
             }]
         });
- 
+
+        
+
+
         if (!name_module[3]) {
             community_id = result2.user_types[0].id_community
         }
