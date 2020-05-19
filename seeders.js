@@ -189,7 +189,8 @@ let speakers = [
   {
     "id_user": 1,
     "id_event": 1,
-    "id_state": 1
+    "id_state": 1,
+    "id_session": 1,
   }
 ]
 
@@ -288,7 +289,7 @@ let sessions = [
     "name": "dev game",
     "description": "this conference is aimed at all video game developers",
     "id_room": 1,
-    "id_speaker": 1,
+    
     "order":1,
     "start": "2020-10-11",
     "end": "2020-10-11",
@@ -334,6 +335,7 @@ let loadtables = async () => {
   await ticket_sale.bulkCreate(ticket_sales, { returning: true });
   await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
   await attendee.bulkCreate(attendees, { returning: true });
+  await session.bulkCreate(sessions, {returning: true});
   await speaker.bulkCreate(speakers, { returning: true });
 
   await partnership.bulkCreate(partnerships, { returning: true });
@@ -345,7 +347,7 @@ let loadtables = async () => {
   await type_booth.bulkCreate(type_booths, { returning: true });
   await exhibitor.bulkCreate(exhibitors, { returning: true });
   
-  await session.bulkCreate(sessions, {returning: true});
+  
   await track_session.bulkCreate(track_sessions, {returning:true});
   await session_attendee.bulkCreate(session_attendees, {returning:true});
 }

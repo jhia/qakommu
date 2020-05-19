@@ -55,7 +55,12 @@ controller.getEventBySpeakers = async function (req, res) {
 				attributes:['name', 'last_name'],
 				model: this.db.user,
 				as: 'user'
-			},
+            },
+            {
+                attributes: ['name', 'description'],
+				model: this.db.session,
+				as: 'session',
+            },
 			{
 				attributes: ['name', 'blocker'],
 				model: this.db.state,
@@ -63,9 +68,11 @@ controller.getEventBySpeakers = async function (req, res) {
 				where: {
 					active : true
 				}
-			}
+            }
+            
 		]
-		});
+        });
+
 		this.response({
 			res,
 			payload: [data]

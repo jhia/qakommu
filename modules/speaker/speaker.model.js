@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         id_state: {
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+        id_session: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -40,6 +44,12 @@ module.exports = (sequelize, DataTypes) => {
         speaker.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        //speaker to session
+        speaker.belongsTo(models.session, {
+            foreignKey: 'id_session',
+            as: 'session'
         });
     }
 

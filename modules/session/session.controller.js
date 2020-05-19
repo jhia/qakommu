@@ -42,13 +42,12 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_room, id_speaker, order, start, end, is_break } = req.body;
+    const { name, description, id_room, order, start, end, is_break } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
             id_room,
-            id_speaker,
             order,
             start,
             end,
@@ -73,7 +72,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_room, id_speaker, order, start, end, is_break, return_data } = req.body;
+    const { name, description, id_room, order, start, end, is_break, return_data } = req.body;
     try {
         let result = await this.update(
             {
@@ -82,7 +81,6 @@ controller.putFunc = async function (req, res) {
                     name,
                     description,
                     id_room,
-                    id_speaker,
                     order,
                     start,
                     end,
