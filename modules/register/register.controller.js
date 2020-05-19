@@ -106,6 +106,9 @@ controller.postFunc = async function (req, res) {
 				statusCode: 201,
 				message: "Created Successfully",
 				payload: {
+					result: true
+
+/* 
 					result:{
 						name,
 						last_name,
@@ -123,6 +126,7 @@ controller.postFunc = async function (req, res) {
 							name: data['name']
 						}
 					}
+ */					
 				}
 			});
 		}
