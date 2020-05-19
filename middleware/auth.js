@@ -2,29 +2,82 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models');
 
-const {user,user_type,role,permission,resource} = db
+const {user,user_type,role,permission,resource,community,event} = db
 
 const permissionsVerification = async function (req, res, next){
     // para saltarse el auth
-    console.log(req.url);
     if (req.headers.skip) {
         return next();
     }
 
 
     try {
+        const name_module = (req.url).split("/")    
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, 'secret');
         const name_action = req.method
-        const name_module = (req.url).split("/")    
+        let community_id
+
+    
+        if (name_module[2]=="community") {
+            community_id = name_module[3];
+        }
+
+
+        if (name_module[2]=="event" && name_module[3]) {
+			let query_event = await event.findOne({
+				where: { id: name_module[3] }
+			});
+            community_id = query_event.id_community;
+        }
+
+
+
+        if (name_module[2]=="user" && name_module[3]) {
+            const result2 = await user.findOne({
+				where: { id: name_module[3] },
+                include: [{
+                    model: user_type,
+                    as: 'user_types'
+                }]
+            });
+            community_id = result2.user_types[0].id_community
+        }
+
+
+
+        const result2 = await user.findOne({
+            where: {
+                email: decoded.email
+            },
+
+            include: [{
+                model: user_type,
+                as: 'user_types'
+            }]
+        });
+
+        
+
+
+        if (!name_module[3]) {
+            community_id = result2.user_types[0].id_community
+        }
+ 
 
         const result = await user.findOne({
             where: {
                 email: decoded.email
             },
+
             include: [{
                 model: user_type,
                 as: 'user_types',
+ 
+                where: {
+                    id_community: community_id
+                },
+                 
                 include: [{
                     model: role,
                     as: 'roles',
@@ -36,13 +89,10 @@ const permissionsVerification = async function (req, res, next){
                             as: 'resources',
                             where: {
                                 name: name_module
-                            }
-                        }]
-                            
-                    }],
-                    
-                }],            
-
+                            },
+                        }]                                
+                    }],                    
+                }],
             }]
         });    
 

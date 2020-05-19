@@ -44,7 +44,12 @@ let resources = [
   { "name": "post", "url_resource": "/api/post" },
   { "name": "comment", "url_resource": "/api/comment" },
   { "name": "message", "url_resource": "/api/message" },
-  { "name": "channel", "url_resource": "/api/channel" }
+  { "name": "channel", "url_resource": "/api/channel" },
+  { "name": "event", "url_resource": "/api/event" },
+  { "name": "user", "url_resource": "/api/user" }
+
+  
+
 ];
 
 let roles = [
@@ -58,20 +63,25 @@ let permissions = [
   { "id_role": 1, "id_resource": 4, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true }
+  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }
 ];
 
 let communities = [
-  { "name": "node", "description": "description to node", "id_type_of_account": 1, "user_acount": 3, "web": "www.node.org", "prefix": "node", "member_verification": true, "id_repository": 4, "code": "8OTUHR" }
+  { "name": "python", "description": "description to python", "id_type_of_account": 1, "users_count": 3, "id_website": 2, "prefix": "python", "member_verification": true, "id_repository": 4, "code": "0JWCT2" },
+  { "name": "node", "description": "description to node", "id_type_of_account": 1, "users_count": 3, "id_website": 1, "prefix": "node", "member_verification": true, "id_repository": 4, "code": "8OTUHR" }
 ];
 
 
 let users = [
-  { "name": "user01", "last_name": "user01", "username": "user01", "address": "micasa", "email": "user01@email.com", "password": "user01", "gender": "M", "id_repository": 0 }
+  { "name": "user01", "last_name": "user01", "username": "user01", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
+  { "name": "user02", "last_name": "user02", "username": "user02", "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
 ]
 
 let user_types = [
-  { "id_user": 1, "id_role": 1, "id_community": 1 }
+  { "id_user": 1, "id_role": 1, "id_community": 1 },
+  { "id_user": 2, "id_role": 1, "id_community": 2 }
 ]
 
 
@@ -114,7 +124,26 @@ let events = [
     "prom_rate": 89.8,
     "id_repository": 1,
     "id_state": 1
-  }
+  },
+  {
+    "name": "node for everyone",
+    "description": "This is one of the most important conferences for node language lovers",
+    "id_community": 2,
+    "type": "w",
+    "online": false,
+    "no_cfp": true,
+    "url_code": "www.test.node.com/event/12",
+    "id_webside": 1,
+    "is_private": false,
+    "start": "2020-02-10",
+    "end": "2020-02-11",
+    "active": true,
+    //"id_call_for_paper": 1, 
+    "prom_rate": 89.8,
+    "id_repository": 1,
+    "id_state": 1
+  },
+  
 ]
 
 

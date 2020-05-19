@@ -58,15 +58,17 @@ controller.postFunc = async function(req,res){
         }
     }
 
+    const community_id = result.user_types[0].id_community;
     let User = {
-        email
+        email,
+        community_id
     };
 
     User.token = jwt.sign(
         User,
         'secret',
         {
-            expiresIn: '1y',
+            expiresIn: '30d',
             algorithm: 'HS512',
         }
     );            

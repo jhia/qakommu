@@ -12,17 +12,17 @@ const db = require('../../models')
 const jwt = require('jsonwebtoken');
 
 function llama(invitation_code, community_id ,time) {
-    let t = time+"d";
+    let t;
 
 
     if (time){ 
-        let t = time+"d";
+        t = time+"d";
     }else{ 
-        let t = "30d";
+        t = "30d";
     };
     let tk = jwt.sign({
         data: { invitation_code, community_id}
-    }, 'secret', { expiresIn: 60 * 4 });    
+    }, 'secret', { expiresIn: t });    
     return tk;
 }
 
