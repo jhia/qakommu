@@ -4,6 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('partnership');
+const { makeid } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -42,8 +43,30 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, registry_number, logo, host, url, active } = req.body;
+    const { name, description, registry_number, host, url, active } = req.body;
+    let archive;
+    let avatar;
     try {
+
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+		}
+		else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            avatar = req.files.logo;
+            
+            //Use the mv() method to place the file in upload directory (i.e. "uploads")
+            //avatar.mv('./community_name/' + avatar.name);
+            archive = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+            avatar.mv("./community_name/"+archive);
+        }
+
+
+        let logo = "http://"+req.host+":8000/uploads/"+ archive;
+
         let newdate = await this.insert({
             name,
             description,
@@ -61,6 +84,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
+        console.log(error)
         this.response({
             res,
             success: false,
