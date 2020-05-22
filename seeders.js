@@ -77,8 +77,8 @@ let communities = [
 
 
 let users = [
-  { "name": "user01", "last_name": "user01", "username": "user01", "profile_photo":"http://localhost:8000/uploads/profile_photo_J472UU.png", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
-  { "name": "user02", "last_name": "user02", "username": "user02", "profile_photo":"http://localhost:8000/uploads/profile_photo_KK7O36.png",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
+  { "name": "user01", "last_name": "user01", "username": "user01", "profile_photo":"profile_photo_J472UU.png", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
+  { "name": "user02", "last_name": "user02", "username": "user02", "profile_photo":"profile_photo_KK7O36.png",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
 ]
 
 let user_types = [

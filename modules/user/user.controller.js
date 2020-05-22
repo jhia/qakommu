@@ -17,7 +17,21 @@ controller.getFunc = async function (req, res) {
 		});
 		this.response({
 			res,
-			payload: [data]
+			payload: {
+				id: data.id,
+				name: data.name,
+				last_name: data.last_name,
+				username: data.username,
+				profile_photo: "http://"+req.host+":8000/uploads/"+data.profile_photo,
+				address: data.address,
+				email: data.email,
+				password: data.password,
+				active: data.active,
+				gender: data.gender,
+				id_repository: data.id_repository,
+				createdAt: data.createdAt,
+				updatedAt: data.updatedAt
+			}
 		});
 	} catch (error) {
 		this.response({

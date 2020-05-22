@@ -25,13 +25,11 @@ app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
 app.use('/uploads', express.static('community_name'));
-console.log(express.static('community_name'))
-//const user = require('./modules/user/user.router')
-//app.use('/user', user);
-
 
 const register = require('./modules/register/register.router')
 app.use('/register', register);
+
+
 
 const login = require('./modules/login/login.router')
 app.use('/auth', login);

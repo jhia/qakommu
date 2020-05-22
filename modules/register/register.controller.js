@@ -16,22 +16,16 @@ controller.postFunc = async function (req, res) {
  
 	const jwt = require('jsonwebtoken');
 	try {
-
+		//uploads images
         if(!req.files) {
             res.send({
                 status: false,
                 message: 'No file uploaded'
             });
         } else {
-            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
             avatar = req.files.avatar;
-            
-			//Use the mv() method to place the file in upload directory (i.e. "uploads")
             archive = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
             avatar.mv("./community_name/"+archive);
-			
-
-            //avatar	.mv('./community_name/' + avatar.name);
          }
 
 		let data = []
@@ -79,8 +73,7 @@ controller.postFunc = async function (req, res) {
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
-        //let profile_photo = "http://"+req.host+":8000/uploads/"+ avatar.name;
-        let profile_photo = "http://"+req.host+":8000/uploads/"+ archive;
+        let profile_photo = archive;
 
 		let result = await user.create(
 		{
@@ -113,26 +106,6 @@ controller.postFunc = async function (req, res) {
 				message: "Created Successfully",
 				payload: {
 					result: true
-
-/* 
-					result:{
-						name,
-						last_name,
-						username,
-                        profile_photo,
-						address,
-						email,
-						password,
-						gender,
-						id_repository,
-						id_role,
-						community: {
-							id: data['id'],
-							code: data['code'],
-							name: data['name']
-						}
-					}
- */					
 				}
 			});
 		}
