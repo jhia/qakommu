@@ -46,7 +46,8 @@ let resources = [
   { "name": "message", "url_resource": "/api/message" },
   { "name": "channel", "url_resource": "/api/channel" },
   { "name": "event", "url_resource": "/api/event" },
-  { "name": "user", "url_resource": "/api/user" }
+  { "name": "user", "url_resource": "/api/user" },
+  { "name": "partnership", "url_resource": "/api/partnership" }
 
   
 
@@ -65,7 +66,8 @@ let permissions = [
   { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true },
   { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }
+  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true },
+  { "id_role": 1, "id_resource": 10, "_create": true, "_read": true, "_update": true, "_delete": true }
 ];
 
 let communities = [
@@ -75,8 +77,8 @@ let communities = [
 
 
 let users = [
-  { "name": "user01", "last_name": "user01", "username": "user01", "profile_photo":"http://localhost:8000/uploads/cheerful.png", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
-  { "name": "user02", "last_name": "user02", "username": "user02", "profile_photo":"http://localhost:8000/uploads/sad.png",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
+  { "name": "user01", "last_name": "user01", "username": "user01", "profile_photo":"http://localhost:8000/uploads/profile_photo_5D7TVI.png", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
+  { "name": "user02", "last_name": "user02", "username": "user02", "profile_photo":"http://localhost:8000/uploads/profile_photo_WW7RH.png",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
 ]
 
 let user_types = [
@@ -254,7 +256,7 @@ let partnerships = [
     "name": "google company",
     "description": "test descrioption facebook",
     "registry_number": "c26174178",
-    "logo": "/images/company/123/logo.png",
+    "logo": "http://localhost:8000/uploads/partnership_IJQJQZ.png",
     "host": "35.122.343.2:871",
     "url": "google.com",
     "active": true
