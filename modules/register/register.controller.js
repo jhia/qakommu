@@ -11,7 +11,8 @@ controller.postFunc = async function (req, res) {
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
-    let avatar;
+	let avatar;
+	let archive;
  
 	const jwt = require('jsonwebtoken');
 	try {
@@ -25,8 +26,12 @@ controller.postFunc = async function (req, res) {
             //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
             avatar = req.files.avatar;
             
-            //Use the mv() method to place the file in upload directory (i.e. "uploads")
-            avatar.mv('./community_name/' + avatar.name);
+			//Use the mv() method to place the file in upload directory (i.e. "uploads")
+            archive = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+            avatar.mv("./community_name/"+archive);
+			
+
+            //avatar	.mv('./community_name/' + avatar.name);
          }
 
 		let data = []
@@ -74,7 +79,8 @@ controller.postFunc = async function (req, res) {
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
-        let profile_photo = "http://"+req.host+":8000/uploads/"+ avatar.name;
+        //let profile_photo = "http://"+req.host+":8000/uploads/"+ avatar.name;
+        let profile_photo = "http://"+req.host+":8000/uploads/"+ archive;
 
 		let result = await user.create(
 		{

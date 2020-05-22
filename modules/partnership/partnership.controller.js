@@ -55,11 +55,8 @@ controller.postFunc = async function (req, res) {
             });
 		}
 		else {
-            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
             avatar = req.files.logo;
             
-            //Use the mv() method to place the file in upload directory (i.e. "uploads")
-            //avatar.mv('./community_name/' + avatar.name);
             archive = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
             avatar.mv("./community_name/"+archive);
         }
