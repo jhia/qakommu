@@ -12,6 +12,7 @@ const controller = new Base('event');
 *this.model -> Current module model
 */
 
+/* ---------- basic functions ---------- */
 
 controller.getFunc = async function (req, res) {
 
@@ -40,65 +41,15 @@ controller.getFunc = async function (req, res) {
 
 }
 
-controller.getEventBySpeakers = async function (req, res) {
-    const { id_event } = req.params;
-    const { limit, offset, order } = req.body;
-
-	try {
-		const data  = await this.db.speaker.findAll({
-            limit,
-			offset,
-			attributes: ['id'],
-			order,
-			where: { id_event },
-			include: [{
-				attributes:['name', 'last_name', 'profile_photo'],
-				model: this.db.user,
-				as: 'user'
-            },
-            {
-                attributes: ['name', 'description'],
-				model: this.db.session,
-				as: 'session',
-            },
-			{
-				attributes: ['name', 'blocker'],
-				model: this.db.state,
-				as: 'state',
-				where: {
-					active : true
-				}
-            }
-            
-		]
-        });
-
-		this.response({
-			res,
-			payload: [data]
-		});
-
-	} catch (error) {
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong',
-		});
-
-	}
-	
-}
-
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_community,type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
+    const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
-            id_community, 
+            id_community,
             type,
             online,
             no_cfp,
@@ -110,7 +61,7 @@ controller.postFunc = async function (req, res) {
             active,
             //id_call_for_paper, 
             prom_rate,
-            id_repository, 
+            id_repository,
             id_state
         });
         if (newdate) {
@@ -141,7 +92,7 @@ controller.putFunc = async function (req, res) {
                 {
                     name,
                     description,
-                    id_community, 
+                    id_community,
                     type,
                     online,
                     no_cfp,
@@ -153,7 +104,7 @@ controller.putFunc = async function (req, res) {
                     active,
                     //id_call_for_paper, 
                     prom_rate,
-                    id_repository, 
+                    id_repository,
                     id_state
                 },
                 return_data
@@ -207,6 +158,103 @@ controller.deleteFunc = async function (req, res) {
             statusCode: 500,
             message: 'something went wrong'
         });
+    }
+}
+
+
+/* ---------- special functions ---------- */
+
+
+controller.getSpeakersByEvent = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+
+    try {
+        const data = await this.db.speaker.findAll({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: { id_event },
+            include: [{
+                attributes: ['name', 'last_name', 'profile_photo'],
+                model: this.db.user,
+                as: 'user'
+            },
+            {
+                attributes: ['name', 'description'],
+                model: this.db.session,
+                as: 'session',
+            },
+            {
+                attributes: ['name', 'blocker'],
+                model: this.db.state,
+                as: 'state',
+                where: {
+                    active: true
+                }
+            }
+
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+controller.getTicketsByEvent = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.ticket.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'description', 'base_price', 'quantity_total', 'quantity_current'],
+            order,
+            where: { id_event },
+            include: [
+                {
+                    attributes: ['name', 'blocker'],
+                    model: this.db.state,
+                    as: 'state',
+                    where: {
+                        active: true
+                    }
+                },
+                {
+                    attributes: ['name'],
+                    model: this.db.coupon,
+                    as: 'coupon'
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
     }
 }
 

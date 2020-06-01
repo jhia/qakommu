@@ -20,7 +20,12 @@ router.get('/:id',function(req, res){
 
 router.get('/:id_event/speaker/all/',function(req, res){
   //HTTP get route
-  eventController.getEventBySpeakers(req,res);
+  eventController.getSpeakersByEvent(req,res);
+});
+
+router.get('/:id_event/ticket/all/',function(req, res){
+  //HTTP get route
+  eventController.getTicketsByEvent(req,res);
 });
 
 
