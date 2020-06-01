@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
+const { makeid } = require('../../helpers/utilities')
 
 controller.getFunc = async function (req, res) {
 	const { id } = req.params;
@@ -53,6 +54,7 @@ controller.postFunc = async function (req, res) {
 				name,
 				last_name,
 				username,
+				profile_photo,
 				address,
 				email,
 				password,
@@ -88,7 +90,12 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body;
+	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community, return_data } = req.body;
+
+	const avatar = req.files.avatar;
+	const profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+	avatar.mv("./community_name/"+profile_photo);
+
 
     await this.update(
         {
@@ -97,6 +104,7 @@ controller.putFunc = async function (req, res) {
 				name,
 				last_name,
 				username,
+				profile_photo,
 				address,
 				email,
 				password,
@@ -104,8 +112,6 @@ controller.putFunc = async function (req, res) {
 				id_repository,
 				id_rol,
 				id_community
-
-
 			},
             return_data
         })
