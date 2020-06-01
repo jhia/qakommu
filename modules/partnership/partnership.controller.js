@@ -61,7 +61,6 @@ controller.postFunc = async function (req, res) {
             avatar.mv("./community_name/"+archive);
         }
 
-
         let logo = "http://"+req.host+":8000/uploads/"+ archive;
 
         let newdate = await this.insert({
@@ -95,9 +94,29 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, logo, host, url, active, return_data } = req.body;
+    const { name, description, registry_number, host, url, active, return_data } = req.body;
 
     try {
+        let archive;
+        let avatar;
+    
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+		}
+		else {
+            avatar = req.files.logo;
+            
+            archive = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+            avatar.mv("./community_name/"+archive);
+        }
+
+        let logo = "http://"+req.host+":8000/uploads/"+ archive;
+
+
+
         let result = await this.update(
             {
                 id,
