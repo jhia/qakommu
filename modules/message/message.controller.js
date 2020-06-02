@@ -41,9 +41,6 @@ const ver = async function (req,channel) {
     let data = await channel.findOne({
         where: { id_community }
     });
-    console.log('------------------------------')
-    console.log(decoded)
-    console.log('------------------------------')
 
     return data.id;
 }
