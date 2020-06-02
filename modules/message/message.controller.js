@@ -6,7 +6,6 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('message');
 const jwt = require('jsonwebtoken');
 
-
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
@@ -19,39 +18,101 @@ controller.getFunc = async function (req, res) {
             attributes,
             order
         });
-
-        return this.response({
+        this.response({
             res,
             payload: [data]
         });
     } catch (error) {
-        return this.response({
+        this.response({
             res,
             success: false,
             statusCode: 500,
             message: 'something went wrong',
         });
     }
+
+}
+
+const ver = async function (req,channel) {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, 'secret');
+    let id_community = decoded.community_id
+
+    let data = await channel.findOne({
+        where: { id_community }
+    });
+    console.log('------------------------------')
+    console.log(decoded)
+    console.log('------------------------------')
+
+    return data.id;
+}
+
+
+controller.getMessageByChannel = async function (req, res) {
+    
+    const { id } = req.params;
+    const { limit, offset, order, attributes } = req.body;
+    const { message, user_channel, channel } = this.db
+
+    const id_channel = await ver(req, channel); 
+
+	try {
+
+		const data  = await message.findAll({
+            id,
+            limit,
+			offset,
+            order,
+            attributes,
+			include: [
+                {
+                    where: { id_channel },
+                    attributes,
+                    model: user_channel,
+                    as: 'messages',
+                 },
+            ]
+        });
+
+		this.response({
+			res,
+			payload: {
+                data,
+            }
+		});
+
+	} catch (error) {
+		this.response({
+			res,
+			success: false,
+			statusCode: 500,
+			message: 'something went wrong',
+		});
+
+	}   
 }
 
 controller.postFunc = async function (req, res) {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
-    const { user, user_channel } = this.db
+    const { user, user_channel, channel } = this.db
     const email = decoded.email
+    const channel_id = await ver(req, channel); 
  
     let query = await user.findOne({
         where: { email }
     });
  
-    const { message, id_channel, id_message } = req.body;
+    const { message, reference } = req.body;
     try {
         let newdate = await this.insert({
             message,
+            reference
         });
         
         let newdate2 = await user_channel.create({
-            id_channel: 1,
+            id_channel: channel_id,
             id_message: newdate['id'],
             id_user: query['id']
         });
@@ -59,7 +120,13 @@ controller.postFunc = async function (req, res) {
             return this.response({
                 res,
                 statusCode: 201,
-                payload: newdate
+                payload: {
+                    id: newdate.id,
+                    id_channel: newdate2.id_channel,
+                    id_user: newdate2.id_user,
+                    message: newdate.message,
+                    reference: newdate.reference
+                }
             });
         }
     } catch (err) {

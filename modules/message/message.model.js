@@ -7,10 +7,19 @@ module.exports = (sequelize, DataTypes) => {
 
     message.associate = function(models){
 
+        
         message.hasOne(models.user_channel, {
             foreignKey: 'id_message',
-            as: 'user_channels'
+            as: 'messages'
           });
+
+
+
+
+
+
+
+
     }
 
     return message;

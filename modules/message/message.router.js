@@ -10,7 +10,11 @@ router.use((req, res, next) => {
 
 router.get('/:id?',function(req, res){
   //HTTP get route
-  messageController.getFunc(req,res);
+  if (req.params) {
+    messageController.getMessageByChannel(req,res);
+  }else{
+    messageController.getFunc(req,res);    
+  }
 });
 
 router.post('/',(req, res) => {
