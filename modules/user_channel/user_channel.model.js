@@ -17,6 +17,15 @@ module.exports = (sequelize, DataTypes) => {
             as: 'users'
         });
 
+        user_channel.belongsTo(models.message,{
+            foreignKey: 'id_message',
+            as: 'messages'
+        });
+
+
+
+
+        
 
 
     }
