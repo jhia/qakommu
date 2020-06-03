@@ -28,15 +28,11 @@ controller.postFunc = async function (req, res) {
 
 		} 
 
-
-
 		let data = []
 		let decoded
 		if (invitation_code) {
 			decoded = jwt.verify(invitation_code, 'secret');
 			codeCommunity = comunity_code;
-
-
 
 			let query_invitation_code = await user_type.findOne({
 				where: { invitation_code: decoded.data.invitation_code }
@@ -45,8 +41,6 @@ controller.postFunc = async function (req, res) {
 			if (query_invitation_code) {
 				throw new Error("Invitation code used!")
 			}
-	
-
 		}
 
 		if (!nameCommunity && !codeCommunity) throw new Error("needs community")
@@ -83,7 +77,6 @@ controller.postFunc = async function (req, res) {
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
-        //let profile_photo = archive;
 
 		let result = await user.create(
 		{
@@ -107,10 +100,8 @@ controller.postFunc = async function (req, res) {
 				invitation_code: invitation_code ? decoded.data.invitation_code : null
 			});
 
-
 		if(result)
 		{
-
 			return this.response({
 				res,
 				statusCode: 201,
@@ -122,7 +113,6 @@ controller.postFunc = async function (req, res) {
 		}
 
 	} catch (err) {
-		
 		return this.response({
 			res,
 			success: false,
