@@ -7,6 +7,7 @@ const {
   community,
   user,
   user_type,
+  channel,
   //generics  
   state,
   track,
@@ -41,16 +42,16 @@ let resources = [
   { "name": "community", "url_resource": "/api/community" },
   { "name": "role", "url_resource": "/api/role" },
   { "name": "resource", "url_resource": "/api/resource" },
+  { "name": "permission", "url_resource": "/api/permission" },
   { "name": "post", "url_resource": "/api/post" },
   { "name": "comment", "url_resource": "/api/comment" },
   { "name": "message", "url_resource": "/api/message" },
   { "name": "channel", "url_resource": "/api/channel" },
   { "name": "event", "url_resource": "/api/event" },
   { "name": "user", "url_resource": "/api/user" },
-  { "name": "partnership", "url_resource": "/api/partnership" }
-
-  
-
+  { "name": "partnership", "url_resource": "/api/partnership" },
+  { "name": "ticket", "url_resource": "/api/ticket" },  
+  { "name": "speaker", "url_resource": "/api/speaker" }  
 ];
 
 let roles = [
@@ -58,16 +59,20 @@ let roles = [
 ];
 
 let permissions = [
-  { "id_role": 1, "id_resource": 1, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 2, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 3, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 4, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true },
-  { "id_role": 1, "id_resource": 10, "_create": true, "_read": true, "_update": true, "_delete": true }
+  // admin
+  { "id_role": 1, "id_resource": 1, "_create": true, "_read": true, "_update": true, "_delete": true }, // community
+  { "id_role": 1, "id_resource": 2, "_create": true, "_read": true, "_update": true, "_delete": true }, // role
+  { "id_role": 1, "id_resource": 3, "_create": true, "_read": true, "_update": true, "_delete": true }, // resource
+  { "id_role": 1, "id_resource": 4, "_create": true, "_read": true, "_update": true, "_delete": true }, // permission
+  { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true }, // post
+  { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true }, // comment
+  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true }, // message
+  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true }, // channel
+  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }, // event
+  { "id_role": 1, "id_resource": 10, "_create": true, "_read": true, "_update": true, "_delete": true }, // user
+  { "id_role": 1, "id_resource": 11, "_create": true, "_read": true, "_update": true, "_delete": true }, // partnership  
+  { "id_role": 1, "id_resource": 12, "_create": true, "_read": true, "_update": true, "_delete": true }, // ticket  
+  { "id_role": 1, "id_resource": 13, "_create": true, "_read": true, "_update": true, "_delete": true }, // speaker  
 ];
 
 let communities = [
@@ -86,6 +91,10 @@ let user_types = [
   { "id_user": 2, "id_role": 1, "id_community": 2 }
 ]
 
+let channels = [
+  { "name": "python", "description": "descrition python", "id_community": 1 },  
+  { "name": "node", "description": "descrition node", "id_community": 2 }  
+]
 
 
 //seeders carlos
@@ -352,6 +361,7 @@ let loadtables = async () => {
   await community.bulkCreate(communities, { returning: true });
   await user.bulkCreate(users, { returning: true });
   await user_type.bulkCreate(user_types, { returning: true });
+  await channel.bulkCreate(channels, { returning: true });
 
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
