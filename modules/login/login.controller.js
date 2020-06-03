@@ -59,9 +59,11 @@ controller.postFunc = async function(req,res){
     }
 
     const community_id = result.user_types[0].id_community;
+    const user_id = result.user_types[0].id_user;
     let User = {
-        email,
-        community_id
+        email: email,
+        user_id: user_id,
+        community_id: community_id
     };
 
     User.token = jwt.sign(
