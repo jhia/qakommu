@@ -7,26 +7,28 @@ const { makeid } = require('../../helpers/utilities')
 
 controller.postFunc = async function (req, res) {
 
-	const {user_type,user,community} = this.db
+	const {user_type,user,community,channel} = this.db
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
 	let avatar;
-	let archive;
+	let profile_photo;
  
 	const jwt = require('jsonwebtoken');
+	
 	try {
-		//uploads images
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-        } else {
-            avatar = req.files.avatar;
-            archive = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-            avatar.mv("./community_name/"+archive);
-         }
+
+		if (req.files) {
+
+			avatar = req.files.avatar;
+
+			profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+			avatar.mv("./community_name/"+profile_photo);				
+
+
+		} 
+
+
 
 		let data = []
 		let decoded
@@ -68,12 +70,20 @@ controller.postFunc = async function (req, res) {
 				name: nameCommunity,
 				code: makeid(6)
 			}); 			
+
+			await channel.create({
+				name: nameCommunity,
+				description: nameCommunity,
+				id_community: invitation_code ? decoded.data.community_id : data['id']
+			});
+	
+
 		}		
 		
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
-        let profile_photo = archive;
+        //let profile_photo = archive;
 
 		let result = await user.create(
 		{
@@ -96,6 +106,7 @@ controller.postFunc = async function (req, res) {
 				id_community: invitation_code ? decoded.data.community_id : data['id'],
 				invitation_code: invitation_code ? decoded.data.invitation_code : null
 			});
+
 
 		if(result)
 		{
