@@ -5,6 +5,8 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
 const { makeid } = require('../../helpers/utilities')
 
+
+
 controller.getFunc = async function (req, res) {
 	const { id } = req.params;
 	const { limit, offset, order, attributes } = req.body;
@@ -23,7 +25,7 @@ controller.getFunc = async function (req, res) {
 				name: data.name,
 				last_name: data.last_name,
 				username: data.username,
-				profile_photo: "http://"+req.host+":8000/uploads/"+data.profile_photo,
+				profile_photo: data.profile_photo ? "http://"+req.host+":8000/uploads/"+data.profile_photo : null,
 				address: data.address,
 				email: data.email,
 				password: data.password,
