@@ -6,6 +6,8 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('partnership');
 const { makeid } = require('../../helpers/utilities')
 
+const fs = require('fs');
+
 /*
 *Extend or overwrite the base functions
 *All the controllers already have implicit the models by:
@@ -44,30 +46,23 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
     const { name, description, registry_number, host, url, active } = req.body;
-    let archive;
-    let avatar;
+	let logo_photo;
     try {
 
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-		}
-		else {
-            avatar = req.files.logo;
-            
-            archive = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-            avatar.mv("./community_name/"+archive);
-        }
 
-        let logo = "http://"+req.host+":8000/uploads/"+ archive;
+        if (req.files) {
+
+			const {logo} = req.files;
+			logo_photo = "profile_photo"+"_"+makeid(6)+"."+logo.name.split(".")[logo.name.split(".").length-1]
+			logo.mv("./community_name/"+logo_photo);
+    
+        } 
 
         let newdate = await this.insert({
             name,
             description,
             registry_number,
-            logo,
+            logo: logo_photo,
             host,
             url,
             active
@@ -96,23 +91,21 @@ controller.putFunc = async function (req, res) {
     const { name, description, registry_number, host, url, active, return_data } = req.body;
 
     try {
-        let archive;
-        let avatar;
+        const avatar = req.files.logo;
     
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-		}
-		else {
-            avatar = req.files.logo;
-            
-            archive = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-            avatar.mv("./community_name/"+archive);
+        let old_partnership = await this.db.partnership.findOne({
+            where: { id }
+        });
+        if (old_partnership.logo) {
+            console.log(old_partnership.logo+'paso----------------------------------------------')
+            fs.unlinkSync("./community_name/"+old_partnership.logo);
         }
-
-        let logo = "http://"+req.host+":8000/uploads/"+ archive;
+    
+    
+        const logo = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+        avatar.mv("./community_name/"+logo);
+    
+        //let logo =  logo_photo;
 
 
 
