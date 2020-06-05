@@ -11,21 +11,16 @@ controller.postFunc = async function (req, res) {
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
-	let avatar;
 	let profile_photo;
  
 	const jwt = require('jsonwebtoken');
-	
+
 	try {
 
 		if (req.files) {
-
-			avatar = req.files.avatar;
-
+			const {avatar} = req.files;
 			profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-			avatar.mv("./community_name/"+profile_photo);				
-
-
+			avatar.mv("./community_name/"+profile_photo);
 		} 
 
 		let data = []

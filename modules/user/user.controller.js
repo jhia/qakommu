@@ -5,7 +5,7 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
 const { makeid } = require('../../helpers/utilities')
 
-
+const fs = require('fs');
 
 controller.getFunc = async function (req, res) {
 	const { id } = req.params;
@@ -95,8 +95,20 @@ controller.putFunc = async function (req, res) {
 	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community, return_data } = req.body;
 
 	const avatar = req.files.avatar;
+
+	let old_profile_photo = await this.db.user.findOne({
+		where: { id }
+	});
+	if (old_profile_photo.profile_photo) {
+		fs.unlinkSync("./community_name/"+old_profile_photo.profile_photo);
+	}
+
+
 	const profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
 	avatar.mv("./community_name/"+profile_photo);
+
+
+
 
 
     await this.update(
