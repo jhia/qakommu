@@ -25,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         host:{
             type: DataTypes.TEXT
         },
-        url: {
-            type: DataTypes.TEXT
-        },
         active: {
             allowNull: false,
             type: DataTypes.BOOLEAN

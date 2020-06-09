@@ -30,7 +30,17 @@ controller.getFunc = async function (req, res) {
         });
         this.response({
             res,
-            payload: [data]
+            payload: {
+
+                name: data.name,
+                description: data.description,
+                registry_number: data.registry_number,
+                logo: "http://"+req.host+":8000/uploads/"+data.logo,
+                host: data.host,
+                active: data.active
+
+
+            }
         });
     } catch (error) {
         this.response({
@@ -45,7 +55,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, registry_number, host, url, active } = req.body;
+    const { name, description, registry_number, host, active } = req.body;
 	let logo_photo;
     try {
 
@@ -53,8 +63,8 @@ controller.postFunc = async function (req, res) {
         if (req.files) {
 
 			const {logo} = req.files;
-			logo_photo = "profile_photo"+"_"+makeid(6)+"."+logo.name.split(".")[logo.name.split(".").length-1]
-			logo.mv("./community_name/"+logo_photo);
+			logo_photo = controller.model.name+"_"+makeid(6)+"."+logo.name.split(".")[logo.name.split(".").length-1]
+			logo.mv("./upload/"+logo_photo);
     
         } 
 
@@ -62,16 +72,25 @@ controller.postFunc = async function (req, res) {
             name,
             description,
             registry_number,
-            logo: logo_photo,
+            logo:logo_photo,
             host,
-            url,
             active
         });
         if (newdate) {
             return this.response({
                 res,
                 statusCode: 201,
-                payload: [newdate]
+                payload: {
+
+                    name,
+                    description,
+                    registry_number,
+                    logo: "http://"+req.host+":8000/uploads/"+logo_photo,
+                    host,
+                    active
+        
+
+                }
             });
         }
     } catch (error) {
@@ -88,7 +107,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, host, url, active, return_data } = req.body;
+    const { name, description, registry_number, host, active, return_data } = req.body;
 
     try {
         const avatar = req.files.logo;
@@ -97,15 +116,13 @@ controller.putFunc = async function (req, res) {
             where: { id }
         });
         if (old_partnership.logo) {
-            console.log(old_partnership.logo+'paso----------------------------------------------')
-            fs.unlinkSync("./community_name/"+old_partnership.logo);
+            fs.unlinkSync("./upload/"+old_partnership.logo);
         }
     
     
-        const logo = "partnership"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-        avatar.mv("./community_name/"+logo);
+        const logo = controller.model.name+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+        avatar.mv("./upload/"+logo);
     
-        //let logo =  logo_photo;
 
 
 
@@ -118,7 +135,6 @@ controller.putFunc = async function (req, res) {
                     registry_number,
                     logo,
                     host,
-                    url,
                     active
                 },
                 return_data
@@ -127,7 +143,13 @@ controller.putFunc = async function (req, res) {
             return this.response({
                 res,
                 statusCode: 200,
-                payload: return_data ? result : []
+                payload: return_data ? { 
+                    description,
+                    registry_number,
+                    logo: "http://"+req.host+":8000/uploads/"+result.logo,
+                    host,
+                    active
+                } : []
             });
         } else {
             this.response({
@@ -175,6 +197,5 @@ controller.deleteFunc = async function (req, res) {
         });
     }
 }
-
 
 module.exports = controller;

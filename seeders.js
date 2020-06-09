@@ -55,7 +55,9 @@ let resources = [
 ];
 
 let roles = [
-  { "name": "admin", "description": "admin all modules" }
+  { "name": "admin", "special": "all-access" },
+  { "name": "community user", "special": "community-user" },
+  { "name": "no access", "special": "no-access" }
 ];
 
 let permissions = [
@@ -265,7 +267,7 @@ let partnerships = [
     "name": "google company",
     "description": "test descrioption facebook",
     "registry_number": "c26174178",
-    "logo": "http://localhost:8000/uploads/partnership_IJQJQZ.png",
+    "logo": "partnership_BSGCMX.png",
     "host": "35.122.343.2:871",
     "url": "google.com",
     "active": true
