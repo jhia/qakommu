@@ -30,17 +30,7 @@ controller.getFunc = async function (req, res) {
         });
         this.response({
             res,
-            payload: {
-
-                name: data.name,
-                description: data.description,
-                registry_number: data.registry_number,
-                logo: "http://"+req.host+":8000/uploads/"+data.logo,
-                host: data.host,
-                active: data.active
-
-
-            }
+            payload: {data}
         });
     } catch (error) {
         this.response({
@@ -72,7 +62,7 @@ controller.postFunc = async function (req, res) {
             name,
             description,
             registry_number,
-            logo:logo_photo,
+            logo:"/uploads/"+logo_photo,
             host,
             active
         });
@@ -80,17 +70,7 @@ controller.postFunc = async function (req, res) {
             return this.response({
                 res,
                 statusCode: 201,
-                payload: {
-
-                    name,
-                    description,
-                    registry_number,
-                    logo: "http://"+req.host+":8000/uploads/"+logo_photo,
-                    host,
-                    active
-        
-
-                }
+                payload: {newdate}
             });
         }
     } catch (error) {
@@ -116,7 +96,8 @@ controller.putFunc = async function (req, res) {
             where: { id }
         });
         if (old_partnership.logo) {
-            fs.unlinkSync("./upload/"+old_partnership.logo);
+            //console.log(old_partnership.logo.split("/")[2])
+            fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);
         }
     
     
@@ -133,7 +114,7 @@ controller.putFunc = async function (req, res) {
                     name,
                     description,
                     registry_number,
-                    logo,
+                    logo:"/uploads/"+logo,
                     host,
                     active
                 },
@@ -146,7 +127,7 @@ controller.putFunc = async function (req, res) {
                 payload: return_data ? { 
                     description,
                     registry_number,
-                    logo: "http://"+req.host+":8000/uploads/"+result.logo,
+                    logo,
                     host,
                     active
                 } : []
