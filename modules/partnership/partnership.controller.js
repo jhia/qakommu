@@ -87,22 +87,39 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, host, active, return_data } = req.body;
+    const { name, description, registry_number, host, active, update_logo, remove_logo, return_data } = req.body;
 
     try {
         const avatar = req.files.logo;
-    
-        let old_partnership = await this.db.partnership.findOne({
-            where: { id }
-        });
-        if (old_partnership.logo) {
-            //console.log(old_partnership.logo.split("/")[2])
-            fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);
+
+        
+        let logo
+
+
+        if(update_logo=="true"){
+            console.log('paso1')    
+            let old_partnership = await this.db.partnership.findOne({
+                where: { id }
+            });
+            if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
+
+            logo = "/uploads/"+controller.model.name+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
+            avatar.mv("./upload/"+logo.split("/")[2]);
+        }
+
+        if(remove_logo=="true"){
+            logo = null
+            let old_partnership = await this.db.partnership.findOne({
+                where: { id }
+            });
+            console.log('-----------------------------')
+            console.log(old_partnership.logo)
+            console.log('-----------------------------')
+            if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
         }
     
     
-        const logo = controller.model.name+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-        avatar.mv("./upload/"+logo);
+    
     
 
 
@@ -114,7 +131,7 @@ controller.putFunc = async function (req, res) {
                     name,
                     description,
                     registry_number,
-                    logo:"/uploads/"+logo,
+                    logo,
                     host,
                     active
                 },
