@@ -17,7 +17,6 @@ const fs = require('fs');
 
 
 controller.getFunc = async function (req, res) {
-
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
     try {
@@ -47,9 +46,8 @@ controller.postFunc = async function (req, res) {
 
     const { name, description, registry_number, host, active } = req.body;
 	let logo_photo;
-    try {
-
-
+    try {    
+        const host = req.headers.host
         if (req.files) {
 
 			const {logo} = req.files;
@@ -83,26 +81,19 @@ controller.postFunc = async function (req, res) {
     }
 }
 
-
-
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-    const { name, description, registry_number, host, active, update_logo, remove_logo, return_data } = req.body;
 
+    const { id } = req.params;
+    const { name, description, registry_number, active, update_logo, remove_logo, return_data } = req.body;
     try {
         const avatar = req.files.logo;
-
-        
         let logo
-
-
         if(update_logo=="true"){
             console.log('paso1')    
             let old_partnership = await this.db.partnership.findOne({
                 where: { id }
             });
             if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
-
             logo = "/uploads/"+controller.model.name+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
             avatar.mv("./upload/"+logo.split("/")[2]);
         }
@@ -112,17 +103,8 @@ controller.putFunc = async function (req, res) {
             let old_partnership = await this.db.partnership.findOne({
                 where: { id }
             });
-            console.log('-----------------------------')
-            console.log(old_partnership.logo)
-            console.log('-----------------------------')
             if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
         }
-    
-    
-    
-    
-
-
 
         let result = await this.update(
             {
@@ -132,7 +114,6 @@ controller.putFunc = async function (req, res) {
                     description,
                     registry_number,
                     logo,
-                    host,
                     active
                 },
                 return_data
@@ -145,7 +126,6 @@ controller.putFunc = async function (req, res) {
                     description,
                     registry_number,
                     logo,
-                    host,
                     active
                 } : []
             });
