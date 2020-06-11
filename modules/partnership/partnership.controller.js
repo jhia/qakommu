@@ -96,16 +96,21 @@ controller.putFunc = async function (req, res) {
             if (old_partnership.logo) fs.unlinkSync("./upload/" + old_partnership.logo.split("/")[2]);
             logo = "/uploads/" + controller.model.name + "_" + makeid(6) + "." + avatar.name.split(".")[avatar.name.split(".").length - 1]
             avatar.mv("./upload/" + logo.split("/")[2]);
-        }
-
-        if (remove_logo == "true") {
-            logo = null
-
-            let old_partnership = await this.db.partnership.findOne({
-                where: { id }
-            });
-            if (old_partnership.logo) fs.unlinkSync("./upload/" + old_partnership.logo.split("/")[2]);
-
+        }else {
+            if (remove_logo == "true") {
+                logo = null
+    
+                let old_partnership = await this.db.partnership.findOne({
+                    where: { id }
+                });
+                if (old_partnership.logo) fs.unlinkSync("./upload/" + old_partnership.logo.split("/")[2]);
+    
+            }else{
+                let old_partnership = await this.db.partnership.findOne({
+                    where: { id }
+                });
+                logo = old_partnership.logo;
+            }
         }
 
         let result = await this.update(
@@ -130,6 +135,7 @@ controller.putFunc = async function (req, res) {
                     description,
                     registry_number,
                     logo,
+                    web,
                     active
                 } : []
             });
