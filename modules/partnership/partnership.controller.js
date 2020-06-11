@@ -29,7 +29,7 @@ controller.getFunc = async function (req, res) {
         });
         this.response({
             res,
-            payload: {data}
+            payload: { data }
         });
     } catch (error) {
         this.response({
@@ -43,32 +43,32 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-
-    const { name, description, registry_number, host, active } = req.body;
-	let logo_photo;
-    try {    
+    const { name, description, registry_number, web, active } = req.body;
+    let logo_photo;
+    try {
         const host = req.headers.host
-        if (req.files) {
 
-			const {logo} = req.files;
-			logo_photo = controller.model.name+"_"+makeid(6)+"."+logo.name.split(".")[logo.name.split(".").length-1]
-			logo.mv("./upload/"+logo_photo);
-    
-        } 
+        if (req.files) {
+            const { logo } = req.files;
+            logo_photo = controller.model.name + "_" + makeid(6) + "." + logo.name.split(".")[logo.name.split(".").length - 1]
+            logo.mv("./upload/" + logo_photo);
+
+        }
 
         let newdate = await this.insert({
             name,
             description,
             registry_number,
-            logo:"/uploads/"+logo_photo,
+            logo: logo_photo ? "/uploads/" + logo_photo : null,
             host,
+            web,
             active
         });
         if (newdate) {
             return this.response({
                 res,
                 statusCode: 201,
-                payload: {newdate}
+                payload: { newdate }
             });
         }
     } catch (error) {
@@ -84,26 +84,28 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { name, description, registry_number, active, update_logo, remove_logo, return_data } = req.body;
+    const { name, description, registry_number, active, web, update_logo, remove_logo, return_data } = req.body;
     try {
         const avatar = req.files.logo;
-        let logo
-        if(update_logo=="true"){
-            console.log('paso1')    
+        let logo;
+        if (update_logo == "true") {
+            console.log('paso1')
             let old_partnership = await this.db.partnership.findOne({
                 where: { id }
             });
-            if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
-            logo = "/uploads/"+controller.model.name+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-            avatar.mv("./upload/"+logo.split("/")[2]);
+            if (old_partnership.logo) fs.unlinkSync("./upload/" + old_partnership.logo.split("/")[2]);
+            logo = "/uploads/" + controller.model.name + "_" + makeid(6) + "." + avatar.name.split(".")[avatar.name.split(".").length - 1]
+            avatar.mv("./upload/" + logo.split("/")[2]);
         }
 
-        if(remove_logo=="true"){
+        if (remove_logo == "true") {
             logo = null
+
             let old_partnership = await this.db.partnership.findOne({
                 where: { id }
             });
-            if (old_partnership.logo) fs.unlinkSync("./upload/"+old_partnership.logo.split("/")[2]);    
+            if (old_partnership.logo) fs.unlinkSync("./upload/" + old_partnership.logo.split("/")[2]);
+
         }
 
         let result = await this.update(
@@ -114,6 +116,7 @@ controller.putFunc = async function (req, res) {
                     description,
                     registry_number,
                     logo,
+                    web,
                     active
                 },
                 return_data
@@ -122,7 +125,8 @@ controller.putFunc = async function (req, res) {
             return this.response({
                 res,
                 statusCode: 200,
-                payload: return_data ? { 
+                payload: return_data ? {
+                    name,
                     description,
                     registry_number,
                     logo,

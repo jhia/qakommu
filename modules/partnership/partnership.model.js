@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         host:{
+            type: DataTypes.TEXT,
+        },
+        web:{
             type: DataTypes.TEXT
         },
         active: {
