@@ -19,10 +19,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.FLOAT
         },
-        currency:{
-            allowNull: false,
-            type: DataTypes.TEXT
-        },
         active: {
             allowNull: false,
             type: DataTypes.BOOLEAN

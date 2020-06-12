@@ -292,7 +292,6 @@ let type_sponsors = [
     "name": "general",
     "description": "standard fee for sponsors",
     "contribution_value": 0.00005685,
-    "currency": "btc",
     "active": true
   }
 ]
