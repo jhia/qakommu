@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER
         },
         id_user: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: true,
         },
         name: {
             type: DataTypes.TEXT
@@ -43,6 +44,11 @@ module.exports = (sequelize, DataTypes) => {
         attendee.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        attendee.belongsTo(models.user, {
+            foreignKey: 'id_user',
+            as: 'user'
         });
     }
 
