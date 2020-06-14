@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const db = require('../models');
-
+const fs = require('fs');
 
 function makeid(length) {
     var result           = '';
@@ -11,6 +11,79 @@ function makeid(length) {
     }
     return result;
 }
+
+
+// UPLOAD IMAGE
+
+const parse_image = (x,y,identify) => ({
+    image: x,
+    archive: x.name,
+    name: y,
+    identify: identify
+})
+
+const create_image_name = x => 
+({ 
+    "profile_photo": x.name+"_"+x.identify+"."+x.archive.split(".")[x.archive.split(".").length-1],
+    "image": x.image
+})
+const move_image = ({profile_photo,image}) =>  image.mv("./upload/"+profile_photo)
+
+const upload_images = (x,y,identify) => {
+    move_image(
+        create_image_name(parse_image(x,y,identify)) 
+    )
+}
+
+let send_image_name = (x,y,identify) => create_image_name(parse_image(x,y,identify)) 
+
+
+const verify_and_upload_image_post = (x,y) => {
+    let send = null
+    let identify = makeid(6);
+    if(x) {
+        upload_images(x,y,identify);
+        send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
+    }
+    return send
+}
+
+const verify_and_upload_image_put = (x,y,z,remove_image) => {
+	let send = null;
+    let identify = makeid(6);
+
+    if (z && remove_image == '1') {
+        console.log('paso 1')
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
+        send = null
+    }
+
+	if (z && remove_image == '0') {
+        console.log('paso 0')
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
+	}	
+	if(x && remove_image == '0') {
+        console.log('paso 0')
+		upload_images(x,y,identify);
+		send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
+	}
+	return send
+}
+
+
+const delete_image = (x) => {     
+    fs.unlinkSync("./upload/"+x);
+}
+
+
+
+
+
+// ----------------------------------------------------------------------------------------
+
+
+
+
 
 
 function findRelation(relations, relation_model) {
@@ -96,5 +169,8 @@ module.exports = {
     cleanAttributes,
     setGlobalSQLMode,
     response,
-    makeid
+    makeid,
+    verify_and_upload_image_post,
+    verify_and_upload_image_put,
+    delete_image
 };

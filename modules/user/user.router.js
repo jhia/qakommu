@@ -28,7 +28,7 @@ router.put('/:id',(req, res) => {
   userController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   userController.deleteFunc(req,res);
 });

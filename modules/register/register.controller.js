@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('register');
-const { makeid } = require('../../helpers/utilities')
+const { makeid , verify_and_upload_image_post } = require('../../helpers/utilities')
 
 controller.postFunc = async function (req, res) {
 
@@ -11,17 +11,23 @@ controller.postFunc = async function (req, res) {
 	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
-	let profile_photo;
  
 	const jwt = require('jsonwebtoken');
 
+	
+	const avatar = req.files ? req.files.avatar: null;
+
 	try {
 
-		if (req.files) {
-			const {avatar} = req.files;
-			profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-			avatar.mv("./community_name/"+profile_photo);
-		} 
+		const profile_photo = verify_and_upload_image_post(avatar,"profile_photo");
+
+
+
+
+
+
+
+
 
 		let data = []
 		let decoded
@@ -72,6 +78,8 @@ controller.postFunc = async function (req, res) {
 		if (!data) {
 			throw new Error("the code does not belong to any community!");
 		}
+
+
 
 		let result = await user.create(
 		{

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
-const { makeid } = require('../../helpers/utilities')
+const { makeid, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
 
 const fs = require('fs');
 
@@ -25,7 +25,7 @@ controller.getFunc = async function (req, res) {
 				name: data.name,
 				last_name: data.last_name,
 				username: data.username,
-				profile_photo: data.profile_photo ? "http://"+req.host+":8000/uploads/"+data.profile_photo : null,
+				profile_photo: data.profile_photo ? req.headers.host+data.profile_photo : null,
 				address: data.address,
 				email: data.email,
 				password: data.password,
@@ -92,24 +92,17 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community, return_data } = req.body;
+	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
-	const avatar = req.files.avatar;
-
-	let old_profile_photo = await this.db.user.findOne({
+	let find_image = await this.db.user.findOne({
 		where: { id }
 	});
-	if (old_profile_photo.profile_photo) {
-		fs.unlinkSync("./community_name/"+old_profile_photo.profile_photo);
-	}
 
+	const fnd_image = find_image ? find_image.profile_photo : null
+	const avatar = req.files ? req.files.avatar : null;
+	const rm_image = remove_image ? remove_image : 0;
 
-	const profile_photo = "profile_photo"+"_"+makeid(6)+"."+avatar.name.split(".")[avatar.name.split(".").length-1]
-	avatar.mv("./community_name/"+profile_photo);
-
-
-
-
+	const profile_photo = verify_and_upload_image_put( avatar, "profile_photo", fnd_image, rm_image );
 
     await this.update(
         {
@@ -147,9 +140,26 @@ controller.putFunc = async function (req, res) {
 
 controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
+
+	let find_image = await this.db.user.findOne({
+		where: { id }
+	});
+	 
+	 console.log(find_image.profile_photo)
+
+
+	delete_image( find_image.profile_photo.split("/")[2] );
+	
 	try {
 		let deleterows = await this.delete({ id });
-		console.log(deleterows);
+
+
+
+
+
+
+
+
 		if (deleterows > 0) {
 			return this.response({
 				res,
