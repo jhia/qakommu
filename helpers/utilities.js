@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const db = require('../models');
-
+const fs = require('fs');
 
 function makeid(length) {
     var result           = '';
@@ -11,6 +11,122 @@ function makeid(length) {
     }
     return result;
 }
+
+
+// UPLOAD IMAGE POST
+
+//let identify = makeid(6);
+
+const parse_image = (x,y,identify) => ({
+    image: x,
+    archive: x.name,
+    name: y,
+    identify: identify
+})
+
+const create_image_name = x => 
+({ 
+    "profile_photo": x.name+"_"+x.identify+"."+x.archive.split(".")[x.archive.split(".").length-1],
+    "image": x.image
+})
+const move_image = ({profile_photo,image}) =>  image.mv("./upload/"+profile_photo)
+
+const upload_images = (x,y,identify) => {
+    move_image(
+        create_image_name(parse_image(x,y,identify)) 
+    )
+}
+
+let send_image_name = (x,y,identify) => create_image_name(parse_image(x,y,identify)) 
+
+
+const verify_and_upload_image_post = (x,y) => {
+    let send = null
+    let identify = makeid(6);
+    if(x) {
+        upload_images(x,y,identify);
+        send = send_image_name(x,y,identify).profile_photo;
+    }
+    return send
+}
+
+const verify_and_upload_image_put = (x,y,z,remove_image) => {
+	let send = null;
+    let identify = makeid(6);
+
+    if (remove_image) {
+        console.log('-------------------')
+        console.log('elimino mensaje')
+        console.log('-------------------')            
+    }
+
+
+	if (z) {
+		fs.unlinkSync("./upload/"+z);
+	}	
+	if(x) {
+		upload_images(x,y,identify);
+		send = send_image_name(x,y,identify).profile_photo;
+	}
+	return send
+}
+
+
+
+
+
+/* 
+let identify = makeid(6);
+
+const parse_image = (x,y) => ({
+    image: x,
+    archive: x.name,
+    name: y
+})
+
+const create_image_name = x => 
+({ 
+    "profile_photo": x.name+"_"+identify+"."+x.archive.split(".")[x.archive.split(".").length-1],
+    "image": x.image
+})
+const move_image = ({profile_photo,image}) =>  image.mv("./upload/"+profile_photo)
+
+const upload_images = (x,y) => {
+    move_image(
+        create_image_name(parse_image(x,y)) 
+    )
+}
+
+let send_image_name = (x,y) => create_image_name(parse_image(x,y)) 
+
+
+const verify_and_upload_image_post = (x,y) => {
+    let send = null
+    if(x) {
+        upload_images(x,y);
+        send = send_image_name(x,y).profile_photo;
+    }
+    return send
+}
+
+const verify_and_upload_image_put = (x,y,z) => {
+	let send = null;
+
+	if (z) {
+		fs.unlinkSync("./upload/"+z);
+	}	
+	if(x) {
+		upload_images(x,y);
+		send = send_image_name(x,y).profile_photo;
+	}
+	return send
+}
+ */
+// ----------------------------------------------------------------------------------------
+
+
+
+
 
 
 function findRelation(relations, relation_model) {
@@ -96,5 +212,7 @@ module.exports = {
     cleanAttributes,
     setGlobalSQLMode,
     response,
-    makeid
+    makeid,
+    verify_and_upload_image_post,
+    verify_and_upload_image_put
 };
