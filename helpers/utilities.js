@@ -13,9 +13,7 @@ function makeid(length) {
 }
 
 
-// UPLOAD IMAGE POST
-
-//let identify = makeid(6);
+// UPLOAD IMAGE
 
 const parse_image = (x,y,identify) => ({
     image: x,
@@ -54,17 +52,18 @@ const verify_and_upload_image_put = (x,y,z,remove_image) => {
 	let send = null;
     let identify = makeid(6);
 
-    if (remove_image) {
-        console.log('-------------------')
-        console.log('elimino mensaje')
-        console.log('-------------------')            
+    if (z && remove_image == '1') {
+        console.log('paso 1')
+		fs.unlinkSync("./upload/"+z);
+        send = null
     }
 
-
-	if (z) {
+	if (z && remove_image == '0') {
+        console.log('paso 0')
 		fs.unlinkSync("./upload/"+z);
 	}	
-	if(x) {
+	if(x && remove_image == '0') {
+        console.log('paso 0')
 		upload_images(x,y,identify);
 		send = send_image_name(x,y,identify).profile_photo;
 	}
