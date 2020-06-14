@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
-const { makeid, verify_and_upload_image_put } = require('../../helpers/utilities')
+const { makeid, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
 
 const fs = require('fs');
 
@@ -140,9 +140,26 @@ controller.putFunc = async function (req, res) {
 
 controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
+
+	let find_image = await this.db.user.findOne({
+		where: { id }
+	});
+	 
+	 console.log(find_image.profile_photo)
+
+
+	delete_image( find_image.profile_photo );
+	
 	try {
 		let deleterows = await this.delete({ id });
-		console.log(deleterows);
+
+
+
+
+
+
+
+
 		if (deleterows > 0) {
 			return this.response({
 				res,
