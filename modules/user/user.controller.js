@@ -25,7 +25,7 @@ controller.getFunc = async function (req, res) {
 				name: data.name,
 				last_name: data.last_name,
 				username: data.username,
-				profile_photo: data.profile_photo ? "http://"+req.host+":8000/uploads/"+data.profile_photo : null,
+				profile_photo: data.profile_photo ? req.headers.host+data.profile_photo : null,
 				address: data.address,
 				email: data.email,
 				password: data.password,
@@ -148,7 +148,7 @@ controller.deleteFunc = async function (req, res) {
 	 console.log(find_image.profile_photo)
 
 
-	delete_image( find_image.profile_photo );
+	delete_image( find_image.profile_photo.split("/")[2] );
 	
 	try {
 		let deleterows = await this.delete({ id });

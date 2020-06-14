@@ -43,7 +43,7 @@ const verify_and_upload_image_post = (x,y) => {
     let identify = makeid(6);
     if(x) {
         upload_images(x,y,identify);
-        send = send_image_name(x,y,identify).profile_photo;
+        send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
     }
     return send
 }
@@ -54,18 +54,18 @@ const verify_and_upload_image_put = (x,y,z,remove_image) => {
 
     if (z && remove_image == '1') {
         console.log('paso 1')
-		fs.unlinkSync("./upload/"+z);
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
         send = null
     }
 
 	if (z && remove_image == '0') {
         console.log('paso 0')
-		fs.unlinkSync("./upload/"+z);
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
 	}	
 	if(x && remove_image == '0') {
         console.log('paso 0')
 		upload_images(x,y,identify);
-		send = send_image_name(x,y,identify).profile_photo;
+		send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
 	}
 	return send
 }
