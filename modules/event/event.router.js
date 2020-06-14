@@ -28,6 +28,10 @@ router.get('/:id_event/ticket/all/',function(req, res){
   eventController.getTicketsByEvent(req,res);
 });
 
+router.get('/:id_event/attendee/all/',function(req, res){
+  //HTTP get route
+  eventController.getAttendeesByEvent(req,res);
+});
 
 router.post('/',(req, res) => {
   ///HTTP post route

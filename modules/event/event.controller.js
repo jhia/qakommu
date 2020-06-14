@@ -258,4 +258,46 @@ controller.getTicketsByEvent = async function (req, res) {
     }
 }
 
+controller.getAttendeesByEvent = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.attendee.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'dni', 'present', 'rate'],
+            order,
+            include: [
+                {
+                    attributes: ['name', 'blocker'],
+                    model: this.db.state,
+                    as: 'state',
+                    where: {
+                        active: true
+                    }
+                },
+                {
+                    attributes: ['code_ticket'],
+                    model: this.db.ticket_sale_detail,
+                    as: 'ticket_sale_detail'
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
 module.exports = controller;
