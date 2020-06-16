@@ -15,10 +15,10 @@ function makeid(length) {
 
 // UPLOAD IMAGE
 
-const parse_image = (x,y,identify) => ({
-    image: x,
-    archive: x.name,
-    name: y,
+const parse_image = (file,name_image,identify) => ({
+    image: file,
+    archive: file.name,
+    name: name_image,
     identify: identify
 })
 
@@ -29,55 +29,70 @@ const create_image_name = x =>
 })
 const move_image = ({profile_photo,image}) =>  image.mv("./upload/"+profile_photo)
 
-const upload_images = (x,y,identify) => {
+const upload_images = (file,name_image,identify) => {
     move_image(
-        create_image_name(parse_image(x,y,identify)) 
+        create_image_name(parse_image(file,name_image,identify)) 
     )
 }
 
-let send_image_name = (x,y,identify) => create_image_name(parse_image(x,y,identify)) 
+let send_image_name = (file,name_image,identify) => create_image_name(parse_image(file,name_image,identify)) 
 
 
-const verify_and_upload_image_post = (x,y) => {
+const verify_and_upload_image_post = (file,name_image) => {
     let send = null
     let identify = makeid(6);
-    if(x) {
-        upload_images(x,y,identify);
-        send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
+    if(file) {
+        upload_images(file,name_image,identify);
+        send = "/uploads/"+send_image_name(file,name_image,identify).profile_photo;
     }
     return send
 }
 
-const verify_and_upload_image_put = (x,y,z,remove_image) => {
+const verify_and_upload_image_put = (file,name_image,archive,remove_image) => {
 	let send = null;
     let identify = makeid(6);
 
-    if (z && remove_image == '1') {
-        console.log('paso 1')
-		fs.unlinkSync("./upload/"+z.split("/")[2]);
+    if (archive && remove_image == '1') {
+		fs.unlinkSync("./upload/"+archive.split("/")[2]);
         send = null
     }
 
-	if (z && remove_image == '0') {
-        console.log('paso 0')
-		fs.unlinkSync("./upload/"+z.split("/")[2]);
+	if (archive && remove_image == '0') {
+		fs.unlinkSync("./upload/"+archive.split("/")[2]);
 	}	
-	if(x && remove_image == '0') {
-        console.log('paso 0')
-		upload_images(x,y,identify);
-		send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
+	if(file && remove_image == '0') {
+		upload_images(file,name_image,identify);
+		send = "/uploads/"+send_image_name(file,name_image,identify).profile_photo;
 	}
 	return send
 }
 
 
+
+/* 
+const verify_and_upload_image_put = (x,y,z,remove_image) => {
+	let send = null;
+    let identify = makeid(6);
+
+    if (z && remove_image == '1') {
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
+        send = null
+    }
+
+	if (z && remove_image == '0') {
+		fs.unlinkSync("./upload/"+z.split("/")[2]);
+	}	
+	if(x && remove_image == '0') {
+		upload_images(x,y,identify);
+		send = "/uploads/"+send_image_name(x,y,identify).profile_photo;
+	}
+	return send
+}
+ */
+
 const delete_image = (x) => {     
     fs.unlinkSync("./upload/"+x);
 }
-
-
-
-
 
 // ----------------------------------------------------------------------------------------
 
