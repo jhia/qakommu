@@ -100,7 +100,7 @@ controller.putFunc = async function (req, res) {
 
 	const fnd_image = find_image ? find_image.profile_photo : null
 	const avatar = req.files ? req.files.avatar : null;
-	const rm_image = remove_image ? remove_image : 0;
+	const rm_image = remove_image ? remove_image : '0';
 
 	const profile_photo = verify_and_upload_image_put( avatar, "profile_photo", fnd_image, rm_image );
 
@@ -145,21 +145,10 @@ controller.deleteFunc = async function (req, res) {
 		where: { id }
 	});
 	 
-	 console.log(find_image.profile_photo)
-
-
 	delete_image( find_image.profile_photo.split("/")[2] );
 	
 	try {
 		let deleterows = await this.delete({ id });
-
-
-
-
-
-
-
-
 		if (deleterows > 0) {
 			return this.response({
 				res,

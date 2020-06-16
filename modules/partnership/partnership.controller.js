@@ -86,7 +86,7 @@ controller.putFunc = async function (req, res) {
     
         const fnd_image = find_image ? find_image.logo : null
         const avatar = req.files ? req.files.logo : null;
-        const rm_image = remove_image ? remove_image : 0;
+        const rm_image = remove_image ? remove_image : '0';
     
         const logo = verify_and_upload_image_put( avatar, "partnership", fnd_image, rm_image );
     
