@@ -267,6 +267,9 @@ controller.getAttendeesByEvent = async function (req, res) {
             offset,
             attributes: ['id', 'name', 'dni', 'present', 'rate'],
             order,
+            where:{
+                id_event
+            },
             include: [
                 {
                     attributes: ['name', 'blocker'],
