@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         id_state:{
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+        id_event:{
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -44,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         attendee.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+        
+        attendee.belongsTo(models.event, {
+            foreignKey: 'id_event',
+            as: 'event'
         });
 
         attendee.belongsTo(models.user, {

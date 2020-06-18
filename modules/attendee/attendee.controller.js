@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_user, name, dni, present, id_ticket_sale_detail, rate, id_state } = req.body;
+    const { id_user, name, dni, present, id_ticket_sale_detail, rate, id_state, id_event } = req.body;
     try {
         let newdate = await this.insert({
             id_user,
@@ -50,7 +50,8 @@ controller.postFunc = async function (req, res) {
             present,
             id_ticket_sale_detail,
             rate,
-            id_state
+            id_state,
+            id_event
         });
         if (newdate) {
             return this.response({
@@ -71,7 +72,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, name, dni, present, id_ticket_sale_detail, rate, id_state, return_data } = req.body;
+    const { id_user, name, dni, present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
     try {
         let result = await this.update(
             {
@@ -83,7 +84,8 @@ controller.putFunc = async function (req, res) {
                     present,
                     id_ticket_sale_detail,
                     rate,
-                    id_state
+                    id_state,
+                    id_event
                 },
                 return_data
             });
