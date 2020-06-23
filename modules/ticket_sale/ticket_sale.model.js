@@ -39,6 +39,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         dni_payer: {
             type: DataTypes.TEXT
+        },
+        name_ticket: {
+            allowNull: false,
+            type: DataTypes.TEXT,
+            
+        },
+        name_event: {
+            allowNull: false,
+            type: DataTypes.TEXT
         }
     });
 

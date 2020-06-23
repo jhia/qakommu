@@ -203,7 +203,9 @@ let ticket_sales = [
     "amount_paid": 75,
     "paying_name": "john smith",
     "paying_address": "Cartagena street, number 25, 66534",
-    "dni_payer": "E25331234"
+    "dni_payer": "E25331234",
+    "name_ticket": "any name ticket",
+    "name_event": "any name event"
   }
 ]
 
@@ -217,7 +219,7 @@ let ticket_sale_details = [
 
 let attendees = [
   {
-    "id_user": null,
+    "id_user": 1,
     "name": "carlos",
     "dni": "x127665254",
     "present": true,
