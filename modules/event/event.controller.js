@@ -285,7 +285,7 @@ controller.getAttendeesByEvent = async function (req, res) {
                     as: 'user'
                 },
                 {
-                    attributes: ['code_ticket'],
+                    attributes: ['code_ticket', 'deactivated'],
                     model: this.db.ticket_sale_detail,
                     as: 'ticket_sale_detail',
                     include: [
