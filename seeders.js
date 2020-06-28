@@ -7,6 +7,8 @@ const {
   community,
   user,
   user_type,
+  post,
+  comment,
   channel,
   //generics  
   state,
@@ -84,13 +86,59 @@ let communities = [
 
 
 let users = [
-  { "name": "user01", "last_name": "user01", "username": "user01", "profile_photo":"profile_photo_J472UU.png", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
-  { "name": "user02", "last_name": "user02", "username": "user02", "profile_photo":"profile_photo_KK7O36.png",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
+  { "name": "Juan", "last_name": "Perez", "username": "juanperez", "profile_photo":"", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
+  { "name": "Romulo", "last_name": "Gomez", "username": "romulogomez", "profile_photo":"",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
 ]
 
 let user_types = [
   { "id_user": 1, "id_role": 1, "id_community": 1 },
   { "id_user": 2, "id_role": 1, "id_community": 2 }
+]
+let posts = [
+  {
+    "id_community": 1,
+    "id_user": 1,
+    "title": "Aprende a Leer",
+    "sub_title": "código de otras personas",
+    "content": "Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.",
+    "active": true,
+    "value": 3,
+    "fixed": true,
+    "track": [1]
+  }
+]
+
+let comments = [
+  {
+    "id_user": 2,        
+    "id_post": 1,        
+    "active": true,
+    "content": "Todos menos usted escriben un código terrible",
+    "image": "",
+    "video": "",
+    "file": "",
+    "fixed": true,
+  },  
+  {
+    "id_user": 2,        
+    "id_post": 1,        
+    "active": true,
+    "content": "Es por eso que una gran habilidad que tiene múltiples beneficios",
+    "image": "",
+    "video": "",
+    "file": "",
+    "fixed": true,
+  },  
+  {
+    "id_user": 2,        
+    "id_post": 1,        
+    "active": true,
+    "content": "Después de todo, es tu trabajo",
+    "image": "",
+    "video": "",
+    "file": "",
+    "fixed": false,
+  }  
 ]
 
 let channels = [
@@ -366,6 +414,8 @@ let loadtables = async () => {
   await user.bulkCreate(users, { returning: true });
   await user_type.bulkCreate(user_types, { returning: true });
   await channel.bulkCreate(channels, { returning: true });
+  await post.bulkCreate(posts, { returning: true });
+  await comment.bulkCreate(comments, { returning: true });
 
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
