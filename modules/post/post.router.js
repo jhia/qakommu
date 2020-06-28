@@ -13,6 +13,11 @@ router.get('/:id',function(req, res){
   postController.getFunc(req,res);
 });
 
+router.get('/:id_post/comment/all/:id',function(req, res){
+  //HTTP get route
+  postController.getPostByComment(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   postController.postFunc(req,res);

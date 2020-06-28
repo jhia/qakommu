@@ -17,7 +17,7 @@ controller.getFunc = async function (req, res) {
             order
         });
 
-        const { user, community, track_post, track, sequelize } = this.db
+        const { user, community, track_post, track, sequelize, Sequelize } = this.db
              
         let query1 = await user.findOne({
             where: { id : data['_previousDataValues']['id_user'] }
@@ -57,13 +57,13 @@ controller.getFunc = async function (req, res) {
             payload: [{
                 community: id_community,
                 name_user: id_user,
-                title: title,
-                sub_title: sub_title,
-                content: content,
-                active: active,
-                value: value,
-                fixed: fixed,
-                tracks: tracks
+                title,
+                sub_title,
+                content,
+                active,
+                value,
+                fixed,
+                tracks
             }]
         });
     } catch (error) {
@@ -75,6 +75,98 @@ controller.getFunc = async function (req, res) {
         });
     }
 }
+
+controller.getPostByComment = async function (req, res) {
+
+    const { id_post } = req.params;
+    const { limit, offset, order, attributes } = req.body;
+    const { Sequelize } = this.db
+
+    try { 
+        
+        const count = await this.db.comment.findOne({
+            limit,
+            offset,
+            attributes: [ 
+                [Sequelize.fn('COUNT', Sequelize.literal('CASE WHEN "fixed" = true THEN 1 END')), 'likes'],
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'messages']
+            ]
+        });
+        const counters = count.toJSON()
+
+        const data_comment = await this.db.comment.findAll({
+            limit,
+            offset,
+            attributes: ['id','id_post','active','content','image','video','file','fixed','reference','createdAt'],
+            order,
+            where: { id_post },
+            include: [
+                {
+                    attributes: [ [Sequelize.fn('concat', Sequelize.col('name'), ' ', Sequelize.col('last_name')), 'name' ], 'username', ['profile_photo', 'imgUser']],
+                    model: this.db.user,
+                    as: 'users'
+                },
+                {
+                    attributes: ['id_user','createdAt'],
+                    model: this.db.post,
+                    as: 'posts',
+                    where: { id: id_post },
+                }
+            ]
+        });
+
+        
+        
+
+
+        const copy_data = { ...data_comment }
+        let data_result = []
+        _.forEach(copy_data, function(value, key) {
+            const part = value.toJSON()
+            const fields = {
+                id: part.id,
+                user: {
+                    alias: part.users.username,
+                    author: part.users.name,
+                    img_user: part.users.imgUser,
+    
+                },
+                like: part.fixed,
+                count_likes: counters.likes,
+                count_messages: counters.messages,
+                comment: part.content,
+                image: [ part.image ? req.headers.host+part.image : null ],
+                video: [ part.video ],
+                file: [ part.file ]
+            }
+            data_result.push(fields)
+        });
+      
+        console.log('---------------------')
+        console.log( data_result );
+        console.log('---------------------')
+
+        return this.response({
+            res,
+            payload: [data_result]
+            //payload: [data_comment]
+        });
+    } catch (error) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
+
+
+
+
+
+
+
 
 controller.postFunc = async function (req, res) {
 

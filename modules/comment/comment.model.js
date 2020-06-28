@@ -6,8 +6,9 @@ module.exports = (sequelize, DataTypes) => {
         id_post: DataTypes.INTEGER,        
         active: DataTypes.BOOLEAN,
         content: DataTypes.TEXT,
-        multimedia: DataTypes.TEXT,        
-        value: DataTypes.INTEGER,
+        image: DataTypes.TEXT,        
+        video: DataTypes.TEXT,        
+        file: DataTypes.TEXT,        
         fixed: DataTypes.BOOLEAN,
         reference: DataTypes.INTEGER
     });
