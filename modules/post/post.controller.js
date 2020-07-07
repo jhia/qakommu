@@ -4,6 +4,8 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('post');
 const jwt = require('jsonwebtoken');
+const { QueryTypes } = require('sequelize');
+const { verify_and_upload_image_post, verify_and_upload_image_put, } = require('../../helpers/utilities')
 
 controller.getFunc = async function (req, res) {
     const { id } = req.params;
@@ -19,16 +21,15 @@ controller.getFunc = async function (req, res) {
 
         const { user, community, track_post, track, sequelize, Sequelize } = this.db
              
-        let query1 = await user.findOne({
+        let search_name_user = await user.findOne({
             where: { id : data['_previousDataValues']['id_user'] }
         });
 
-        let query2 = await community.findOne({
+        let search_name_community = await community.findOne({
             where: { id : data['_previousDataValues']['id_community'] }
         });
 
-        const { QueryTypes } = require('sequelize');
-        let query3 = await sequelize.query(
+        let search_name_tracks = await sequelize.query(
             "SELECT name FROM track_posts JOIN tracks ON track_posts.id_track=tracks.id WHERE id_post =  ?",
             {
                 replacements: [id],
@@ -37,13 +38,13 @@ controller.getFunc = async function (req, res) {
         );
 
         let tracks = []; 
-        query3.forEach(element => {
+        search_name_tracks.forEach(element => {
             let x=element['name']
             tracks.push(x)
         });
 
-        let id_community = query2['name'];
-        let id_user = query1['name'];
+        let id_community = search_name_community['name'];
+        let id_user = search_name_user['name'];
         let title = data['_previousDataValues']['title'];
         let sub_title = data['_previousDataValues']['sub_title'];
         let content = data['_previousDataValues']['content'];
@@ -115,10 +116,6 @@ controller.getPostByComment = async function (req, res) {
             ]
         });
 
-        
-        
-
-
         const copy_data = { ...data_comment }
         let data_result = []
         _.forEach(copy_data, function(value, key) {
@@ -142,14 +139,9 @@ controller.getPostByComment = async function (req, res) {
             data_result.push(fields)
         });
       
-        console.log('---------------------')
-        console.log( data_result );
-        console.log('---------------------')
-
         return this.response({
             res,
             payload: [data_result]
-            //payload: [data_comment]
         });
     } catch (error) {
         return this.response({
@@ -161,13 +153,6 @@ controller.getPostByComment = async function (req, res) {
     }
 }
 
-
-
-
-
-
-
-
 controller.postFunc = async function (req, res) {
 
     const token = req.headers.authorization.split(" ")[1];
@@ -175,30 +160,43 @@ controller.postFunc = async function (req, res) {
     const { user, user_type, track_post } = this.db;
     const email = decoded.email;
  
-    let query = await user.findOne({
+    let search_id_user = await user.findOne({
         where: { email }
     });
 
-    const id_user = query['id'];
-    let query2 = await user_type.findOne({
+    const id_user = search_id_user['id'];
+    let search_id_community = await user_type.findOne({
         where: { id_user }
     });
 
-    const { title, sub_title, content, active, value, fixed, track } = req.body;
+    const { title, content, active, value, fixed, track } = req.body;
+
+    const img = req.files ? req.files.image: null;
+    const vid = req.files ? req.files.video: null;
+    const fil = req.files ? req.files.file: null;
+
     try {
+		const image = verify_and_upload_image_post(img,"post_image");
+		const video = verify_and_upload_image_post(vid,"post_video");
+		const file = verify_and_upload_image_post(fil,"post_file");
+
+
         let newdate = await this.insert({
-            id_community: query2['id_community'],
-            id_user: query['id'],        
+            id_community: search_id_community['id_community'],
+            id_user: search_id_user['id'],        
             title,
-            sub_title,
             content,
+            image,
+            video,
+            file,
             active,
             value,
             fixed
         });
-        
+        const trk  = JSON.parse("[" + track + "]");
+        console.log(trk)
         let tracks = [];
-        track.forEach(element => {
+        trk.forEach(element => {
             tracks.push({"id_track": element,"id_post": newdate['id']});
         });
 

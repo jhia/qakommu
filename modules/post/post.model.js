@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         title: DataTypes.STRING,
         sub_title: DataTypes.STRING,
         content: DataTypes.TEXT,
+        image: DataTypes.TEXT,        
+        video: DataTypes.TEXT,        
+        file: DataTypes.TEXT,        
         active: DataTypes.BOOLEAN,
         value: DataTypes.INTEGER,
         fixed: DataTypes.BOOLEAN
