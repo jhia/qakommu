@@ -48,6 +48,9 @@ controller.getFunc = async function (req, res) {
         let title = data['_previousDataValues']['title'];
         let sub_title = data['_previousDataValues']['sub_title'];
         let content = data['_previousDataValues']['content'];
+        let image = data['_previousDataValues']['image'];
+        let video = data['_previousDataValues']['video'];
+        let file = data['_previousDataValues']['file'];
         let active = data['_previousDataValues']['active'];
         let value = data['_previousDataValues']['value'];
         let fixed = data['_previousDataValues']['fixed'];
@@ -61,6 +64,9 @@ controller.getFunc = async function (req, res) {
                 title,
                 sub_title,
                 content,
+                image,
+                video,
+                file,
                 active,
                 value,
                 fixed,
@@ -223,6 +229,26 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { id_community, id_user, title, sub_title, content, active, value, fixed, return_data } = req.body;
 
+	let find_image = await this.db.post.findOne({
+		where: { id }
+	});
+
+	const fnd_image = find_image ? find_image.image : null
+	const fnd_video = find_image ? find_image.video : null
+	const fnd_file = find_image ? find_image.file : null
+
+    const img = req.files ? req.files.image: null;
+    const vid = req.files ? req.files.video: null;
+    const fil = req.files ? req.files.file: null;
+
+	const rm_image = remove_image ? remove_image : '0';
+	const rm_video = remove_video ? remove_video : '0';
+	const rm_file = remove_file ? remove_file : '0';
+
+    const image = verify_and_upload_image_put(img,"post_image", fnd_image, rm_image);
+    const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
+    const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
+
     await this.update(
         {
             id,
@@ -232,6 +258,9 @@ controller.putFunc = async function (req, res) {
                 title,
                 sub_title,
                 content,
+                image,
+                video,
+                file, 
                 active,
                 value,
                 fixed
