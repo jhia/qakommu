@@ -14,24 +14,32 @@ controller.getFunc = async function (req, res) {
     const { sequelize } = this.db
 
     try {
-        const post1= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS fullname, title, image, video, file, fixed, posts.active, posts.active,
-        JSON_AGG(tracks.name)
-        FROM posts 
-        LEFT JOIN users ON posts.id_user = users.id 
-        LEFT JOIN communities ON posts.id_community = communities.id
-        LEFT JOIN track_posts ON posts.id = track_posts.id_post
-        LEFT JOIN tracks ON tracks.id = track_posts.id_track
-        WHERE posts.id =:id
-        GROUP BY posts.id, communities.name,fullname`;
+        const post1= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 
+        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(comments.id) AS count_messages,
+        COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
+                JSON_AGG(tracks.name) as tracks,
+                posts."createdAt", posts."updatedAt"
+                FROM posts 
+                LEFT JOIN users ON posts.id_user = users.id 
+                LEFT JOIN communities ON posts.id_community = communities.id
+                LEFT JOIN comments ON posts.id = comments.id_post
+                LEFT JOIN track_posts ON posts.id = track_posts.id_post
+                LEFT JOIN tracks ON tracks.id = track_posts.id_track
+                WHERE posts.id =1
+                GROUP BY posts.id, communities.name,fullname`;
 
-        const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS fullname, title, image, video, file, fixed, posts.active, posts.active,
-        JSON_AGG(tracks.name)
-        FROM posts 
-        LEFT JOIN users ON posts.id_user = users.id 
-        LEFT JOIN communities ON posts.id_community = communities.id
-        LEFT JOIN track_posts ON posts.id = track_posts.id_post
-        LEFT JOIN tracks ON tracks.id = track_posts.id_track
-        GROUP BY posts.id, communities.name,fullname`;
+        const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 
+        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(comments.id) AS count_messages,
+        COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
+                JSON_AGG(tracks.name) as tracks,
+                posts."createdAt", posts."updatedAt"
+                FROM posts 
+                LEFT JOIN users ON posts.id_user = users.id 
+                LEFT JOIN communities ON posts.id_community = communities.id
+                LEFT JOIN comments ON posts.id = comments.id_post
+                LEFT JOIN track_posts ON posts.id = track_posts.id_post
+                LEFT JOIN tracks ON tracks.id = track_posts.id_track
+                GROUP BY posts.id, communities.name,fullname`;
 
         const query_post = id ? post1 : post2        
         const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
