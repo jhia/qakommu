@@ -3,27 +3,29 @@
 module.exports = (sequelize, DataTypes) => {
     const ticket_sale_detail = sequelize.define('ticket_sale_detail', {
         id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
-        },
-        code_ticket: {
             allowNull: false,
-            type: DataTypes.TEXT
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
         },
-        id_ticket_sale:{
+        uuid: {
+            //allowNull: false,
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            
+        },
+        id_ticket_sale: {
             allowNull: false,
             type: DataTypes.INTEGER
         },
-        deactivated:{
+        deactivated: {
             type: DataTypes.BOOLEAN
         }
     });
 
-    ticket_sale_detail.associate = function(models){
+    ticket_sale_detail.associate = function (models) {
         //To create model associations
-        
+
         ticket_sale_detail.belongsTo(models.ticket_sale, {
             foreignKey: 'id_ticket_sale',
             as: 'ticket_sale'
