@@ -7,72 +7,41 @@ const jwt = require('jsonwebtoken');
 const { QueryTypes } = require('sequelize');
 const { verify_and_upload_image_post, verify_and_upload_image_put, } = require('../../helpers/utilities')
 
+
 controller.getFunc = async function (req, res) {
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
+    const { sequelize } = this.db
+
     try {
-        const data = await this.getData({
-            id,
-            limit,
-            offset,
-            attributes,
-            order
-        });
+        const post1= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS fullname, title, image, video, file, fixed, posts.active, posts.active,
+        JSON_AGG(tracks.name)
+        FROM posts 
+        LEFT JOIN users ON posts.id_user = users.id 
+        LEFT JOIN communities ON posts.id_community = communities.id
+        LEFT JOIN track_posts ON posts.id = track_posts.id_post
+        LEFT JOIN tracks ON tracks.id = track_posts.id_track
+        WHERE posts.id =:id
+        GROUP BY posts.id, communities.name,fullname`;
 
-        const { user, community, track_post, track, sequelize, Sequelize } = this.db
-             
-        let search_name_user = await user.findOne({
-            where: { id : data['_previousDataValues']['id_user'] }
-        });
+        const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS fullname, title, image, video, file, fixed, posts.active, posts.active,
+        JSON_AGG(tracks.name)
+        FROM posts 
+        LEFT JOIN users ON posts.id_user = users.id 
+        LEFT JOIN communities ON posts.id_community = communities.id
+        LEFT JOIN track_posts ON posts.id = track_posts.id_post
+        LEFT JOIN tracks ON tracks.id = track_posts.id_track
+        GROUP BY posts.id, communities.name,fullname`;
 
-        let search_name_community = await community.findOne({
-            where: { id : data['_previousDataValues']['id_community'] }
-        });
-
-        let search_name_tracks = await sequelize.query(
-            "SELECT name FROM track_posts JOIN tracks ON track_posts.id_track=tracks.id WHERE id_post =  ?",
-            {
-                replacements: [id],
-                type: QueryTypes.SELECT
-            }            
-        );
-
-        let tracks = []; 
-        search_name_tracks.forEach(element => {
-            let x=element['name']
-            tracks.push(x)
-        });
-
-        let id_community = search_name_community['name'];
-        let id_user = search_name_user['name'];
-        let title = data['_previousDataValues']['title'];
-        let sub_title = data['_previousDataValues']['sub_title'];
-        let content = data['_previousDataValues']['content'];
-        let image = data['_previousDataValues']['image'];
-        let video = data['_previousDataValues']['video'];
-        let file = data['_previousDataValues']['file'];
-        let active = data['_previousDataValues']['active'];
-        let value = data['_previousDataValues']['value'];
-        let fixed = data['_previousDataValues']['fixed'];
-
+        const query_post = id ? post1 : post2        
+        const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
 
         return this.response({
             res,
-            payload: [{
-                community: id_community,
-                name_user: id_user,
-                title,
-                sub_title,
-                content,
-                image,
-                video,
-                file,
-                active,
-                value,
-                fixed,
-                tracks
-            }]
+            payload: [data]
+            
         });
+
     } catch (error) {
         return this.response({
             res,
@@ -199,7 +168,7 @@ controller.postFunc = async function (req, res) {
             value,
             fixed
         });
-        const trk  = JSON.parse("[" + track + "]");
+        const trk  = JSON.parse( track );
         console.log(trk)
         let tracks = [];
         trk.forEach(element => {
