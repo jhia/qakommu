@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         deactivated: {
             type: DataTypes.BOOLEAN
+        },
+        amount_paid:{
+            type: DataTypes.FLOAT
+        }, 
+        original_amount:{
+            type: DataTypes.FLOAT
         }
     });
 

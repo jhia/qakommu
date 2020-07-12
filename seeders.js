@@ -260,7 +260,9 @@ let ticket_sales = [
 let ticket_sale_details = [
   {
     "id_ticket_sale": 1,
-    "deactivated": false
+    "deactivated": false,
+    "amount_paid": 85.3,
+    "original_amount": 100
   }
 ]
 
