@@ -25,7 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT
         }, 
         original_amount:{
+            allowNull: false,
             type: DataTypes.FLOAT
+        },
+        use_coupon: {
+            type: DataTypes.BOOLEAN
         }
     });
 
