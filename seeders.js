@@ -262,7 +262,7 @@ let ticket_sale_details = [
     "deactivated": false,
     "amount_paid": 85.3,
     "original_amount": 100,
-    "use_coupon": true
+    "id_coupon": 1
   }
 ]
 

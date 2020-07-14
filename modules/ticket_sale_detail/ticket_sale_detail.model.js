@@ -28,8 +28,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.FLOAT
         },
-        use_coupon: {
-            type: DataTypes.BOOLEAN
+        id_coupon: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -39,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         ticket_sale_detail.belongsTo(models.ticket_sale, {
             foreignKey: 'id_ticket_sale',
             as: 'ticket_sale'
+        });
+
+        ticket_sale_detail.belongsTo(models.coupon, {
+            foreignKey: 'id_coupon',
+            as: 'coupon'
         });
 
         ticket_sale_detail.hasMany(models.attendee, {
