@@ -25,7 +25,7 @@ controller.getFunc = async function (req, res) {
                 LEFT JOIN comments ON posts.id = comments.id_post
                 LEFT JOIN track_posts ON posts.id = track_posts.id_post
                 LEFT JOIN tracks ON tracks.id = track_posts.id_track
-                WHERE posts.id =1
+                WHERE posts.id =:id
                 GROUP BY posts.id, communities.name,fullname`;
 
         const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 

@@ -99,7 +99,6 @@ let posts = [
     "id_community": 1,
     "id_user": 1,
     "title": "Aprende a Leer",
-    "sub_title": "código de otras personas",
     "content": "Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.",
     "active": true,
     "value": 3,

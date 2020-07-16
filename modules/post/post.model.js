@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
         id_community: DataTypes.INTEGER,
         id_user: DataTypes.INTEGER,        
         title: DataTypes.STRING,
-        sub_title: DataTypes.STRING,
         content: DataTypes.TEXT,
         image: DataTypes.TEXT,        
         video: DataTypes.TEXT,        
