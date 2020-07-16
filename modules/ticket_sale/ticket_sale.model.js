@@ -17,18 +17,18 @@ module.exports = (sequelize, DataTypes) => {
             //this field can go null
             type: DataTypes.INTEGER
         },
-        id_coupon:
+        /*id_coupon:
         {
             //this field can go null
             type: DataTypes.INTEGER
-        },
+        },*/
         count: {
             type: DataTypes.INTEGER
         },
         total_amount: {
             type: DataTypes.FLOAT
         },
-        amount_paid: {
+        total_amount_paid: {
             type: DataTypes.FLOAT
         },
         paying_name: {
@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
         name_ticket: {
             allowNull: false,
             type: DataTypes.TEXT,
-            
         },
         name_event: {
             allowNull: false,

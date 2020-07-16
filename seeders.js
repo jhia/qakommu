@@ -244,10 +244,9 @@ let ticket_sales = [
   {
     "id_ticket": 1,
     "id_user": 1,
-    "id_coupon": null,
     "count": 1,
     "total_amount": 150,
-    "amount_paid": 75,
+    "total_amount_paid": 75,
     "paying_name": "john smith",
     "paying_address": "Cartagena street, number 25, 66534",
     "dni_payer": "E25331234",
@@ -259,7 +258,10 @@ let ticket_sales = [
 let ticket_sale_details = [
   {
     "id_ticket_sale": 1,
-    "deactivated": false
+    "deactivated": false,
+    "amount_paid": 85.3,
+    "original_amount": 100,
+    "id_coupon": 1
   }
 ]
 
