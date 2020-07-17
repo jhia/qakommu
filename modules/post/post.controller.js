@@ -138,11 +138,13 @@ controller.getPostByComment = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, 'secret');
+     
+    //const token = req.headers.authorization.split(" ")[1];
+    //const decoded = jwt.verify(token, 'secret');
     const { user, user_type, track_post } = this.db;
-    const email = decoded.email;
- 
+    //const email = decoded.email;
+
+/* 
     let search_id_user = await user.findOne({
         where: { email }
     });
@@ -151,8 +153,9 @@ controller.postFunc = async function (req, res) {
     let search_id_community = await user_type.findOne({
         where: { id_user }
     });
+ */
 
-    const { title, content, active, value, fixed, track } = req.body;
+    const { id_community, id_user, title, content, active, value, fixed, track } = req.body;
 
     const img = req.files ? req.files.image: null;
     const vid = req.files ? req.files.video: null;
@@ -165,8 +168,10 @@ controller.postFunc = async function (req, res) {
 
 
         let newdate = await this.insert({
-            id_community: search_id_community['id_community'],
-            id_user: search_id_user['id'],        
+            //id_community: search_id_community['id_community'],
+            //id_user: search_id_user['id'],
+            id_community,
+            id_user,
             title,
             content,
             image,
