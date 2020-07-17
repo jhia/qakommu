@@ -40,7 +40,9 @@
 			"order": [
 				"fccdce75-7cf1-7172-236d-b80dd7dc2294",
 				"63a8b2d3-61e6-bde7-85a7-43c0ae526d01",
-				"44f2041f-f3f8-b748-c673-36df50421824"
+				"64887ff9-3223-50ef-5796-6501fc0d8b23",
+				"4ffd2483-700e-583c-ba9e-95c46b2762a7",
+				"d09e06ce-9cc4-7bbb-1d68-2d7ab7a2aec4"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -105,7 +107,9 @@
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"order": [
 				"cf80070c-f9d5-6300-1202-9f19144d77b8",
-				"d18fe476-cd34-15e6-74a9-5eee4630af3e"
+				"d18fe476-cd34-15e6-74a9-5eee4630af3e",
+				"bb5c910e-eeb1-cf07-4f45-a93c904e0002",
+				"d25ea087-6fef-0e9b-1c7a-c6ececd366d1"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -573,14 +577,14 @@
 					"key": "remove_image",
 					"value": "1",
 					"type": "text",
-					"enabled": true
+					"enabled": false
 				}
 			],
 			"dataMode": "params",
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1592266840939,
+			"time": 1592331379770,
 			"name": "put",
 			"description": "",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
@@ -724,7 +728,7 @@
 			"data": [
 				{
 					"key": "avatar",
-					"value": "",
+					"value": "surprise.png",
 					"description": "",
 					"type": "file",
 					"enabled": true
@@ -804,7 +808,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1592254627510,
+			"time": 1594857411544,
 			"name": "Register",
 			"description": "can to select:\n- nameCommunity: created community. or\n- codeCommunity: joins the community",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
@@ -1565,42 +1569,6 @@
 			"folder": "b779831d-d145-4c23-f659-b393f0a3d7ba"
 		},
 		{
-			"id": "44f2041f-f3f8-b748-c673-36df50421824",
-			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "{{server}}:{{port}}/api/post/1",
-			"folder": "154c1b49-988d-4b7e-3cfe-e50f37f7b556",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1585325868822,
-			"name": "blog - post - put",
-			"description": "",
-			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
-			"responses": [],
-			"rawModeData": "{\n        \"title\": \"xxxxxxxx\",\n        \"sub_title\": \"código de otras personas\",\n        \"content\": \"Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.\",\n        \"active\": true,\n        \"value\": 3,\n        \"fixed\": true,\n        \"track\": [1,2],\n        \"return_data\": true\n}"
-		},
-		{
 			"id": "485db063-41f5-772a-49e5-9c38430200a5",
 			"name": "getOne",
 			"description": "",
@@ -1663,6 +1631,47 @@
 			],
 			"collection_id": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"folder": "bd85be09-2edf-ff28-1043-e6f969014f61"
+		},
+		{
+			"id": "4ffd2483-700e-583c-ba9e-95c46b2762a7",
+			"headers": "Content-Type: application/json\n//Authorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\nskip: true\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "skip",
+					"value": "true",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "{{server}}:{{port}}/api/post/",
+			"folder": "154c1b49-988d-4b7e-3cfe-e50f37f7b556",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594346276657,
+			"name": "get all",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
 		},
 		{
 			"id": "503f9d97-cc2a-a865-00fe-bac3d8bf8c14",
@@ -1923,7 +1932,7 @@
 		},
 		{
 			"id": "63a8b2d3-61e6-bde7-85a7-43c0ae526d01",
-			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headers": "Content-Type: application/json\n//Authorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\nskip: true\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
@@ -1935,10 +1944,16 @@
 					"key": "Authorization",
 					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
 					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "skip",
+					"value": "true",
+					"description": "",
 					"enabled": true
 				}
 			],
-			"url": "{{server}}:{{port}}/api/post/1",
+			"url": "{{server}}:{{port}}/api/post/2",
 			"folder": "154c1b49-988d-4b7e-3cfe-e50f37f7b556",
 			"queryParams": [],
 			"preRequestScript": null,
@@ -1950,8 +1965,44 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1585317209879,
-			"name": "blog - post - get",
+			"time": 1595022747482,
+			"name": "get one",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
+		},
+		{
+			"id": "64887ff9-3223-50ef-5796-6501fc0d8b23",
+			"headers": "Content-Type: application/json\nskip: true\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "skip",
+					"value": "true",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "{{server}}:{{port}}/api/post/1/comment/all/",
+			"folder": "ac7f5c3d-51e6-8357-109d-584a540002bb",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1593390616704,
+			"name": "getPostByComment",
 			"description": "",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"responses": []
@@ -3361,12 +3412,12 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1591133628592,
+			"time": 1595022749628,
 			"name": "login",
 			"description": "- acces to sistem.\n- generates the acces token.",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"responses": [],
-			"rawModeData": "{\n\t\"email\": \"user03@email.com\",\n\t\"password\": \"user03\"\n}"
+			"rawModeData": "{\n\t\"email\": \"user01@email.com\",\n\t\"password\": \"user01\"\n}"
 		},
 		{
 			"id": "af3bc575-f36b-62e6-5f3e-72500e65eb2a",
@@ -3580,6 +3631,98 @@
 			],
 			"collection_id": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"folder": "96e0c27c-a665-97dd-8e58-a346bc9ebb77"
+		},
+		{
+			"id": "bb5c910e-eeb1-cf07-4f45-a93c904e0002",
+			"headers": "//Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "Authorization",
+					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "{{server}}:{{port}}/api/comment/4",
+			"folder": "ac7f5c3d-51e6-8357-109d-584a540002bb",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [
+				{
+					"key": "id_post",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "active",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "content",
+					"value": "Todos menos usted escriben un código terrible",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "fixed",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "image",
+					"value": "surprise.png",
+					"description": "",
+					"type": "file",
+					"enabled": false
+				},
+				{
+					"key": "video",
+					"value": "cheerful.png",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				},
+				{
+					"key": "file",
+					"value": "cheerful.png",
+					"description": "",
+					"type": "file",
+					"enabled": false
+				},
+				{
+					"key": "reference",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				}
+			],
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1593301734391,
+			"name": "put",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
 		},
 		{
 			"id": "be2326cb-98a1-d651-c526-5f59f492b0c6",
@@ -3875,13 +4018,13 @@
 		},
 		{
 			"id": "cf80070c-f9d5-6300-1202-9f19144d77b8",
-			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headers": "//Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
 					"description": "",
-					"enabled": true
+					"enabled": false
 				},
 				{
 					"key": "Authorization",
@@ -3897,21 +4040,176 @@
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
+			"data": [
+				{
+					"key": "id_post",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "active",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "content",
+					"value": "Todos menos usted escriben un código terrible",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "fixed",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "image",
+					"value": "surprise.png",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				},
+				{
+					"key": "video",
+					"value": "",
+					"description": "",
+					"type": "file",
+					"enabled": false
+				},
+				{
+					"key": "file",
+					"value": "",
+					"description": "",
+					"type": "file",
+					"enabled": false
+				},
+				{
+					"key": "reference",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				}
+			],
+			"dataMode": "params",
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1585342203017,
-			"name": "blog - comment post",
+			"time": 1594318502102,
+			"name": "post",
 			"description": "",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
-			"responses": [],
-			"rawModeData": "{\n    \"id_post\": 1,        \n    \"active\": true,\n    \"content\": \"repetido comentario\",\n    \"multimedia\": \"comentario.mp4\",        \n    \"value\": 2,\n    \"fixed\": true,\n    \"reference\": 1\n}"
+			"responses": []
+		},
+		{
+			"id": "d09e06ce-9cc4-7bbb-1d68-2d7ab7a2aec4",
+			"headers": "//Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "Authorization",
+					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "{{server}}:{{port}}/api/post/2",
+			"folder": "154c1b49-988d-4b7e-3cfe-e50f37f7b556",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [
+				{
+					"key": "title",
+					"value": "Aprende a Leer",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "content",
+					"value": "Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "image",
+					"value": "",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				},
+				{
+					"key": "video",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "file",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "active",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "value",
+					"value": "3",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "fixed",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "track",
+					"value": "[1]",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				}
+			],
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594346269387,
+			"name": "put",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
 		},
 		{
 			"id": "d18fe476-cd34-15e6-74a9-5eee4630af3e",
-			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headers": "Content-Type: application/json\n//Authorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\nskip: true\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
@@ -3923,28 +4221,33 @@
 					"key": "Authorization",
 					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
 					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "skip",
+					"value": "true",
+					"description": "",
 					"enabled": true
 				}
 			],
 			"url": "{{server}}:{{port}}/api/comment/",
+			"folder": "ac7f5c3d-51e6-8357-109d-584a540002bb",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"data": null,
 			"dataMode": "params",
-			"name": "blog - comment - get",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1585328964882,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "ac7f5c3d-51e6-8357-109d-584a540002bb"
+			"time": 1593391446074,
+			"name": "get",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
 		},
 		{
 			"id": "d1b5009c-4a5f-fe67-08f9-d30fa5a892e0",
@@ -3969,6 +4272,42 @@
 			],
 			"collection_id": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
 			"folder": "e1141b19-b303-dd97-7dcb-470a4b6db1a4"
+		},
+		{
+			"id": "d25ea087-6fef-0e9b-1c7a-c6ececd366d1",
+			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "{{server}}:{{port}}/api/comment/4",
+			"folder": "ac7f5c3d-51e6-8357-109d-584a540002bb",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594121401914,
+			"name": "get_one",
+			"description": "",
+			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
+			"responses": []
 		},
 		{
 			"id": "d6a0a7b0-92a0-a07f-95e3-279cbe6264b8",
@@ -4321,7 +4660,7 @@
 					"value": "",
 					"description": "",
 					"type": "file",
-					"enabled": true
+					"enabled": false
 				},
 				{
 					"key": "address",
@@ -4384,7 +4723,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1592254625352,
+			"time": 1594857270594,
 			"name": "update",
 			"description": "",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
@@ -4588,17 +4927,23 @@
 		},
 		{
 			"id": "fccdce75-7cf1-7172-236d-b80dd7dc2294",
-			"headers": "Content-Type: application/json\nAuthorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\n",
+			"headers": "//Content-Type: application/json\n//Authorization: bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ\nskip: true\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
 					"description": "",
-					"enabled": true
+					"enabled": false
 				},
 				{
 					"key": "Authorization",
 					"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBlbWFpbC5jb20iLCJpYXQiOjE1ODAzMzQ2ODksImV4cCI6MTYxMTg5MjI4OX0.gZ7A-V8LecRdr19J3CMSWogqbgGdgTXJU1bhVhnJJJi3eSyoWwU7Aol-kxXRJO8j2SMs6ju_dRRw9D3tFAYgMQ",
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "skip",
+					"value": "true",
 					"description": "",
 					"enabled": true
 				}
@@ -4610,17 +4955,87 @@
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
+			"data": [
+				{
+					"key": "title",
+					"value": "cualquier titulo",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "content",
+					"value": "cualquier contenido",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "image",
+					"value": "90fdcd5c-4a2d-44e4-9e47-5fa6aa3be876.jpeg",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				},
+				{
+					"key": "video",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "file",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "active",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "value",
+					"value": "3",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "fixed",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "track",
+					"value": "[1]",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "skip",
+					"value": "true",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1588806259665,
-			"name": "blog - post - post",
+			"time": 1595022744913,
+			"name": "post",
 			"description": "",
 			"collectionId": "c6bcabb8-93d6-b21e-07a9-31ac5890a429",
-			"responses": [],
-			"rawModeData": "{\n        \"title\": \"Aprende a Leer\",\n        \"sub_title\": \"código de otras personas\",\n        \"content\": \"Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.\",\n        \"active\": true,\n        \"value\": 3,\n        \"fixed\": true,\n        \"track\": [1]\n}"
+			"responses": []
 		},
 		{
 			"id": "fe4cc221-a74c-6fb3-97d4-a99cbcf2ce6f",
