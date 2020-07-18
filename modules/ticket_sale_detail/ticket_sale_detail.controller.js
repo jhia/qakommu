@@ -42,11 +42,11 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const {  id_ticket_sale, deactivated, amount_paid, original_amount, id_coupon } = req.body;
+    const {  id_ticket_sale, deactivated } = req.body;
     let uuid;
     try {
         let newdate = await this.insert({
-            uuid, id_ticket_sale, deactivated, amount_paid, original_amount, id_coupon
+            uuid, id_ticket_sale, deactivated
         });
         if (newdate) {
             return this.response({
@@ -67,13 +67,13 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_ticket_sale, deactivated, amount_paid, original_amount, id_coupon, return_data } = req.body;
+    const { id_ticket_sale, deactivated, return_data } = req.body;
     try {
         let result = await this.update(
             {
                 id,
                 data: {
-                    id_ticket_sale, deactivated, amount_paid, original_amount, id_coupon
+                    id_ticket_sale, deactivated
                 },
                 return_data
             });

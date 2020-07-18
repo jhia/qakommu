@@ -55,9 +55,9 @@ module.exports = (sequelize, DataTypes) => {
             as: 'coupon_ticket'
         });
 
-        coupon.hasMany(models.ticket_sale_detail, {
+        coupon.hasMany(models.ticket_sale, {
             foreignKey: 'id_coupon',
-            as: 'coupon_ticket_sale_detail'
+            as: 'coupon_ticket_sale'
         });
     }
 

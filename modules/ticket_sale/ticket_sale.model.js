@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         count: {
             type: DataTypes.INTEGER
         },
+        unit_amount:{
+            type: DataTypes.FLOAT
+        },
         total_amount: {
             type: DataTypes.FLOAT
         },
@@ -47,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         name_event: {
             allowNull: false,
             type: DataTypes.TEXT
+        },
+        id_coupon:{
+            allowNull: true,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -57,6 +64,11 @@ module.exports = (sequelize, DataTypes) => {
         ticket_sale.hasMany(models.ticket_sale_detail, {
             foreignKey: 'id_ticket_sale',
             as: 'ticket_sale_detail'
+        });
+
+        ticket_sale.belongsTo(models.coupon, {
+            foreignKey: 'id_coupon',
+            as: 'coupon'
         });
 
     }

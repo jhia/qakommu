@@ -42,12 +42,13 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_ticket, id_user, count, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event } = req.body;
+    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event } = req.body;
     try {
         let newdate = await this.insert({
             id_ticket,
             id_user,
             count,
+            unit_amount,
             total_amount,
             total_amount_paid,
             paying_name,
@@ -75,7 +76,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_ticket, id_user, count, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event, return_data } = req.body;
+    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event, return_data } = req.body;
     try {
         let result = await this.update(
             {
@@ -84,6 +85,7 @@ controller.putFunc = async function (req, res) {
                     id_ticket,
                     id_user,
                     count,
+                    unit_amount,
                     total_amount,
                     total_amount_paid,
                     paying_name,

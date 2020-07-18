@@ -245,13 +245,15 @@ let ticket_sales = [
     "id_ticket": 1,
     "id_user": 1,
     "count": 1,
+    "unit_amount": 160,
     "total_amount": 150,
-    "total_amount_paid": 75,
+    "total_amount_paid": 150,
     "paying_name": "john smith",
     "paying_address": "Cartagena street, number 25, 66534",
     "dni_payer": "E25331234",
     "name_ticket": "any name ticket",
-    "name_event": "any name event"
+    "name_event": "any name event",
+    "id_coupon":1
   }
 ]
 
@@ -259,9 +261,6 @@ let ticket_sale_details = [
   {
     "id_ticket_sale": 1,
     "deactivated": false,
-    "amount_paid": 85.3,
-    "original_amount": 100,
-    "id_coupon": 1
   }
 ]
 
