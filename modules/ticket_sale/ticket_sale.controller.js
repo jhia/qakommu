@@ -43,6 +43,7 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
     const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event } = req.body;
+    
     try {
         let newdate = await this.insert({
             id_ticket,
@@ -57,14 +58,26 @@ controller.postFunc = async function (req, res) {
             name_ticket,
             name_event
         });
-        if (newdate) {
-            return this.response({
-                res,
-                statusCode: 201,
-                payload: [newdate]
-            });
+        
+        if (newdate.id > 0 ) {
+            let i;
+            let uuid;
+            let id_ticket_sale = newdate.id;
+            let deactivated = false;
+            for(i = 0; i < count; i++){
+                await this.db.ticket_sale_detail.create({
+                    uuid, id_ticket_sale, deactivated
+                });
+            }
         }
+        return this.response({
+            res,
+            statusCode: 201,
+            payload: [newdate]
+        });
+        
     } catch (error) {
+        console.log(error);
         this.response({
             res,
             success: false,
