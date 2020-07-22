@@ -20,7 +20,12 @@ router.get('/:id',function(req, res){
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  ticket_saleController.postFunc(req,res);
+ // if(req.count < 1 || req.count == null ){
+    //console.log(req);
+ // }else{
+    ticket_saleController.postFunc(req,res);
+  //}
+  
 });
 
 router.put('/:id',(req, res) => {

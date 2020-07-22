@@ -45,6 +45,14 @@ controller.postFunc = async function (req, res) {
     const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event } = req.body;
     
     try {
+        if(count < 1 || count === null || count == null || id_ticket < 1 || unit_amount < 0 || total_amount < 0 || total_amount_paid < 0 ){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, verify the data sent!',
+            });
+        }
         let newdate = await this.insert({
             id_ticket,
             id_user,
@@ -77,7 +85,6 @@ controller.postFunc = async function (req, res) {
         });
         
     } catch (error) {
-        console.log(error);
         this.response({
             res,
             success: false,

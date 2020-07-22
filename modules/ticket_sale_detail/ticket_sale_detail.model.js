@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         uuid: {
-            //allowNull: false,
+            allowNull: false,
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             
@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         deactivated: {
+            allowNull: false,
+            defaultValue: false,
             type: DataTypes.BOOLEAN
         }
     });

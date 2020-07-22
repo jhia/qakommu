@@ -17,21 +17,20 @@ module.exports = (sequelize, DataTypes) => {
             //this field can go null
             type: DataTypes.INTEGER
         },
-        /*id_coupon:
-        {
-            //this field can go null
-            type: DataTypes.INTEGER
-        },*/
         count: {
+            allowNull: false,
             type: DataTypes.INTEGER
         },
         unit_amount:{
+            allowNull: false,
             type: DataTypes.FLOAT
         },
         total_amount: {
+            allowNull: false,
             type: DataTypes.FLOAT
         },
         total_amount_paid: {
+            allowNull: false,
             type: DataTypes.FLOAT
         },
         paying_name: {
