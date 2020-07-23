@@ -43,7 +43,6 @@ controller.getFunc = async function (req, res) {
 
         const query_post = id ? post1 : post2        
         const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
-
         return this.response({
             res,
             payload: [data]

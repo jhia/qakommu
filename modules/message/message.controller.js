@@ -55,7 +55,6 @@ controller.getMessageByChannel = async function (req, res) {
     const id_channel = await ver(req, channel); 
 
 	try {
-
 		const data  = await message.findAll({
             id,
             limit,
@@ -86,7 +85,6 @@ controller.getMessageByChannel = async function (req, res) {
 			statusCode: 500,
 			message: 'something went wrong',
 		});
-
 	}   
 }
 
@@ -138,13 +136,13 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { message } = req.body;
+    const { view,return_data } = req.body;
     
     await this.update(
         {
             id,
             data: {
-                message                
+                view                
             },
             return_data
         }            

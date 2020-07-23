@@ -5,9 +5,11 @@ const db = require('../models');
 const {user,user_type,role,permission,resource,community,event} = db
 
 const permissionsVerification = async function (req, res, next){
+    
     if ((req.url).split("/")[1]=="uploads") {
         return next();
-    }    
+    }
+
     // para saltarse el auth
     if (req.headers.skip) {
         return next();

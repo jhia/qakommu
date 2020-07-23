@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
-app.use('/uploads', express.static('community_name'));
+app.use('/uploads', express.static('upload'));
 
 const register = require('./modules/register/register.router')
 app.use('/register', register);

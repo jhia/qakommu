@@ -9,7 +9,12 @@ module.exports = (sequelize, DataTypes) => {
               msg: 'role exist'
           }
       },
-        description: DataTypes.STRING,
+        special: {
+          type:   DataTypes.ENUM,
+          values: [ 'all-access', 'community-user', 'community-admin', 'no-access' ]
+        }
+
+
     });
 
     role.associate = function(models) {
