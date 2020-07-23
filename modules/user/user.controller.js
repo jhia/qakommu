@@ -27,6 +27,7 @@ controller.getFunc = async function (req, res) {
 				username: data.username,
 				profile_photo: data.profile_photo ? req.headers.host+data.profile_photo : null,
 				address: data.address,
+				phone: data.phone,
 				email: data.email,
 				password: data.password,
 				active: data.active,
@@ -58,6 +59,7 @@ controller.postFunc = async function (req, res) {
 				username,
 				profile_photo,
 				address,
+				phone,
 				email,
 				password,
 				gender,
@@ -92,7 +94,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
+	const { name, last_name, username, address, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
 	let find_image = await this.db.user.findOne({
 		where: { id }
@@ -113,6 +115,7 @@ controller.putFunc = async function (req, res) {
 				username,
 				profile_photo,
 				address,
+				phone,
 				email,
 				password,
 				gender,

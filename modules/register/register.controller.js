@@ -8,7 +8,7 @@ const { makeid , verify_and_upload_image_post } = require('../../helpers/utiliti
 controller.postFunc = async function (req, res) {
 
 	const {user_type,user,community,channel} = this.db
-	const { name, last_name, username, address, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
+	const { name, last_name, username, address, phone, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
 	let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
  
@@ -88,6 +88,7 @@ controller.postFunc = async function (req, res) {
             username,
             profile_photo,
 			address,
+			phone,
 			email,
 			password,
 			gender,
