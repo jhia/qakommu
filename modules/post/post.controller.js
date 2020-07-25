@@ -14,9 +14,12 @@ controller.getFunc = async function (req, res) {
     const { sequelize } = this.db
 
     try {
-        const post1= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 
-        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(comments.id) AS count_messages,
-        COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
+        const post1= `SELECT posts.id, communities.name, 
+        CONCAT(users.name,' ',users.last_name) AS fullname, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
+        COUNT(COALESCE(comments.content, null)) AS count_messages,
+        COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, 
+        posts.active, posts.active, 
                 JSON_AGG(tracks.name) as tracks,
                 posts."createdAt", posts."updatedAt"
                 FROM posts 
@@ -29,7 +32,7 @@ controller.getFunc = async function (req, res) {
                 GROUP BY posts.id, communities.name,fullname`;
 
         const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 
-        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(comments.id) AS count_messages,
+        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(coalesce(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
                 JSON_AGG(tracks.name) as tracks,
                 posts."createdAt", posts."updatedAt"
@@ -43,7 +46,6 @@ controller.getFunc = async function (req, res) {
 
         const query_post = id ? post1 : post2        
         const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
-
         return this.response({
             res,
             payload: [data]
@@ -139,12 +141,12 @@ controller.getPostByComment = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
      
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, 'secret');
+    //const token = req.headers.authorization.split(" ")[1];
+    //const decoded = jwt.verify(token, 'secret');
     const { user, user_type, track_post } = this.db;
-    const email = decoded.email;
+    //const email = decoded.email;
 
- 
+/* 
     let search_id_user = await user.findOne({
         where: { email }
     });
@@ -153,9 +155,9 @@ controller.postFunc = async function (req, res) {
     let search_id_community = await user_type.findOne({
         where: { id_user }
     });
+ */
 
-
-    const { title, content, active, value, fixed, track } = req.body;
+    const { id_community, id_user, title, content, active, value, fixed, track } = req.body;
 
     const img = req.files ? req.files.image: null;
     const vid = req.files ? req.files.video: null;
@@ -168,8 +170,10 @@ controller.postFunc = async function (req, res) {
 
 
         let newdate = await this.insert({
-            id_community: search_id_community['id_community'],
-            id_user: search_id_user['id'],
+            //id_community: search_id_community['id_community'],
+            //id_user: search_id_user['id'],
+            id_community,
+            id_user,
             title,
             content,
             image,
