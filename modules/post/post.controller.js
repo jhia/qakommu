@@ -31,8 +31,10 @@ controller.getFunc = async function (req, res) {
                 WHERE posts.id =:id
                 GROUP BY posts.id, communities.name,fullname`;
 
-        const post2= `SELECT posts.id, communities.name, CONCAT(users.name,' ',users.last_name) AS 
-        fullname, title, posts.content, posts.image, posts.video, posts.file, posts.fixed, COUNT(coalesce(comments.content, null)) AS count_messages,
+        const post2= `SELECT posts.id, communities.name, 
+        CONCAT(users.name,' ',users.last_name) AS fullname, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
+        COUNT(coalesce(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
                 JSON_AGG(tracks.name) as tracks,
                 posts."createdAt", posts."updatedAt"
@@ -75,7 +77,8 @@ controller.getPostByComment = async function (req, res) {
             offset,
             attributes: [ 
                 [Sequelize.fn('COUNT', Sequelize.literal('CASE WHEN "fixed" = true THEN 1 END')), 'likes'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'messages']
+                [Sequelize.fn('COUNT', Sequelize.literal('coalesce(content, null)')), 'messages']
+                //[Sequelize.fn('COUNT', Sequelize.col('id')), 'messages']
             ]
         });
         const counters = count.toJSON()
