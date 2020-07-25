@@ -43,6 +43,7 @@ controller.getFunc = async function (req, res) {
 
         const query_post = id ? post1 : post2        
         const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
+
         return this.response({
             res,
             payload: [data]
@@ -138,12 +139,12 @@ controller.getPostByComment = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
      
-    //const token = req.headers.authorization.split(" ")[1];
-    //const decoded = jwt.verify(token, 'secret');
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, 'secret');
     const { user, user_type, track_post } = this.db;
-    //const email = decoded.email;
+    const email = decoded.email;
 
-/* 
+ 
     let search_id_user = await user.findOne({
         where: { email }
     });
@@ -152,9 +153,9 @@ controller.postFunc = async function (req, res) {
     let search_id_community = await user_type.findOne({
         where: { id_user }
     });
- */
 
-    const { id_community, id_user, title, content, active, value, fixed, track } = req.body;
+
+    const { title, content, active, value, fixed, track } = req.body;
 
     const img = req.files ? req.files.image: null;
     const vid = req.files ? req.files.video: null;
@@ -167,10 +168,8 @@ controller.postFunc = async function (req, res) {
 
 
         let newdate = await this.insert({
-            //id_community: search_id_community['id_community'],
-            //id_user: search_id_user['id'],
-            id_community,
-            id_user,
+            id_community: search_id_community['id_community'],
+            id_user: search_id_user['id'],
             title,
             content,
             image,
