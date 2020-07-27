@@ -46,7 +46,7 @@ let resources = [
   { "name": "resource", "url_resource": "/api/resource" },
   { "name": "permission", "url_resource": "/api/permission" },
   { "name": "post", "url_resource": "/api/post" },
-  { "name": "comment", "url_resource": "/api/comment" },
+  { "name": "comment", "url_resource": "/api/comment/" },
   { "name": "message", "url_resource": "/api/message" },
   { "name": "channel", "url_resource": "/api/channel" },
   { "name": "event", "url_resource": "/api/event" },
@@ -92,7 +92,7 @@ let users = [
 
 let user_types = [
   { "id_user": 1, "id_role": 1, "id_community": 1 },
-  { "id_user": 2, "id_role": 1, "id_community": 2 }
+  { "id_user": 2, "id_role": 1, "id_community": 1 }
 ]
 let posts = [
   {

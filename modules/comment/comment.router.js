@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:id',function(req, res){
+router.get('/:id?',function(req, res){
   //HTTP get route
   commentController.getFunc(req,res);
 });
