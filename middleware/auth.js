@@ -62,10 +62,14 @@ const permissionsVerification = async function (req, res, next){
             }]
         });
 
-        
+
 
 
         if (!name_module[3]) {
+            community_id = result2.user_types[0].id_community
+        }
+
+        if (name_module[3]) {
             community_id = result2.user_types[0].id_community
         }
  
