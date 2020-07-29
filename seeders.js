@@ -379,7 +379,8 @@ let sponsors = [
   {
     "id_partnership": 1,
     "id_type_sponsor": 1,
-    "id_event": 1
+    "id_event": 1,
+    "active": true
   }
 ]
 
@@ -399,7 +400,8 @@ let exhibitors = [
   {
     "id_partnership": 1,
     "id_type_booth": 1,
-    "id_event": 1
+    "id_event": 1,
+    "active": true
   }
 ]
 
