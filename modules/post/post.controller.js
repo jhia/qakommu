@@ -16,7 +16,7 @@ controller.getFunc = async function (req, res) {
     try {
         const post1= `SELECT posts.id, communities.name, 
         CONCAT(users.name,' ',users.last_name) AS fullname, 
-        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.full_file, posts.fixed, 
         COUNT(COALESCE(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, 
         posts.active, posts.active, 
@@ -33,7 +33,7 @@ controller.getFunc = async function (req, res) {
 
         const post2= `SELECT posts.id, communities.name, 
         CONCAT(users.name,' ',users.last_name) AS fullname, 
-        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.full_file, posts.fixed, 
         COUNT(coalesce(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
                 JSON_AGG(tracks.name) as tracks,
@@ -47,10 +47,32 @@ controller.getFunc = async function (req, res) {
                 GROUP BY posts.id, communities.name,fullname`;
 
         const query_post = id ? post1 : post2        
-        const data = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
+        const x = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
+        const data = []
+        x.forEach(element => {
+            data.push({
+                "id": element.id,
+                "name": element.name,
+                "fullname": element.fullname,
+                "title": element.title,
+                "content": element.content,
+                "image": element.image,
+                "video": element.video,
+                "files": {
+                    "title": element.full_file,
+                    "link": element.file
+                },
+                "fixed": element.fixed,
+                "coun_message": element.count_messages,
+                "count_likes": element.count_likes
+            })
+        });        
+
+
+
         return this.response({
             res,
-            payload: [data]
+            payload: {data}
             
         });
 
@@ -78,7 +100,6 @@ controller.getPostByComment = async function (req, res) {
             attributes: [ 
                 [Sequelize.fn('COUNT', Sequelize.literal('CASE WHEN "fixed" = true THEN 1 END')), 'likes'],
                 [Sequelize.fn('COUNT', Sequelize.literal('coalesce(content, null)')), 'messages']
-                //[Sequelize.fn('COUNT', Sequelize.col('id')), 'messages']
             ]
         });
         const counters = count.toJSON()
@@ -179,12 +200,12 @@ controller.postFunc = async function (req, res) {
             image,
             video,
             file,
+            full_file: fil.name,
             active,
             value,
             fixed
         });
         const trk  = JSON.parse( track );
-        console.log(trk)
         let tracks = [];
         trk.forEach(element => {
             tracks.push({"id_track": element,"id_post": newdate['id']});
