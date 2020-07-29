@@ -11,6 +11,7 @@ const {
   comment,
   channel,
   //generics  
+  module_name,
   state,
   track,
   //event module
@@ -147,12 +148,40 @@ let channels = [
 
 
 //seeders carlos
+
+let module_names = [
+  {
+    "name": "community",
+    "active": true
+  },
+  {
+    "name": "event",
+    "active":true
+  },
+  {
+    "name": "ticket",
+    "active":true
+  },
+  {
+    "name": "speaker",
+    "active": true
+  },
+  {
+    "name": "attendee",
+    "active":true
+  },
+  {
+    "name": "coupon",
+    "active": true
+  }
+]
+
 let states = [
   {
     "name": "available",
     "description": "represents an availability status",
     "active": true,
-    "module_name": "coupon",
+    "id_module_name": 1,
     "blocker": false
   }
 ]
@@ -416,6 +445,7 @@ let loadtables = async () => {
   await post.bulkCreate(posts, { returning: true });
   await comment.bulkCreate(comments, { returning: true });
 
+  await module_name.bulkCreate(module_names, { returning: true});
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
 
