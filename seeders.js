@@ -298,7 +298,7 @@ let attendees = [
     "id_user": 1,
     "name": "carlos",
     "dni": "x127665254",
-    "present": true,
+    "is_present": true,
     "id_ticket_sale_detail": 1,
     "rate": null,
     "id_state": 1,
