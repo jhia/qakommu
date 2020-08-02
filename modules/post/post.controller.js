@@ -200,7 +200,7 @@ controller.postFunc = async function (req, res) {
             image,
             video,
             file,
-            full_file: fil.name,
+            //full_file: fil.name,
             active,
             value,
             fixed
