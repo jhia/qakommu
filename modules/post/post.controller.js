@@ -16,7 +16,7 @@ controller.getFunc = async function (req, res) {
     try {
         const post1= `SELECT posts.id, communities.name, 
         CONCAT(users.name,' ',users.last_name) AS fullname, 
-        title, posts.content, posts.image, posts.video, posts.file, posts.full_file, posts.fixed, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
         COUNT(COALESCE(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, 
         posts.active, posts.active, 
@@ -33,7 +33,7 @@ controller.getFunc = async function (req, res) {
 
         const post2= `SELECT posts.id, communities.name, 
         CONCAT(users.name,' ',users.last_name) AS fullname, 
-        title, posts.content, posts.image, posts.video, posts.file, posts.full_file, posts.fixed, 
+        title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
         COUNT(coalesce(comments.content, null)) AS count_messages,
         COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
                 JSON_AGG(tracks.name) as tracks,
