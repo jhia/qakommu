@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
-const controller = new Base('state');
+const controller = new Base('module_name');
 
 /*
 *Extend or overwrite the base functions
@@ -11,6 +11,7 @@ const controller = new Base('state');
 *this.db -> All models
 *this.model -> Current module model
 */
+
 
 controller.getFunc = async function (req, res) {
 
@@ -41,14 +42,11 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, id_module_name, blocker } = req.body;
+	const { name, active } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
-			description,
-			active,
-			id_module_name,
-			blocker
+			active
 		});
 		if (newdate) {
 			return this.response({
@@ -69,17 +67,14 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, id_module_name, blocker, return_data } = req.body;
+	const { name, active, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
 				id,
 				data: {
 					name,
-					description,
-					active,
-					id_module_name,
-					blocker
+					active
 				},
 				return_data
 			});
@@ -134,5 +129,6 @@ controller.deleteFunc = async function (req, res) {
 		});
 	}
 }
+
 
 module.exports = controller;

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         dni:{
             type: DataTypes.TEXT
         },
-        present: {
+        is_present: {
             type: DataTypes.BOOLEAN
         },
         id_ticket_sale_detail:{

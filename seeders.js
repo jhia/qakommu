@@ -11,6 +11,7 @@ const {
   comment,
   channel,
   //generics  
+  module_name,
   state,
   track,
   //event module
@@ -147,12 +148,40 @@ let channels = [
 
 
 //seeders carlos
+
+let module_names = [
+  {
+    "name": "community",
+    "active": true
+  },
+  {
+    "name": "event",
+    "active":true
+  },
+  {
+    "name": "ticket",
+    "active":true
+  },
+  {
+    "name": "speaker",
+    "active": true
+  },
+  {
+    "name": "attendee",
+    "active":true
+  },
+  {
+    "name": "coupon",
+    "active": true
+  }
+]
+
 let states = [
   {
     "name": "available",
     "description": "represents an availability status",
     "active": true,
-    "module_name": "coupon",
+    "id_module_name": 1,
     "blocker": false
   }
 ]
@@ -269,7 +298,7 @@ let attendees = [
     "id_user": 1,
     "name": "carlos",
     "dni": "x127665254",
-    "present": true,
+    "is_present": true,
     "id_ticket_sale_detail": 1,
     "rate": null,
     "id_state": 1,
@@ -350,7 +379,8 @@ let sponsors = [
   {
     "id_partnership": 1,
     "id_type_sponsor": 1,
-    "id_event": 1
+    "id_event": 1,
+    "active": true
   }
 ]
 
@@ -370,7 +400,8 @@ let exhibitors = [
   {
     "id_partnership": 1,
     "id_type_booth": 1,
-    "id_event": 1
+    "id_event": 1,
+    "active": true
   }
 ]
 
@@ -416,6 +447,7 @@ let loadtables = async () => {
   await post.bulkCreate(posts, { returning: true });
   await comment.bulkCreate(comments, { returning: true });
 
+  await module_name.bulkCreate(module_names, { returning: true});
   await state.bulkCreate(states, { returning: true });
   await track.bulkCreate(tracks, { returning: true });
 

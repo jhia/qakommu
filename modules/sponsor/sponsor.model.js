@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         id_event:{
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+        active: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         }
     });
 

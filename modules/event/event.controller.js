@@ -265,7 +265,7 @@ controller.getAttendeesByEvent = async function (req, res) {
         const data = await this.db.attendee.findAll({
             limit,
             offset,
-            attributes: ['id', 'id_user', 'name', 'dni', 'present', 'rate'],
+            attributes: ['id', 'id_user', 'name', 'dni', 'is_present', 'rate'],
             order,
             where: {
                 id_event
@@ -280,7 +280,7 @@ controller.getAttendeesByEvent = async function (req, res) {
                     }
                 },
                 {
-                    attributes: ['name','last_name', 'profile_photo','address','email'],
+                    attributes: ['name','last_name', 'username', 'profile_photo','address','email'],
                     model: this.db.user,
                     as: 'user'
                 },
