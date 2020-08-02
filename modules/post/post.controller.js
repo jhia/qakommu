@@ -234,7 +234,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_community, id_user, title, sub_title, content, active, value, fixed, return_data } = req.body;
+    const { id_community, id_user, title, sub_title, content, active, value, fixed, return_data, remove_image, remove_video, remove_file } = req.body;
 
 	let find_image = await this.db.post.findOne({
 		where: { id }
