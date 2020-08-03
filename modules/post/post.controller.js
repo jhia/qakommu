@@ -135,6 +135,7 @@ controller.getPostByComment = async function (req, res) {
 	  img_user: part.users.imgUser,
 
 	},
+	date: part.createdAt,
 	like: part.fixed,
 	count_likes: counters.likes,
 	count_messages: counters.messages,
