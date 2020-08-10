@@ -296,10 +296,19 @@ controller.deleteFunc = async function (req, res) {
   let find_image = await this.db.post.findOne({
     where: { id }
   });
-
-  delete_image( find_image.image.split("/")[2] );
+  if(find_image.image) delete_image( find_image.image.split("/")[2] );
 
   try {
+    await this.db.comment.destroy({
+      where: {
+	id_post: id
+      }
+    })
+
+
+
+
+
     let deleterows = await this.delete({ id });
     if (deleterows > 0) {
       return this.response({
