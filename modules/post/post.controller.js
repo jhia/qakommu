@@ -5,7 +5,7 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('post');
 const jwt = require('jsonwebtoken');
 const { QueryTypes } = require('sequelize');
-const { verify_and_upload_image_post, verify_and_upload_image_put, } = require('../../helpers/utilities')
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
 
 
 controller.getFunc = async function (req, res) {
@@ -289,7 +289,16 @@ controller.putFunc = async function (req, res) {
 }
 
 controller.deleteFunc = async function (req, res) {
+
   const { id } = req.params;
+
+
+  let find_image = await this.db.post.findOne({
+    where: { id }
+  });
+
+  delete_image( find_image.image.split("/")[2] );
+
   try {
     let deleterows = await this.delete({ id });
     if (deleterows > 0) {
@@ -299,20 +308,25 @@ controller.deleteFunc = async function (req, res) {
 	statusCode: 200
       });
     } else {
-      return this.response({
+      this.response({
 	res,
 	success: false,
 	statusCode: 202,
 	message: 'it was not possible to delete the item because it does not exist'
       });
     }
+
   } catch (error) {
-    return this.response({
+    this.response({
       res,
       success: false,
       statusCode: 500,
       message: 'something went wrong'
     });
   }
+
+
+
+
 }
 module.exports = controller;
