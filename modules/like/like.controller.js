@@ -17,7 +17,7 @@ controller.getFunc = async function (req, res) {
             id,
             limit,
             offset,
-            attributes,
+            attributes: [ 'id_post','id_user', 'reference' ],
             order
         });
 
