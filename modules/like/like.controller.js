@@ -5,6 +5,53 @@ const Base = require('../../helpers/base.controller');
 const jwt = require('jsonwebtoken');
 
 const controller = new Base('like');
+
+
+
+controller.getFunc = async function (req, res) {
+
+    const { id } = req.params;
+    const { limit, offset, order, attributes } = req.body;
+    try {
+        const data = await this.getData({
+            id,
+            limit,
+            offset,
+            attributes,
+            order
+        });
+
+        return this.response({
+            res,
+            payload: [data]
+        });
+    } catch (error) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 controller.postFunc = async function (req, res) {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, 'secret');
@@ -39,6 +86,22 @@ controller.postFunc = async function (req, res) {
       message: err.message,
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

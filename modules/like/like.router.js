@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+router.get('/:id?',function(req, res){
   //HTTP get route
   likeController.getFunc(req,res);
 });
@@ -18,12 +18,12 @@ router.post('/',(req, res) => {
   likeController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   likeController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   likeController.deleteFunc(req,res);
 });
