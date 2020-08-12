@@ -14,12 +14,13 @@ controller.getFunc = async function (req, res) {
   const { sequelize } = this.db
 
   try {
+
     const post1= `SELECT posts.id, communities.name, 
       CONCAT(users.name,' ',users.last_name) AS fullname, 
-      title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
-      COUNT(COALESCE(comments.content, null)) AS count_messages,
-      COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, 
+      title, posts.content, posts.image, posts.video, posts.file, 
+      COUNT(comments.content) AS count_messages,
       posts.active, posts.active, 
+      COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
       JSON_AGG(tracks.name) as tracks,
       posts."createdAt", posts."updatedAt"
     FROM posts 
@@ -33,8 +34,9 @@ controller.getFunc = async function (req, res) {
 
     const post2= `SELECT posts.id, communities.name, 
       CONCAT(users.name,' ',users.last_name) AS fullname, 
-      title, posts.content, posts.image, posts.video, posts.file, posts.fixed, 
-      COUNT(coalesce(comments.content, null)) AS count_messages,
+      title, posts.content, posts.image, posts.video, posts.file, 
+      COUNT(comments.content) AS count_messages,
+      posts.active, posts.active, 
       COUNT(CASE WHEN comments.fixed = true THEN 1 END) AS count_likes, posts.active, posts.active, 
       JSON_AGG(tracks.name) as tracks,
       posts."createdAt", posts."updatedAt"
@@ -46,27 +48,28 @@ controller.getFunc = async function (req, res) {
     LEFT JOIN tracks ON tracks.id = track_posts.id_track
     GROUP BY posts.id, communities.name,fullname`;
 
-    const query_post = id ? post1 : post2        
-    const x = await sequelize.query(`${query_post}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
-    const data = []
-    x.forEach(element => {
-      data.push({
-	"id": element.id,
-	"name": element.name,
-	"fullname": element.fullname,
-	"date": element.createdAt,
-	"title": element.title,
-	"content": element.content,
-	"image": element.image,
-	"video": element.video,
-	"files": element.file,
-	"fixed": element.fixed,
-	"coun_message": element.count_messages,
-	"count_likes": element.count_likes
-      })
-    });        
+    const query = id ? post1 : post2        
+    const query_post = await sequelize.query(`${query}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
+    const total_like = await sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:id}, type: QueryTypes.SELECT });
 
+    const data = query_post.map(x => { 
+      let rx = {};
 
+      rx= {
+	id: x.id,
+	name: x.name,
+	fullname: x.fullname,
+	date: x.createdAt,
+	title: x.title,
+	content: x.content,
+	image: x.image,
+	video: x.video,
+	files: x.file,
+	coun_message: x.count_messages,
+	count_fixed: parseInt(total_like[0].total_likes) 
+      };
+      return rx;
+    });
 
     return this.response({
       res,
@@ -88,68 +91,66 @@ controller.getPostByComment = async function (req, res) {
 
   const { id_post } = req.params;
   const { limit, offset, order, attributes } = req.body;
-  const { Sequelize } = this.db
+  const { sequelize } = this.db
 
   try { 
 
-    const count = await this.db.comment.findOne({
-      limit,
-      offset,
-      attributes: [ 
-	[Sequelize.fn('COUNT', Sequelize.literal('CASE WHEN "fixed" = true THEN 1 END')), 'likes'],
-	[Sequelize.fn('COUNT', Sequelize.literal('coalesce(content, null)')), 'messages']
-      ]
-    });
-    const counters = count.toJSON()
+    const query= `SELECT
+    DISTINCT ON (comments.id) comments.id,
+      comments.id_user,
+      comments.id_post,
+      users.username as alias,
+      CONCAT(users.name,' ',users.last_name) AS author,
+      users.profile_photo as img_user,
+      comments."createdAt",
+      comments.reference as reference_coment,
+      COUNT( CASE WHEN comments.reference isnull THEN 1 END ) as count_reference_comment,
+      likes.reference as reference_likes,
+      COUNT(likes.reference) as count_refence_like,
+      comments.image,
+      comments.video,
+      comments.file,
+      comments.content,
+      comments.active
+    FROM 
+    comments
+    LEFT JOIN users ON comments.id_user = users.id
+    LEFT JOIN likes ON comments.id_user = likes.id_user
+    WHERE comments.id_post =:id
+    GROUP BY content,author,alias,img_user,comments.id_user,comments.id_post,comments.active,comments.id,likes.reference
+    ORDER BY comments.id
+    `;
+    const query_post = await sequelize.query(`${query}`, { replacements:{id: id_post}, type: sequelize.QueryTypes.SELECT });
 
-    const data_comment = await this.db.comment.findAll({
-      limit,
-      offset,
-      attributes: ['id','id_post','active','content','image','video','file','fixed','reference','createdAt'],
-      order,
-      where: { id_post },
-      include: [
-	{
-	  attributes: [ [Sequelize.fn('concat', Sequelize.col('name'), ' ', Sequelize.col('last_name')), 'name' ], 'username', ['profile_photo', 'imgUser']],
-	  model: this.db.user,
-	  as: 'users'
-	},
-	{
-	  attributes: ['id_user','createdAt'],
-	  model: this.db.post,
-	  as: 'posts',
-	  where: { id: id_post },
-	}
-      ]
-    });
+    const total_like = await sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:id_post}, type: QueryTypes.SELECT });
 
-    const copy_data = { ...data_comment }
-    let data_result = []
-    _.forEach(copy_data, function(value, key) {
-      const part = value.toJSON()
-      const fields = {
-	id: part.id,
+    const data = query_post.map(x => {
+      console.log(x)
+      let rx = {}
+      rx = {
+	id: x.id,
 	user: {
-	  alias: part.users.username,
-	  author: part.users.name,
-	  img_user: part.users.imgUser,
-
+	  id_user: x.id_user,
+	  alias: x.alias,
+	  author: x.author,
+	  img_user: x.img_user
 	},
-	date: part.createdAt,
-	like: part.fixed,
-	count_likes: counters.likes,
-	count_messages: counters.messages,
-	comment: part.content,
-	image: [ part.image ? req.headers.host+part.image : null ],
-	video: [ part.video ],
-	file: [ part.file ]
+	date: x.createdAt,
+	like: parseInt(total_like[0].total_likes),
+	count_likes: x.count_refence_like,
+	count_message: x.count_reference_comment,
+	reference: x.reference_coment,
+	comment: x.content,
+	image: [x.image],
+	video: [x.video],
+	file: [x.file]
       }
-      data_result.push(fields)
-    });
+      return rx;
+    })
 
     return this.response({
       res,
-      payload: [data_result]
+      payload: [data]
     });
   } catch (error) {
     return this.response({

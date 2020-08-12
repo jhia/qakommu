@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         video: DataTypes.TEXT,        
         file: DataTypes.TEXT,        
         active: DataTypes.BOOLEAN,
-        value: DataTypes.INTEGER,
-        fixed: DataTypes.BOOLEAN
+        //value: DataTypes.INTEGER,
+        //fixed: DataTypes.BOOLEAN
     });
 
     post.associate = function(models){
