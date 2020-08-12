@@ -12,7 +12,7 @@ controller.getFunc = async function (req, res) {
   const { sequelize } = this.db
 
   try {
-    const query_like= `SELECT
+    const query = `SELECT
     id_post,
       id_user,
       reference,
@@ -27,22 +27,25 @@ controller.getFunc = async function (req, res) {
     FROM LIKES WHERE id_post =:id`
 
 
-    const x = await sequelize.query(`${query_like}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
+    const query_like = await sequelize.query(`${query}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
     const y = await sequelize.query(`${query_total_like}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
     const total_likes = y[0].total_likes
-    const data = []
-
-    x.forEach(element => {
-      data.push({
-	"id_post": element.id_post,
-	"id_user": element.id_user,
-	"reference": element.reference,
-	"count_reference": element.count_reference
-
-      })
-    });        
 
 
+    const data = query_like.map(x => {
+      console.log(x)
+      let rx = {};
+
+      rx = {
+	id_post: x.id_post,
+	id_user: x.id_user,
+	reference: x.reference,
+	count_reference: x.count_reference
+      }
+      return rx;
+
+
+    })
 
     return this.response({
       res,
