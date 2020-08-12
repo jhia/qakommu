@@ -9,6 +9,7 @@ const {
   user_type,
   post,
   comment,
+  like,
   channel,
   //generics  
   module_name,
@@ -48,6 +49,7 @@ let resources = [
   { "name": "permission", "url_resource": "/api/permission" },
   { "name": "post", "url_resource": "/api/post" },
   { "name": "comment", "url_resource": "/api/comment/" },
+  { "name": "like", "url_resource": "/api/like/" },
   { "name": "message", "url_resource": "/api/message" },
   { "name": "channel", "url_resource": "/api/channel" },
   { "name": "event", "url_resource": "/api/event" },
@@ -71,13 +73,14 @@ let permissions = [
   { "id_role": 1, "id_resource": 4, "_create": true, "_read": true, "_update": true, "_delete": true }, // permission
   { "id_role": 1, "id_resource": 5, "_create": true, "_read": true, "_update": true, "_delete": true }, // post
   { "id_role": 1, "id_resource": 6, "_create": true, "_read": true, "_update": true, "_delete": true }, // comment
-  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true }, // message
-  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true }, // channel
-  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }, // event
-  { "id_role": 1, "id_resource": 10, "_create": true, "_read": true, "_update": true, "_delete": true }, // user
-  { "id_role": 1, "id_resource": 11, "_create": true, "_read": true, "_update": true, "_delete": true }, // partnership  
-  { "id_role": 1, "id_resource": 12, "_create": true, "_read": true, "_update": true, "_delete": true }, // ticket  
-  { "id_role": 1, "id_resource": 13, "_create": true, "_read": true, "_update": true, "_delete": true }, // speaker  
+  { "id_role": 1, "id_resource": 7, "_create": true, "_read": true, "_update": true, "_delete": true }, // like
+  { "id_role": 1, "id_resource": 8, "_create": true, "_read": true, "_update": true, "_delete": true }, // message
+  { "id_role": 1, "id_resource": 9, "_create": true, "_read": true, "_update": true, "_delete": true }, // channel
+  { "id_role": 1, "id_resource": 10, "_create": true, "_read": true, "_update": true, "_delete": true }, // event
+  { "id_role": 1, "id_resource": 11, "_create": true, "_read": true, "_update": true, "_delete": true }, // user
+  { "id_role": 1, "id_resource": 12, "_create": true, "_read": true, "_update": true, "_delete": true }, // partnership  
+  { "id_role": 1, "id_resource": 13, "_create": true, "_read": true, "_update": true, "_delete": true }, // ticket  
+  { "id_role": 1, "id_resource": 14, "_create": true, "_read": true, "_update": true, "_delete": true }, // speaker  
 ];
 
 let communities = [
@@ -118,9 +121,10 @@ let comments = [
     "video": "",
     "file": "",
     "fixed": true,
+    "reference": null,
   },  
   {
-    "id_user": 2,        
+    "id_user": 1,        
     "id_post": 1,        
     "active": true,
     "content": "Es por eso que una gran habilidad que tiene múltiples beneficios",
@@ -128,9 +132,10 @@ let comments = [
     "video": "",
     "file": "",
     "fixed": true,
+    "reference": 2,
   },  
   {
-    "id_user": 2,        
+    "id_user": 1,        
     "id_post": 1,        
     "active": true,
     "content": "Después de todo, es tu trabajo",
@@ -138,8 +143,28 @@ let comments = [
     "video": "",
     "file": "",
     "fixed": false,
+    "reference": 2,
   }  
 ]
+
+let likes = [
+  {
+    "id_post": 1,
+    "id_user": 1,
+    "reference": null
+  },
+  {
+    "id_post": 1,
+    "id_user": 2,
+    "reference": 1
+  },
+  {
+    "id_post": 1,
+    "id_user": 2,
+    "reference": 1
+  }
+]
+
 
 let channels = [
   { "name": "python", "description": "descrition python", "id_community": 1 },  
@@ -232,7 +257,7 @@ let events = [
     "id_repository": 1,
     "id_state": 1
   },
-  
+
 ]
 
 
@@ -411,7 +436,7 @@ let sessions = [
     "name": "dev game",
     "description": "this conference is aimed at all video game developers",
     "id_room": 1,
-    
+
     "order":1,
     "start": "2020-10-11",
     "end": "2020-10-11",
@@ -446,6 +471,7 @@ let loadtables = async () => {
   await channel.bulkCreate(channels, { returning: true });
   await post.bulkCreate(posts, { returning: true });
   await comment.bulkCreate(comments, { returning: true });
+  await like.bulkCreate(likes, { returning: true });
 
   await module_name.bulkCreate(module_names, { returning: true});
   await state.bulkCreate(states, { returning: true });
@@ -472,8 +498,8 @@ let loadtables = async () => {
 
   await type_booth.bulkCreate(type_booths, { returning: true });
   await exhibitor.bulkCreate(exhibitors, { returning: true });
-  
-  
+
+
   await track_session.bulkCreate(track_sessions, {returning:true});
   await session_attendee.bulkCreate(session_attendees, {returning:true});
 }
