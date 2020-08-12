@@ -15,15 +15,15 @@ controller.getFunc = async function (req, res) {
     const query = `SELECT
     id_post,
       id_user,
-      reference,
-      COUNT(reference) AS count_reference
+      reference_message,
+      COUNT(reference_message) AS count_reference
     FROM LIKES
     WHERE id_post =:id
-    GROUP BY id_post,reference,id_user
-    HAVING COUNT(reference) > 0`;
+    GROUP BY id_post,reference_message,id_user
+    HAVING COUNT(reference_message) > 0`;
 
     const query_total_like= `SELECT
-    COUNT(*) as total_likes
+    COUNT(id) as total_likes
     FROM LIKES WHERE id_post =:id`
 
 
@@ -39,7 +39,7 @@ controller.getFunc = async function (req, res) {
       rx = {
 	id_post: x.id_post,
 	id_user: x.id_user,
-	reference: x.reference,
+	reference: x.reference_message,
 	count_reference: x.count_reference
       }
       return rx;
@@ -84,13 +84,13 @@ controller.postFunc = async function (req, res) {
 
   const id_community = search_id_community['id_community'];
 
-  const { id_post, reference } = req.body;
+  const { id_post, reference_message } = req.body;
   try {
     let newdate = await this.insert({
       id_post,
       id_user,
       id_community,
-      reference
+      reference_message
     });
     if (newdate) {
       return this.response({

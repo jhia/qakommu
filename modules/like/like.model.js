@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const like = sequelize.define('like', {
     id_post: DataTypes.INTEGER,        
     id_user: DataTypes.INTEGER,        
-    reference: DataTypes.INTEGER,        
+    reference_message: DataTypes.INTEGER,        
   });
 
   like.associate = function(models){

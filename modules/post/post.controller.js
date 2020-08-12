@@ -96,30 +96,29 @@ controller.getPostByComment = async function (req, res) {
   try { 
 
     const query= `SELECT
-    DISTINCT ON (comments.id) comments.id,
-      comments.id_user,
-      comments.id_post,
-      users.username as alias,
-      CONCAT(users.name,' ',users.last_name) AS author,
-      users.profile_photo as img_user,
-      comments."createdAt",
-      comments.reference as reference_coment,
-      COUNT( CASE WHEN comments.reference isnull THEN 1 END ) as count_reference_comment,
-      likes.reference as reference_likes,
-      COUNT(likes.reference) as count_refence_like,
-      comments.image,
-      comments.video,
-      comments.file,
-      comments.content,
-      comments.active
-    FROM 
-    comments
-    LEFT JOIN users ON comments.id_user = users.id
-    LEFT JOIN likes ON comments.id_user = likes.id_user
-    WHERE comments.id_post =:id
-    GROUP BY content,author,alias,img_user,comments.id_user,comments.id_post,comments.active,comments.id,likes.reference
-    ORDER BY comments.id
-    `;
+          DISTINCT ON (comments.id) comments.id,
+              comments.id_user,
+              comments.id_post,
+              users.username as alias,
+              CONCAT(users.name,' ',users.last_name) AS author,
+              users.profile_photo as img_user,
+              comments."createdAt",
+              comments.reference as reference_coment,
+              COUNT( CASE WHEN comments.reference isnull THEN 1 END ) as count_reference_comment,
+              likes.reference_message as reference_likes,
+              COUNT(likes.reference_message) as count_refence_like,
+              comments.image,
+              comments.video,
+               comments.file,
+               comments.content,
+               comments.active
+           FROM 
+           comments
+           LEFT JOIN users ON comments.id_user = users.id
+           LEFT JOIN likes ON comments.id_user = likes.id_user
+           WHERE comments.id_post =:id
+           GROUP BY content,author,alias,img_user,comments.id_user,comments.id_post,comments.active,comments.id,likes.reference_message
+         ORDER BY comments.id`;
     const query_post = await sequelize.query(`${query}`, { replacements:{id: id_post}, type: sequelize.QueryTypes.SELECT });
 
     const total_like = await sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:id_post}, type: QueryTypes.SELECT });

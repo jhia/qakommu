@@ -151,17 +151,17 @@ let likes = [
   {
     "id_post": 1,
     "id_user": 1,
-    "reference": null
+    "reference_message": null
   },
   {
     "id_post": 1,
     "id_user": 2,
-    "reference": 1
+    "reference_message": 1
   },
   {
     "id_post": 1,
     "id_user": 2,
-    "reference": 1
+    "reference_message": 1
   }
 ]
 
