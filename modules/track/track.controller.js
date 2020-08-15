@@ -42,13 +42,13 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, module_name } = req.body;
+	const { name, description, active, id_module_name } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			module_name
+			id_module_name
 		});
 		if (newdate) {
 			return this.response({
@@ -69,7 +69,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, module_name, return_data } = req.body;
+	const { name, description, active, id_module_name, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -79,7 +79,7 @@ controller.putFunc = async function (req, res) {
 					name,
 					description,
 					active,
-					module_name
+					id_module_name
 				},
 				return_data
 			}

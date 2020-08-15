@@ -3,33 +3,41 @@
 module.exports = (sequelize, DataTypes) => {
     const track = sequelize.define('track', {
         id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
         },
-        name:{
+        name: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        description:{
+        description: {
             type: DataTypes.TEXT
         },
-        active:{
+        active: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        module_name:{
-            type: DataTypes.TEXT,
+        id_module_name: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     });
 
-    track.associate = function(models){
+    track.associate = function (models) {
         track.hasMany(models.track_post, {
             foreignKey: 'id_track',
             as: 'track_posts'
-          });
+        });
+
+
+        // track to module
+        track.belongsTo(models.module_name, {
+            foreignKey: 'id_module_name',
+            as: 'module_name'
+        });
+
     }
 
     return track;
