@@ -216,7 +216,7 @@ let tracks = [
     "name": "back-end",
     "description": "is the logic that is processed on the server side",
     "active": true,
-    "module_name": "community"
+    "id_module_name": 1
   }
 ]
 

@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_module_name',
             as: 'module_name_state'
         });
+
+        module_name.hasMany(models.track, {
+            foreignKey: 'id_module_name',
+            as: 'module_name_track' 
+        });
     }
 
     return module_name;
