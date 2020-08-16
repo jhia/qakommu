@@ -1,33 +1,33 @@
-'use strict'
+  'use strict'
 
-const _ = require('lodash');
-const Base = require('../../helpers/base.controller');
+  const _ = require('lodash');
+  const Base = require('../../helpers/base.controller');
 
-const controller = new Base('partnership');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
+  const controller = new Base('partnership');
+  const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
 
-/*
-*Extend or overwrite the base functions
-*All the controllers already have implicit the models by:
-*this.db -> All models
-*this.model -> Current module model
-*/
+  /*
+  *Extend or overwrite the base functions
+  *All the controllers already have implicit the models by:
+  *this.db -> All models
+  *this.model -> Current module model
+  */
 
 
-controller.getFunc = async function (req, res) {
-    const { id } = req.params;
-    const { limit, offset, order, attributes } = req.body;
-    try {
-        const data = await this.getData({
-            id,
-            limit,
-            offset,
-            attributes,
-            order
-        });
-        this.response({
-            res,
-            payload: { data }
+  controller.getFunc = async function (req, res) {
+      const { id } = req.params;
+      const { limit, offset, order, attributes } = req.body;
+      try {
+	  const data = await this.getData({
+	      id,
+	      limit,
+	      offset,
+	      attributes,
+	      order
+	  });
+	  this.response({
+	      res,
+	      payload: { data }
         });
     } catch (error) {
         this.response({
@@ -77,19 +77,17 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { name, description, registry_number, active, web, return_data, remove_image } = req.body;
+    const { name, description, registry_number, active, web, return_data } = req.body;
     try {
 
         let find_image = await this.db.partnership.findOne({
             where: { id }
         });
     
-        const fnd_image = find_image ? find_image.logo : null
+        const fnd_image = find_image.logo ? find_image.logo : null
         const avatar = req.files ? req.files.logo : null;
-        const rm_image = remove_image ? remove_image : '0';
     
-        const logo = verify_and_upload_image_put( avatar, "partnership", fnd_image, rm_image );
-    
+        const logo = avatar && verify_and_upload_image_put( avatar, "partnership", fnd_image );
         let result = await this.update(
             {
                 id,
@@ -142,8 +140,7 @@ controller.deleteFunc = async function (req, res) {
         let find_image = await this.db.partnership.findOne({
             where: { id }
         });
-         
-        delete_image( find_image.logo.split("/")[2] );
+        if(find_image.logo) delete_image( find_image.logo.split("/")[2] );
     
 
         let deleterows = await this.delete({ id });
