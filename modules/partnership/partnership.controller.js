@@ -18,16 +18,25 @@
       const { id } = req.params;
       const { limit, offset, order, attributes } = req.body;
       try {
-	  const data = await this.getData({
+	  const data1 = await this.getData({
 	      id,
 	      limit,
 	      offset,
 	      attributes,
 	      order
 	  });
+	
+	const update_logo_path  = x => x.map(x => {
+	    x.logo = x.logo && '/uploads/'+x.logo;
+	  return x;
+	})
+	
+	    data1.logo = data1.logo && '/uploads/'+data1.logo;
+
+	console.log(data1)
 	  this.response({
 	      res,
-	      payload: { data }
+	      payload:  id?data1:update_logo_path(data1) 
         });
     } catch (error) {
         this.response({
