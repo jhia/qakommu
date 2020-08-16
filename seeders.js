@@ -202,13 +202,50 @@ let module_names = [
 ]
 
 let states = [
+  //ticket seeders
   {
-    "name": "available",
-    "description": "represents an availability status",
+    "name": "Avaliable",
+    "description": "Ready for immediate use",
     "active": true,
-    "id_module_name": 1,
+    "id_module_name": 3,
     "blocker": false
-  }
+  },
+  {
+    "name": "Sold Out",
+    "description": "Is having all available tickets or accommodations sold completely and especially in advance",
+    "active": true,
+    "id_module_name": 3,
+    "blocker": true
+  },
+  {
+    "name": "Reserved",
+    "description": "Is when it is no longer available to you",
+    "active": true,
+    "id_module_name": 3,
+    "blocker": false
+  },
+  //Event
+  {
+    "name": "Progress",
+    "description": "Ready for immediate use",
+    "active": true,
+    "id_module_name": 2,
+    "blocker": false
+  },
+  {
+    "name": "Draft",
+    "description": "",
+    "active": true,
+    "id_module_name": 2,
+    "blocker": true
+  },
+  {
+    "name": "Reserved",
+    "description": "",
+    "active": true,
+    "id_module_name": 2,
+    "blocker": false
+  },
 ]
 
 let tracks = [
