@@ -66,7 +66,7 @@ controller.getFunc = async function (req, res) {
 	date: x.createdAt,
 	title: x.title,
 	content: x.content,
-	image: x.image,
+	image: x.image && "/uploads/"+x.image,
 	video: x.video,
 	files: x.file,
 	coun_message: x.count_messages,
