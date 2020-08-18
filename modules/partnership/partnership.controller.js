@@ -149,7 +149,7 @@ controller.deleteFunc = async function (req, res) {
         let find_image = await this.db.partnership.findOne({
             where: { id }
         });
-        if(find_image.logo) delete_image( find_image.logo.split("/")[2] );
+        if(find_image.logo) delete_image( find_image.logo );
     
 
         let deleterows = await this.delete({ id });
