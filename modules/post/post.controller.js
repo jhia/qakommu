@@ -30,7 +30,7 @@ controller.getFunc = async function (req, res) {
     LEFT JOIN comments ON posts.id = comments.id_post
     LEFT JOIN track_posts ON posts.id = track_posts.id_post
     LEFT JOIN tracks ON tracks.id = track_posts.id_track
-        LEFT JOIN image_posts ON posts.id = image_posts.id_post
+    LEFT JOIN image_posts ON posts.id = image_posts.id_post
     WHERE posts.id =:id
     GROUP BY posts.id, communities.name,fullname`;
 
@@ -49,7 +49,7 @@ controller.getFunc = async function (req, res) {
     LEFT JOIN comments ON posts.id = comments.id_post
     LEFT JOIN track_posts ON posts.id = track_posts.id_post
     LEFT JOIN tracks ON tracks.id = track_posts.id_track
-        LEFT JOIN image_posts ON posts.id = image_posts.id_post
+    LEFT JOIN image_posts ON posts.id = image_posts.id_post
 
     GROUP BY posts.id, communities.name,fullname`;
 
@@ -63,7 +63,6 @@ controller.getFunc = async function (req, res) {
     const data = query_post.map(x => { 
       const total_like = y => sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:y.id}, type: QueryTypes.SELECT });
       let rx = {};
-      console.log(x.image_path,'---------------------------------------')
 
       rx= {
 	id: x.id,
@@ -215,8 +214,7 @@ controller.postFunc = async function (req, res) {
       fixed
     });
     const image = multi_verify_and_upload_image_post(img,"post_image", newdate['id']);
-   await image_post.bulkCreate(image, { returning: true });
-    console.log('paso')
+    await image_post.bulkCreate(image, { returning: true });
     const trk  = JSON.parse( track );
     let tracks = [];
     trk.forEach(element => {
@@ -248,44 +246,65 @@ controller.putFunc = async function (req, res) {
   const { id } = req.params;
   const { id_community, id_user, title, sub_title, content, active, value, fixed, return_data, remove_image, remove_video, remove_file } = req.body;
 
-  let find_image = await this.db.post.findOne({
-    where: { id }
+  const find_image = await this.db.image_post.findAll({
+    where: { id_post: id },
+    attributes: ['route']
   });
 
-  const fnd_image = find_image ? find_image.image : null
-  const fnd_video = find_image ? find_image.video : null
-  const fnd_file = find_image ? find_image.file : null
 
-  const img = req.files ? req.files.image: null;
-  const vid = req.files ? req.files.video: null;
-  const fil = req.files ? req.files.file: null;
+  const y = x => x.map(x => x.route);
+  console.log('------------------------')
+  //console.log(y(find_image));
+  console.log('------------------------')
 
-  const rm_image = remove_image ? remove_image : '0';
-  const rm_video = remove_video ? remove_video : '0';
-  const rm_file = remove_file ? remove_file : '0';
 
-  const image = verify_and_upload_image_put(img,"post_image", fnd_image, rm_image);
-  const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
-  const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
 
-  await this.update(
-    {
-      id,
-      data: {
-	id_community,
-	id_user,        
-	title,
-	sub_title,
-	content,
-	image,
-	video,
-	file, 
-	active,
-	value,
-	fixed
-      },
-      return_data
-    })
+
+  //const fnd_image = find_image ? find_image.image : null
+  const fnd_image = find_image ? y(find_image) : null
+
+const fnd_video = find_image ? find_image.video : null
+const fnd_file = find_image ? find_image.file : null
+
+const img = req.files ? req.files.image: null;
+const vid = req.files ? req.files.video: null;
+const fil = req.files ? req.files.file: null;
+
+const rm_image = remove_image ? remove_image : '0';
+const rm_video = remove_video ? remove_video : '0';
+const rm_file = remove_file ? remove_file : '0';
+
+// const image = verify_and_upload_image_put(img,"post_image", fnd_image, rm_image);
+
+const image = multi_verify_and_upload_image_post(img,"post_image", newdate['id']);
+await image_post.bulkCreate(image, { returning: true });
+
+const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
+const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
+
+
+
+
+
+
+await this.update(
+  {
+    id,
+    data: {
+      id_community,
+      id_user,        
+      title,
+      sub_title,
+      content,
+      image,
+      video,
+      file, 
+      active,
+      value,
+      fixed
+    },
+    return_data
+  })
     .then(( result )=>{
       this.response({
 	res,

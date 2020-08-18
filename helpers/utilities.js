@@ -49,6 +49,7 @@ const verify_and_upload_image_post = (file,name_image) => {
 }
 
 const multi_verify_and_upload_image_post = ( file, name_image, id_post ) => {
+  console.log(file)
 
   let send = []
   if(!file) return send;
