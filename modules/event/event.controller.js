@@ -280,7 +280,7 @@ controller.getAttendeesByEvent = async function (req, res) {
                     }
                 },
                 {
-                    attributes: ['name','last_name', 'username', 'profile_photo','address','email'],
+                    attributes: ['name','last_name', 'username', 'profile_photo','address','email','phone'],
                     model: this.db.user,
                     as: 'user'
                 },

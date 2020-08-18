@@ -344,9 +344,8 @@ let tickets = [
     "quantity_total": 100,
     "quantity_current": 100,
     "reserved": 0,
-    "max_ticket_sell": 0,
-    "min_ticket_sell": 0,
-    "id_coupon": 1,
+    "max_ticket_sell": 5,
+    "min_ticket_sell": 1,
     "start": "2020-05-05",
     "end": "2020-05-15"
   }
