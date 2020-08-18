@@ -48,13 +48,31 @@ const verify_and_upload_image_post = (file,name_image) => {
   return send
 }
 
+const multi_verify_and_upload_image_post = ( file, name_image, id_post ) => {
+
+  let send = []
+  if(!file) return send;
+  if(!Array.isArray(file)) file = [file]
+    file.map(x => {
+      let identify = makeid(6);
+      upload_images(x, name_image, identify);
+      send.push( { "id_post": id_post, "route": send_image_name(x, name_image, identify).profile_photo } );
+    })
+  return send
+}
+
+
+
+
+
+
 const verify_and_upload_image_put = (file,name_image,old_image) => {
   console.log(file,name_image,old_image)
   let send = null;
   let identify = makeid(6);
- 
+
   if(old_image) delete_image(old_image)
- 
+
   upload_images(file,name_image,identify);
   send = send_image_name(file,name_image,identify).profile_photo;
   return send
@@ -158,6 +176,7 @@ module.exports = {
   response,
   makeid,
   verify_and_upload_image_post,
+  multi_verify_and_upload_image_post,
   verify_and_upload_image_put,
   delete_image
 };
