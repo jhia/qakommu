@@ -175,26 +175,32 @@ let channels = [
 //seeders carlos
 
 let module_names = [
+  //1
   {
     "name": "community",
     "active": true
   },
+  //2
   {
     "name": "event",
     "active":true
   },
+  //3
   {
     "name": "ticket",
     "active":true
   },
+  //4
   {
     "name": "speaker",
     "active": true
   },
+  //5
   {
     "name": "attendee",
     "active":true
   },
+  //6
   {
     "name": "coupon",
     "active": true
@@ -244,6 +250,21 @@ let states = [
     "description": "",
     "active": true,
     "id_module_name": 2,
+    "blocker": false
+  },
+  //Attendes
+  {
+    "name": "Confirmed",
+    "description": "",
+    "active": true,
+    "id_module_name": 5,
+    "blocker": true
+  },
+  {
+    "name": "Unconfirmed",
+    "description": "",
+    "active": true,
+    "id_module_name": 5,
     "blocker": false
   },
 ]
@@ -323,9 +344,8 @@ let tickets = [
     "quantity_total": 100,
     "quantity_current": 100,
     "reserved": 0,
-    "max_ticket_sell": 0,
-    "min_ticket_sell": 0,
-    "id_coupon": 1,
+    "max_ticket_sell": 5,
+    "min_ticket_sell": 1,
     "start": "2020-05-05",
     "end": "2020-05-15"
   }

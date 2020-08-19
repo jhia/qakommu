@@ -41,10 +41,6 @@ module.exports = (sequelize, DataTypes) => {
         min_ticket_sell: {
             type: DataTypes.INTEGER
         },
-        id_coupon: {
-            allowNull: true,
-            type: DataTypes.INTEGER
-        },
         start:{
             type: DataTypes.DATE
         },
@@ -69,11 +65,6 @@ module.exports = (sequelize, DataTypes) => {
             as: 'event'
         });
 
-        //ticket to coupon 
-        ticket.belongsTo(models.coupon, {
-            foreignKey: 'id_coupon',
-            as: 'coupon'
-        });
     }
 
     return ticket;

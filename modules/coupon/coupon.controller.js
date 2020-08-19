@@ -39,6 +39,38 @@ controller.getFunc = async function (req, res) {
 
 }
 
+controller.couponCalculator = async function (req, res) {
+    const { p, d } = req.params;
+    const base = 100;
+    try {
+        if (p > 0 && d > 0 && d <= 100) {
+            let decimalPercentage = d / base;
+            let rest = p * decimalPercentage;
+            let result = p - rest;
+            return this.response({
+                res,
+                statusCode: 201,
+                payload: [result]
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'Does not comply with the indicated format.'
+            });
+        }
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
+
+}
+
 controller.postFunc = async function (req, res) {
 
     const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active } = req.body;
