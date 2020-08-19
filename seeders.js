@@ -324,7 +324,7 @@ let coupons = [
     "name": "early bird",
     "description": "coupon available for morning purchases",
     "free": false,
-    "percentage": 40,
+    "percentage": 50,
     "id_state": 1,
     "applicable_amount": 1,
     "applicable_total_amount": false,
@@ -340,7 +340,7 @@ let tickets = [
     "description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
     "id_state": 1,
     "id_event": 1,
-    "base_price": 56.66,
+    "base_price": 120,
     "quantity_total": 100,
     "quantity_current": 100,
     "reserved": 0,
@@ -356,7 +356,7 @@ let ticket_sales = [
     "id_ticket": 1,
     "id_user": 1,
     "count": 1,
-    "unit_amount": 160,
+    "unit_amount": 150,
     "total_amount": 150,
     "total_amount_paid": 150,
     "paying_name": "john smith",
@@ -364,7 +364,7 @@ let ticket_sales = [
     "dni_payer": "E25331234",
     "name_ticket": "any name ticket",
     "name_event": "any name event",
-    "id_coupon":1
+    "id_coupon": null
   }
 ]
 

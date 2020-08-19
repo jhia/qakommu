@@ -42,48 +42,94 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event } = req.body;
-    
+    const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, name_event, id_coupon } = req.body;
     try {
-        if(count < 1 || count === null || count == null || id_ticket < 1 || unit_amount < 0 || total_amount < 0 || total_amount_paid < 0 ){
+        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 || name_event.length <= 0 ) {
             return this.response({
                 res,
                 success: false,
                 statusCode: 500,
                 message: 'something went wrong, verify the data sent!',
             });
-        }
-        let newdate = await this.insert({
-            id_ticket,
-            id_user,
-            count,
-            unit_amount,
-            total_amount,
-            total_amount_paid,
-            paying_name,
-            paying_address,
-            dni_payer,
-            name_ticket,
-            name_event
-        });
-        
-        if (newdate.id > 0 ) {
-            let i;
-            let uuid;
-            let id_ticket_sale = newdate.id;
-            let deactivated = false;
-            for(i = 0; i < count; i++){
-                await this.db.ticket_sale_detail.create({
-                    uuid, id_ticket_sale, deactivated
+        } else {
+            //in this step we are going to verify the actual data of the ticket
+            let requestedticket = await this.db.ticket.findOne({
+                where: { id: id_ticket }
+            });
+
+            if (!requestedticket) {
+                return this.response({
+                    res,
+                    success: false,
+                    statusCode: 500,
+                    message: 'something went wrong, the selected ticket is not available',
+                });
+            } else {
+                let ticket_total_amount = count * requestedticket.base_price
+                let ticket_total_amount_paid = null;
+                //in this part we are going to verify and calculate the coupon  
+                if (id_coupon > 0) {
+                    let ticketsalecoupon = await this.db.coupon.findOne({
+                        where: { id: id_coupon }
+                    });
+                    if (!ticketsalecoupon) {
+                        return this.response({
+                            res,
+                            success: false,
+                            statusCode: 500,
+                            message: 'something went wrong, the coupon is not available',
+                        });
+                    } else {
+                        //coupon calculator
+                        if (ticket_total_amount > 0 && ticketsalecoupon.percentage > 0 && ticketsalecoupon.percentage <= 100) {
+                            let decimalPercentage = ticketsalecoupon.percentage / 100;
+                            let rest = ticket_total_amount * decimalPercentage;
+                            ticket_total_amount_paid = ticket_total_amount - rest;
+                        } else {
+                            return this.response({
+                                res,
+                                success: false,
+                                statusCode: 500,
+                                message: 'something went wrong',
+                            });
+                        }
+                    }
+                }
+
+                let newdate = await this.insert({
+                    id_ticket,
+                    id_user,
+                    count,
+                    unit_amount: requestedticket.base_price,
+                    total_amount: ticket_total_amount,
+                    total_amount_paid: ticket_total_amount_paid ? ticket_total_amount_paid : ticket_total_amount,
+                    paying_name,
+                    paying_address,
+                    dni_payer,
+                    name_ticket,
+                    name_event,
+                    id_coupon
+                });
+
+                if (newdate.id > 0) {
+                    let i;
+                    let uuid;
+                    let id_ticket_sale = newdate.id;
+                    let deactivated = false;
+                    for (i = 0; i < count; i++) {
+                        await this.db.ticket_sale_detail.create({
+                            uuid, id_ticket_sale, deactivated
+                        });
+                    }
+                }
+                return this.response({
+                    res,
+                    statusCode: 201,
+                    payload: [newdate]
                 });
             }
         }
-        return this.response({
-            res,
-            statusCode: 201,
-            payload: [newdate]
-        });
-        
+
     } catch (error) {
         this.response({
             res,
@@ -96,7 +142,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event, return_data } = req.body;
+    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event, id_coupon, return_data } = req.body;
     try {
         let result = await this.update(
             {
@@ -111,8 +157,9 @@ controller.putFunc = async function (req, res) {
                     paying_name,
                     paying_address,
                     dni_payer,
-                    name_ticket, 
-                    name_event
+                    name_ticket,
+                    name_event,
+                    id_coupon
                 },
                 return_data
             });
