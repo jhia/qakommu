@@ -252,15 +252,18 @@ controller.putFunc = async function (req, res) {
     attributes: ['id_post','route']
   });
 
+  const find_vf = await this.db.post.findOne({
+    where: { id },
+    attributes: ['video','file']
+  });
+
 
   const list_image = x => x.map(x => x.route);
 
 
-  //const fnd_image = find_image ? find_image.image : null
   const fnd_image = find_image ? list_image(find_image) : null
-console.log(fnd_image)
-  const fnd_video = find_image ? find_image.video : null
-  const fnd_file = find_image ? find_image.file : null
+  const fnd_video = find_image ? find_vf.video : null
+  const fnd_file = find_image ? find_vf.file : null
 
   const img = req.files ? req.files.image: null;
   const vid = req.files ? req.files.video: null;
@@ -268,19 +271,14 @@ console.log(fnd_image)
 
 
   const image = multi_verify_and_upload_image_post(img,"post_image", id, fnd_image );
-  console.log('-------------------------------')
-  //console.log(image)
-  console.log('-------------------------------')
 
-  image.map(  )
 
   await image_post.bulkCreate(image, { returning: true, raw: true })
-  //await image_post.bulkUpdate(image, { returning: true });
-
- // const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
- // const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
 
 
+
+  const video = vid && verify_and_upload_image_put( vid, "post_video", fnd_video );
+  const file = fil && verify_and_upload_image_put( fil, "post_file", fnd_file );
 
 
 
@@ -295,8 +293,8 @@ console.log(fnd_image)
 	sub_title,
 	content,
 	//image,
-	//video,
-	//file, 
+	video,
+	file, 
 	active,
 	value,
 	fixed
@@ -344,7 +342,7 @@ console.log(fnd_image)
 controller.deleteFunc = async function (req, res) {
 
   const { id } = req.params;
-  
+
 
   let find_image = await this.db.post.findOne({
     where: { id }
