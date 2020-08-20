@@ -201,7 +201,7 @@ controller.postFunc = async function (req, res) {
     const file = verify_and_upload_image_post(fil,"post_file");
 
 
-    let newdate = await this.insert({
+    let newdata = await this.insert({
       id_community: search_id_community['id_community'],
       id_user: search_id_user['id'],
       title,
@@ -213,21 +213,21 @@ controller.postFunc = async function (req, res) {
       value,
       fixed
     });
-    const image = multi_verify_and_upload_image_post(img,"post_image", newdate['id']);
+    const image = multi_verify_and_upload_image_post(img,"post_image", newdata['id']);
     await image_post.bulkCreate(image, { returning: true });
     const trk  = JSON.parse( track );
     let tracks = [];
     trk.forEach(element => {
-      tracks.push({"id_track": element,"id_post": newdate['id']});
+      tracks.push({"id_track": element,"id_post": newdata['id']});
     });
 
     await track_post.bulkCreate(tracks, { returning: true });
 
-    if (newdate) {
+    if (newdata) {
       return this.response({
 	res,
 	statusCode: 201,
-	payload: newdate
+	payload: newdata
       });
     };
   } catch (err) {
@@ -245,66 +245,64 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
   const { id } = req.params;
   const { id_community, id_user, title, sub_title, content, active, value, fixed, return_data, remove_image, remove_video, remove_file } = req.body;
+  const { user, user_type, track_post, image_post } = this.db;
 
   const find_image = await this.db.image_post.findAll({
     where: { id_post: id },
-    attributes: ['route']
+    attributes: ['id_post','route']
   });
 
 
-  const y = x => x.map(x => x.route);
-  console.log('------------------------')
-  //console.log(y(find_image));
-  console.log('------------------------')
-
-
+  const list_image = x => x.map(x => x.route);
 
 
   //const fnd_image = find_image ? find_image.image : null
-  const fnd_image = find_image ? y(find_image) : null
+  const fnd_image = find_image ? list_image(find_image) : null
+console.log(fnd_image)
+  const fnd_video = find_image ? find_image.video : null
+  const fnd_file = find_image ? find_image.file : null
 
-const fnd_video = find_image ? find_image.video : null
-const fnd_file = find_image ? find_image.file : null
-
-const img = req.files ? req.files.image: null;
-const vid = req.files ? req.files.video: null;
-const fil = req.files ? req.files.file: null;
-
-const rm_image = remove_image ? remove_image : '0';
-const rm_video = remove_video ? remove_video : '0';
-const rm_file = remove_file ? remove_file : '0';
-
-// const image = verify_and_upload_image_put(img,"post_image", fnd_image, rm_image);
-
-const image = multi_verify_and_upload_image_post(img,"post_image", newdate['id']);
-await image_post.bulkCreate(image, { returning: true });
-
-const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
-const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
+  const img = req.files ? req.files.image: null;
+  const vid = req.files ? req.files.video: null;
+  const fil = req.files ? req.files.file: null;
 
 
+  const image = multi_verify_and_upload_image_post(img,"post_image", id, fnd_image );
+  console.log('-------------------------------')
+  //console.log(image)
+  console.log('-------------------------------')
+
+  image.map(  )
+
+  await image_post.bulkCreate(image, { returning: true, raw: true })
+  //await image_post.bulkUpdate(image, { returning: true });
+
+ // const video = verify_and_upload_image_put(vid,"post_video", fnd_video, rm_video);
+ // const file = verify_and_upload_image_put(fil,"post_file", fnd_file, rm_file);
 
 
 
 
-await this.update(
-  {
-    id,
-    data: {
-      id_community,
-      id_user,        
-      title,
-      sub_title,
-      content,
-      image,
-      video,
-      file, 
-      active,
-      value,
-      fixed
-    },
-    return_data
-  })
+
+
+  await this.update(
+    {
+      id,
+      data: {
+	id_community,
+	id_user,        
+	title,
+	sub_title,
+	content,
+	//image,
+	//video,
+	//file, 
+	active,
+	value,
+	fixed
+      },
+      return_data
+    })
     .then(( result )=>{
       this.response({
 	res,
@@ -321,10 +319,32 @@ await this.update(
     });
 }
 
+
+
+
+
+
+
+
+
+/*
+ * sacar las images por la url
+ * el identificador tiene que ser distinto
+ *
+ * */
+
+
+
+
+
+
+
+
+
 controller.deleteFunc = async function (req, res) {
 
   const { id } = req.params;
-
+  
 
   let find_image = await this.db.post.findOne({
     where: { id }

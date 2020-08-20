@@ -23,7 +23,7 @@ router.put('/',(req, res) => {
   image_postController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:image',(req, res) => {
   //HTTP delete route
   image_postController.deleteFunc(req,res);
 });
