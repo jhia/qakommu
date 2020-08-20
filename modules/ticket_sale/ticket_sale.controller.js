@@ -44,7 +44,7 @@ controller.postFunc = async function (req, res) {
 
     const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, name_event, id_coupon } = req.body;
     try {
-        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 || name_event.length <= 0 ) {
+        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 || name_event.length <= 0) {
             return this.response({
                 res,
                 success: false,
@@ -53,7 +53,7 @@ controller.postFunc = async function (req, res) {
             });
         } else {
             //in this step we are going to verify the actual data of the ticket
-            let requestedticket = await this.db.ticket.findOne({
+            const requestedticket = await this.db.ticket.findOne({
                 where: { id: id_ticket }
             });
 
@@ -65,11 +65,21 @@ controller.postFunc = async function (req, res) {
                     message: 'something went wrong, the selected ticket is not available',
                 });
             } else {
+                //in this part we are going to check availability according to the number of tickets
+                if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
+                    return this.response({
+                        res,
+                        success: false,
+                        statusCode: 500,
+                        message: 'the amount of ticket you want to buy exceeds stock',
+                    });
+                }
                 let ticket_total_amount = count * requestedticket.base_price
                 let ticket_total_amount_paid = null;
+                let ticketsalecoupon;
                 //in this part we are going to verify and calculate the coupon  
                 if (id_coupon > 0) {
-                    let ticketsalecoupon = await this.db.coupon.findOne({
+                    ticketsalecoupon = await this.db.coupon.findOne({
                         where: { id: id_coupon }
                     });
                     if (!ticketsalecoupon) {
@@ -121,7 +131,24 @@ controller.postFunc = async function (req, res) {
                             uuid, id_ticket_sale, deactivated
                         });
                     }
+                    //we subtract the amount purchased with the availability of tickets
+                    let resultofcurrent = requestedticket.quantity_current - count
+                    //in this part we update the current amount of ticket
+                    await this.db.ticket.update({ quantity_current: resultofcurrent }, {
+                        where: {
+                            id: requestedticket.id
+                        }
+                    });
+
+                } else {
+                    return this.response({
+                        res,
+                        success: false,
+                        statusCode: 500,
+                        message: 'something went wrong',
+                    });
                 }
+
                 return this.response({
                     res,
                     statusCode: 201,
@@ -131,6 +158,9 @@ controller.postFunc = async function (req, res) {
         }
 
     } catch (error) {
+        console.log("+++++++++++++++++++++++++++");
+        console.log(error);
+        console.log("+++++++++++++++++++++++++++");
         this.response({
             res,
             success: false,
