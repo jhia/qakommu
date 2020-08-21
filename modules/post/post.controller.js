@@ -71,11 +71,7 @@ controller.getFunc = async function (req, res) {
 	date: x.createdAt,
 	title: x.title,
 	content: x.content,
-<<<<<<< HEAD
-	image: x.image && "/uploads/"+x.image,
-=======
 	image: x.image_path[0]!=null ? x.image_path.map( x => "/uploads/"+x ) : x.image_path,
->>>>>>> inestable
 	video: x.video,
 	files: x.file,
 	coun_message: x.count_messages,
