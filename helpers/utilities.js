@@ -48,33 +48,27 @@ const verify_and_upload_image_post = (file,name_image) => {
   return send
 }
 
-const multi_verify_and_upload_image_post = ( file, name_image, id_post , old_image = null) => {
+const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) => {
 
   let send = []
 
+
   if(!file) {
-    console.log('nada te envio null');
     return send;
   }
 
-  if(!Array.isArray(file)) {
-/*    
-    if(old_image) {
-      console.log('se borro 1 imagene')
-    }
-*/    
-    console.log('te encontre uno, te envio como array')
-    file = [file];
-  }
 
   if( old_image ) old_image.map( delete_image)
  
 
   file.map(x => {
-    console.log('yo proceso array, te lo subo y te lo guardo')
+    const media_type = x.name.search("\.(jpg|jpeg|png|bmp)" ) != -1 ?
+      "post_image":x.name.search("\.(mp4|avi|mpg|mpeg|wmv|m4v)") != -1  ?
+      "post_video":x.name.search("\.(mp3|ogg)") != -1  ?
+      "post_audio":"post_file";
     let identify = makeid(6);
-    upload_images(x, name_image, identify);
-    send.push( { "id_post": id_post, "route": send_image_name(x, name_image, identify).profile_photo } );
+    upload_images(x, media_type, identify);
+    send.push( { "id_post": id_post, "route": send_image_name(x, media_type, identify).profile_photo } );
   })
   return send
 }
