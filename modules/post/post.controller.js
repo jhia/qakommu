@@ -7,14 +7,12 @@ const jwt = require('jsonwebtoken');
 const { QueryTypes } = require('sequelize');
 const { verify_and_upload_image_post, multi_verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
 
-
 controller.getFunc = async function (req, res) {
   const { id } = req.params;
   const { limit, offset, order, attributes } = req.body;
-  const { sequelize } = this.db
+  const { sequelize } = this.db;
 
   try {
-
     const post1= `SELECT posts.id, communities.name, 
       CONCAT(users.name,' ',users.last_name) AS fullname, 
       title, posts.content, posts.image, posts.video, posts.file, 
@@ -50,15 +48,10 @@ controller.getFunc = async function (req, res) {
     LEFT JOIN track_posts ON posts.id = track_posts.id_post
     LEFT JOIN tracks ON tracks.id = track_posts.id_track
     LEFT JOIN image_posts ON posts.id = image_posts.id_post
-
     GROUP BY posts.id, communities.name,fullname`;
 
-    const query = id ? post1 : post2        
+    const query = id ? post1 : post2;        
     const query_post = await sequelize.query(`${query}`, { replacements:{id: id}, type: sequelize.QueryTypes.SELECT });
-    //const total_like = await sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:id}, type: QueryTypes.SELECT });
-
-
-
 
     const data = query_post.map(x => { 
       const total_like = y => sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:y.id}, type: QueryTypes.SELECT });
@@ -71,12 +64,9 @@ controller.getFunc = async function (req, res) {
 	date: x.createdAt,
 	title: x.title,
 	content: x.content,
-	image: x.image_path[0]!=null ? x.image_path.map( x => "/uploads/"+x ) : x.image_path,
-	video: x.video,
-	files: x.file,
+	media: x.image_path[0]!=null ? x.image_path.map( x => "/uploads/"+x ) : x.image_path,
 	coun_message: x.count_messages,
 	count_fixed: total_like 
-	//count_fixed: 'parseInt(total_like[0].total_likes)' 
       };
       return rx;
     });
@@ -171,7 +161,6 @@ controller.getPostByComment = async function (req, res) {
 }
 
 
-
 controller.postFunc = async function (req, res) {     
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, 'secret');
@@ -190,31 +179,24 @@ controller.postFunc = async function (req, res) {
 
   const { title, content, active, value, fixed, track } = req.body;
 
-  const img = req.files ? req.files.image: null;
-  const vid = req.files ? req.files.video: null;
-  const fil = req.files ? req.files.file: null;
+  const files = req.files;
+  const media = Array.isArray(files.media) ? files.media : [files.media]  
 
   try {
-    //const image = verify_and_upload_image_post(img,"post_image");
-
-    const video = verify_and_upload_image_post(vid,"post_video");
-    const file = verify_and_upload_image_post(fil,"post_file");
-
 
     let newdata = await this.insert({
       id_community: search_id_community['id_community'],
       id_user: search_id_user['id'],
       title,
       content,
-      //image,
-      video,
-      file,
       active,
       value,
       fixed
     });
-    const image = multi_verify_and_upload_image_post(img,"post_image", newdata['id']);
-    await image_post.bulkCreate(image, { returning: true });
+
+    const processed_media = multi_verify_and_upload_image_post(media, newdata['id']);
+    await image_post.bulkCreate(processed_media, { returning: true });
+
     const trk  = JSON.parse( track );
     let tracks = [];
     trk.forEach(element => {
@@ -260,28 +242,13 @@ controller.putFunc = async function (req, res) {
 
   const list_image = x => x.map(x => x.route);
 
-
-  const fnd_image = find_image ? list_image(find_image) : null
-  const fnd_video = find_image ? find_vf.video : null
-  const fnd_file = find_image ? find_vf.file : null
-
-  const img = req.files ? req.files.image: null;
-  const vid = req.files ? req.files.video: null;
-  const fil = req.files ? req.files.file: null;
+  const files = req.files;
+  const media = Array.isArray(files.media) ? files.media : [files.media]  
 
 
-  const image = multi_verify_and_upload_image_post(img,"post_image", id, fnd_image );
+    const processed_media = multi_verify_and_upload_image_post(media, id);
 
-
-  await image_post.bulkCreate(image, { returning: true, raw: true })
-
-
-
-  const video = vid && verify_and_upload_image_put( vid, "post_video", fnd_video );
-  const file = fil && verify_and_upload_image_put( fil, "post_file", fnd_file );
-
-
-
+    await image_post.bulkCreate(processed_media, { returning: true });
 
   await this.update(
     {
@@ -292,9 +259,6 @@ controller.putFunc = async function (req, res) {
 	title,
 	sub_title,
 	content,
-	//image,
-	video,
-	file, 
 	active,
 	value,
 	fixed
@@ -316,27 +280,6 @@ controller.putFunc = async function (req, res) {
       })
     });
 }
-
-
-
-
-
-
-
-
-
-/*
- * sacar las images por la url
- * el identificador tiene que ser distinto
- *
- * */
-
-
-
-
-
-
-
 
 
 controller.deleteFunc = async function (req, res) {
@@ -363,10 +306,6 @@ controller.deleteFunc = async function (req, res) {
       }
     })
 
-
-
-
-
     let deleterows = await this.delete({ id });
 
     if (deleterows > 0) {
@@ -392,9 +331,6 @@ controller.deleteFunc = async function (req, res) {
       message: 'something went wrong'
     });
   }
-
-
-
 
 }
 module.exports = controller;
