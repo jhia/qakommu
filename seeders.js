@@ -39,7 +39,12 @@ const {
   //session module
   session,
   track_session,
-  session_attendee
+  session_attendee,
+  //survey
+  survey,
+  question,
+  answer,
+  data
 } = db
 
 let resources = [
@@ -517,6 +522,42 @@ let session_attendees = [
   }
 ]
 
+//survey
+let surveys = [
+  {
+    "name": "satisfaction",
+    "description": "Collect customer feedback and increase customer satisfaction",
+    "active": true,
+    "id_event": 1,
+    "id_community": null
+  }
+]
+
+let questions = [
+  {
+    "text": "what is your name",
+    "id_survey": 1,
+    "type_question": "t",
+    "rate": null
+  }
+]
+
+let answers = [
+  {
+    "id_question": 1,
+    "text": "john smith",
+    "description": "test is a test"
+  }
+]
+
+let datas= [
+  {
+    "id_user": 1,
+    "id_question": 1,
+    "id_answer":1,
+    "text": "data test"
+  }
+]
 
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
@@ -559,6 +600,11 @@ let loadtables = async () => {
 
   await track_session.bulkCreate(track_sessions, {returning:true});
   await session_attendee.bulkCreate(session_attendees, {returning:true});
+
+  await survey.bulkCreate(surveys, {returning: true });
+  await question.bulkCreate(questions, {returning: true});
+  await answer.bulkCreate(answers, {returning: true});
+  await data.bulkCreate(datas, {returning: true})
 }
 
 module.exports = loadtables;
