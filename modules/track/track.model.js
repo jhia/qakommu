@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         id_module_name: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        color:{
+            type: DataTypes.TEXT
         }
     });
 

@@ -99,7 +99,6 @@ base.prototype.insert = async function (data) {
 base.prototype.getData = async function (data) {
 	const { id, limit, offset, order, attributes, modelstoextended } = data;
 	
-  console.log(id,'-------------------------------')
 	if (id) {
 	  console.log('yes')
 		const one = await this.model.findOne({
