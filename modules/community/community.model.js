@@ -51,7 +51,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
 
-
+    community.hasMany(models.survey, {
+      foreignKey: 'id_community',
+      as: 'community_survey'
+  });
 
   };
 

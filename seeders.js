@@ -39,7 +39,12 @@ const {
   //session module
   session,
   track_session,
-  session_attendee
+  session_attendee,
+  //survey
+  survey,
+  question,
+  answer,
+  data
 } = db
 
 let resources = [
@@ -233,21 +238,21 @@ let states = [
   //Event
   {
     "name": "Progress",
-    "description": "Ready for immediate use",
+    "description": "Revent that unfolds at that precise moment before reaching its final phase",
     "active": true,
     "id_module_name": 2,
     "blocker": false
   },
   {
     "name": "Draft",
-    "description": "",
+    "description": "Sketch of ideas embodied in an organized way, which the author will modify over time before reaching the final or publication form.",
     "active": true,
     "id_module_name": 2,
     "blocker": true
   },
   {
-    "name": "Reserved",
-    "description": "",
+    "name": "Previews",
+    "description": "event that has already ended or concluded.",
     "active": true,
     "id_module_name": 2,
     "blocker": false
@@ -255,17 +260,17 @@ let states = [
   //Attendes
   {
     "name": "Confirmed",
-    "description": "",
-    "active": true,
-    "id_module_name": 5,
-    "blocker": true
-  },
-  {
-    "name": "Unconfirmed",
-    "description": "",
+    "description": "give definitive proof of a claim",
     "active": true,
     "id_module_name": 5,
     "blocker": false
+  },
+  {
+    "name": "Unconfirmed",
+    "description": "Waiting for the veracity of something that is in doubt",
+    "active": true,
+    "id_module_name": 5,
+    "blocker": true
   },
 ]
 
@@ -274,7 +279,8 @@ let tracks = [
     "name": "back-end",
     "description": "is the logic that is processed on the server side",
     "active": true,
-    "id_module_name": 1
+    "id_module_name": 1,
+    "color": "#333333"
   }
 ]
 
@@ -517,6 +523,42 @@ let session_attendees = [
   }
 ]
 
+//survey
+let surveys = [
+  {
+    "name": "satisfaction",
+    "description": "Collect customer feedback and increase customer satisfaction",
+    "active": true,
+    "id_event": 1,
+    "id_community": null
+  }
+]
+
+let questions = [
+  {
+    "text": "what is your name",
+    "id_survey": 1,
+    "type_question": "t",
+    "rate": null
+  }
+]
+
+let answers = [
+  {
+    "id_question": 1,
+    "text": "john smith",
+    "description": "test is a test"
+  }
+]
+
+let datas= [
+  {
+    "id_user": 1,
+    "id_question": 1,
+    "id_answer":1,
+    "text": "data test"
+  }
+]
 
 let loadtables = async () => {
   await resource.bulkCreate(resources, { returning: true });
@@ -559,6 +601,11 @@ let loadtables = async () => {
 
   await track_session.bulkCreate(track_sessions, {returning:true});
   await session_attendee.bulkCreate(session_attendees, {returning:true});
+
+  await survey.bulkCreate(surveys, {returning: true });
+  await question.bulkCreate(questions, {returning: true});
+  await answer.bulkCreate(answers, {returning: true});
+  await data.bulkCreate(datas, {returning: true})
 }
 
 module.exports = loadtables;
