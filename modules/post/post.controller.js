@@ -64,7 +64,7 @@ controller.getFunc = async function (req, res) {
 	date: x.createdAt,
 	title: x.title,
 	content: x.content,
-	media: x.image_path[0]!=null ? x.image_path.map( x => "/uploads/"+x ) : x.image_path,
+	media: x.image_path[0]!=null ? x.image_path.map( x => [ x.split("_")[1] ,"/uploads/"+x ] ) : [],
 	coun_message: x.count_messages,
 	count_fixed: total_like 
       };
