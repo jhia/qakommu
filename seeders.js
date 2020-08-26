@@ -238,21 +238,21 @@ let states = [
   //Event
   {
     "name": "Progress",
-    "description": "Ready for immediate use",
+    "description": "Revent that unfolds at that precise moment before reaching its final phase",
     "active": true,
     "id_module_name": 2,
     "blocker": false
   },
   {
     "name": "Draft",
-    "description": "",
+    "description": "Sketch of ideas embodied in an organized way, which the author will modify over time before reaching the final or publication form.",
     "active": true,
     "id_module_name": 2,
     "blocker": true
   },
   {
-    "name": "Reserved",
-    "description": "",
+    "name": "Previews",
+    "description": "event that has already ended or concluded.",
     "active": true,
     "id_module_name": 2,
     "blocker": false
@@ -260,17 +260,17 @@ let states = [
   //Attendes
   {
     "name": "Confirmed",
-    "description": "",
-    "active": true,
-    "id_module_name": 5,
-    "blocker": true
-  },
-  {
-    "name": "Unconfirmed",
-    "description": "",
+    "description": "give definitive proof of a claim",
     "active": true,
     "id_module_name": 5,
     "blocker": false
+  },
+  {
+    "name": "Unconfirmed",
+    "description": "Waiting for the veracity of something that is in doubt",
+    "active": true,
+    "id_module_name": 5,
+    "blocker": true
   },
 ]
 
