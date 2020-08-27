@@ -57,6 +57,20 @@ controller.getFunc = async function (req, res) {
       const total_like = y => sequelize.query("SELECT COUNT(id) as total_likes FROM LIKES WHERE id_post =:id", { replacements:{id:y.id}, type: QueryTypes.SELECT });
       let rx = {};
 
+
+
+      const media = x.image_path[0]!=null ? x.image_path.map( x => [ x.split("_")[1] ,"/uploads/"+x ] ) : []
+
+
+      let image=[]
+      let video=[]
+      let file=[]
+      media.forEach( x => {
+	x[0]=='image'?image.push( x[1] ):null
+	x[0]=='video'?video.push( x[1] ):null
+	x[0]=='file'?file.push( x[1] ):null
+      })
+      console.log(image,video,file)
       rx= {
 	id: x.id,
 	name: x.name,
@@ -64,7 +78,11 @@ controller.getFunc = async function (req, res) {
 	date: x.createdAt,
 	title: x.title,
 	content: x.content,
-	media: x.image_path[0]!=null ? x.image_path.map( x => [ x.split("_")[1] ,"/uploads/"+x ] ) : [],
+	//media: x.image_path[0]!=null ? x.image_path.map( x => [ x.split("_")[1] ,"/uploads/"+x ] ) : [],
+	image,
+	video,
+	file,
+
 	coun_message: x.count_messages,
 	count_fixed: total_like 
       };
