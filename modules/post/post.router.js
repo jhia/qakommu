@@ -28,7 +28,7 @@ router.put('/:id',(req, res) => {
   postController.putFunc(req,res);
 });
 
-router.delete('\/([0-9]+)(?:\/image)?',(req, res) => {
+router.delete('/:id',(req, res) => {
   postController.deleteFunc(req,res);
 });
 

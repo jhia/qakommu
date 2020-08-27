@@ -264,9 +264,9 @@ controller.putFunc = async function (req, res) {
   const media = Array.isArray(files.media) ? files.media : [files.media]  
 
 
-    const processed_media = multi_verify_and_upload_image_post(media, id);
+  const processed_media = multi_verify_and_upload_image_post(media, id);
 
-    await image_post.bulkCreate(processed_media, { returning: true });
+  await image_post.bulkCreate(processed_media, { returning: true });
 
   await this.update(
     {
@@ -303,21 +303,17 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
 
   const { id } = req.params;
-
-
-  let find_image = await this.db.post.findOne({
-    where: { id }
-  });
-  if(find_image.image) delete_image( find_image.image.split("/")[2] );
-
+  const { comment } = this.db
 
   try {
-    await this.db.comment.destroy({
+
+    const delete_comment = await comment.destroy({
       where: {
 	id_post: id
       }
     })
 
+    console.log(delete_comment)
     await this.db.like.destroy({
       where: {
 	id_post: id
