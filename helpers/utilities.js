@@ -35,17 +35,17 @@ const upload_images = (file,name_image,identify) => {
   )
 }
 
-let send_image_name = (file,name_image,identify) => create_image_name(parse_image(file,name_image,identify)) 
+let get_image_name = (file,name_image,identify) => create_image_name(parse_image(file,name_image,identify)) 
 
 const verify_and_upload_image_post = (file,name_image) => {
-  let send = null;
+  let image_name = null;
   let identify = makeid(6);
   if(file) {
-    send = send_image_name(file,name_image,identify).profile_photo;
-    route = './upload/'+send;
+    image_name = get_image_name(file,name_image,identify).profile_photo;
+    route = './upload/'+image_name;
     upload_images(file,name_image,identify);
     if(fs.existsSync(route)) {
-      return send;
+      return image_name;
     }
     return;
   }

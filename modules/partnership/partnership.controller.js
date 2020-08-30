@@ -57,6 +57,8 @@ controller.postFunc = async function (req, res) {
         const avatar = req.files ? req.files.logo: null;
         const logo = verify_and_upload_image_post(avatar,"partnership");
 
+
+
         let newdate = await this.insert({
             name,
             description,
@@ -74,6 +76,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
+      delete_image('./upload/'+logo)
         this.response({
             res,
             success: false,
