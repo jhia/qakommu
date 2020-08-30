@@ -52,10 +52,11 @@
 controller.postFunc = async function (req, res) {
     const { name, description, registry_number, web, active } = req.body;
 
+    let logo = null;
     try {
         const host = req.headers.host
         const avatar = req.files ? req.files.logo: null;
-        const logo = verify_and_upload_image_post(avatar,"partnership");
+        logo = verify_and_upload_image_post(avatar,"partnership");
 
 
 
@@ -76,7 +77,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-      delete_image('./upload/'+logo)
+      delete_image(logo)
         this.response({
             res,
             success: false,
