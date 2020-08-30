@@ -37,15 +37,18 @@ const upload_images = (file,name_image,identify) => {
 
 let send_image_name = (file,name_image,identify) => create_image_name(parse_image(file,name_image,identify)) 
 
-
 const verify_and_upload_image_post = (file,name_image) => {
-  let send = null
+  let send = null;
   let identify = makeid(6);
   if(file) {
-    upload_images(file,name_image,identify);
     send = send_image_name(file,name_image,identify).profile_photo;
+    route = './upload/'+send;
+    upload_images(file,name_image,identify);
+    if(fs.existsSync(route)) {
+      return send;
+    }
+    return;
   }
-  return send
 }
 
 const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) => {
@@ -79,7 +82,6 @@ const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) =
 
 
 const verify_and_upload_image_put = (file,name_image,old_image) => {
-  console.log(file,name_image,old_image)
   let send = null;
   let identify = makeid(6);
 
