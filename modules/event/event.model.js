@@ -62,6 +62,12 @@ module.exports = (sequelize, DataTypes) => {
         id_state:{
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+        image: {
+            type: DataTypes.STRING
+        },
+        host: {
+            type: DataTypes.TEXT
         }
     });
 

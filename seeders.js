@@ -301,7 +301,7 @@ let events = [
     //"id_call_for_paper": 1, 
     "prom_rate": 89.8,
     "id_repository": 1,
-    "id_state": 1
+    "id_state": 4
   },
   {
     "name": "node for everyone",
