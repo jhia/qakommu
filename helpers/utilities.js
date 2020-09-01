@@ -82,14 +82,14 @@ const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) =
 
 
 const verify_and_upload_image_put = (file,name_image,old_image) => {
-  let send = null;
+  let image_name = null;
   let identify = makeid(6);
 
   if(old_image) delete_image(old_image)
 
   upload_images(file,name_image,identify);
-  send = send_image_name(file,name_image,identify).profile_photo;
-  return send
+  image_name = get_image_name(file,name_image,identify).profile_photo;
+  return image_name
 }
 
 
