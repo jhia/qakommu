@@ -72,8 +72,28 @@ controller.couponCalculator = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until } = req.body;
+    let uuid;
 
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active } = req.body;
+    if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, incomplete date range data'
+        });
+    } else {
+        let date_since = new Date(since), date_until = new Date(until);
+        if (date_since > date_until) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, dates entered are not valid'
+            });
+        }
+    }
+
     try {
         let newdate = await this.insert({
             name,
@@ -85,6 +105,9 @@ controller.postFunc = async function (req, res) {
             applicable_total_amount,
             id_user_creator,
             active,
+            since,
+            until,
+            uuid
         });
         if (newdate) {
             return this.response({
@@ -105,7 +128,27 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, return_data } = req.body;
+    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until, return_data } = req.body;
+
+    if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, incomplete date range data'
+        });
+    } else {
+        let date_since = new Date(since), date_until = new Date(until);
+        if (date_since > date_until) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, dates entered are not valid'
+            });
+        }
+    }
+
     try {
         let result = await this.update(
             {
@@ -119,7 +162,9 @@ controller.putFunc = async function (req, res) {
                     applicable_amount,
                     applicable_total_amount,
                     id_user_creator,
-                    active
+                    active,
+                    since,
+                    until
                 },
                 return_data
             });

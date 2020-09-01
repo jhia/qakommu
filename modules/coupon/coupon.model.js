@@ -40,6 +40,17 @@ module.exports = (sequelize, DataTypes) => {
         },
         active:{
             type: DataTypes.BOOLEAN
+        },
+        since: {
+            type: DataTypes.DATE
+        },
+        until: {
+            type: DataTypes.DATE
+        },
+        uuid: {
+            allowNull: false,
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
         }
     });
 

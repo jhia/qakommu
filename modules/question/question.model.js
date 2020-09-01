@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'survey'
         });
 
-        question.hasMany(models.coupon, {
+        question.hasMany(models.answer, {
             foreignKey: 'id_question',
             as: 'question_answer'
         });

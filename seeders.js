@@ -336,6 +336,8 @@ let coupons = [
     "applicable_total_amount": false,
     "id_user_creator": 1,
     "active": true,
+    "since": "2021-10-05", 
+    "until": "2021-10-25"
   }
 ]
 

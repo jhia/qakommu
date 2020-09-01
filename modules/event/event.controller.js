@@ -56,7 +56,7 @@ controller.postFunc = async function (req, res) {
     try {
         const host = req.headers.host
         const avatar = req.files ? req.files.image : null;
-        const image = verify_and_upload_image_post(avatar, "partnership");
+        const image = verify_and_upload_image_post(avatar, "event");
 
         let newdate = await this.insert({
             name,
@@ -86,6 +86,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
+        delete_image(logo);
         console.log(error)
         this.response({
             res,
@@ -107,7 +108,7 @@ controller.putFunc = async function (req, res) {
         const fnd_image = find_image.image ? find_image.image : null;
         const avatar = req.files ? req.files.image : null;
 
-        const image = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+        const image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
 
         let result = await this.update(
             {
