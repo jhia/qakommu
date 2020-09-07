@@ -56,6 +56,7 @@ controller.postFunc = async function (req, res) {
         const host = req.headers.host
         const avatar = req.files ? req.files.logo: null;
         logo = verify_and_upload_image_post(avatar,"partnership");
+        const archive = logo ? logo.split("_") : null;
 
         let newdate = await this.insert({
             name,
@@ -67,6 +68,7 @@ controller.postFunc = async function (req, res) {
             active
         });
         if (newdate) {
+            if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -74,7 +76,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-      if(logo) delete_image(logo)
+      //if(logo) delete_image(logo)
         this.response({
             res,
             success: false,
@@ -85,20 +87,17 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-
     const { id } = req.params;
     const { name, description, registry_number, active, web, return_data } = req.body;
-    try {
+    let find_image = await this.db.partnership.findOne({
+        where: { id }
+    });
+    const fnd_image = find_image.logo ? find_image.logo : null;
+    const avatar = req.files ? req.files.logo : undefined;
+    const logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+    const archive = logo ? logo.split("_") : null;
+   try {
 
-        let find_image = await this.db.partnership.findOne({
-            where: { id }
-        });
-
-        const fnd_image = find_image.logo ? find_image.logo : null;
-        const avatar = req.files ? req.files.logo : null;
-        const logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
-        const archive = logo.split("_");
-    
         let result = await this.update(
             {
                 id,
@@ -113,8 +112,8 @@ controller.putFunc = async function (req, res) {
                 return_data
             });
         if (result) {
-            if(fnd_image) delete_image(fnd_image);
-            upload_images(avatar,archive[0],archive[1].split(".")[0]);
+            if(fnd_image && logo) delete_image(fnd_image);
+            if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
@@ -136,6 +135,11 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
+
+      //console.log('logo --------------',logo)
+      console.log('name --------------',name)
+
+
         this.response({
             res,
             success: false,
