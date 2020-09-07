@@ -41,8 +41,9 @@ const verify_and_upload_image_post = (file,name_image) => {
   let image_name = null;
   let identify = makeid(6);
   if(file) {
+    let route = null;
     image_name = get_image_name(file,name_image,identify).profile_photo;
-    route = './upload/'+image_name;
+    route = "./upload/"+image_name;
     upload_images(file,name_image,identify);
     if(fs.existsSync(route)) {
       return image_name;
@@ -62,7 +63,7 @@ const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) =
 
 
   if( old_image ) old_image.map( delete_image)
- 
+
 
   file.map(x => {
     const media_type = x.name.search("\.(jpg|jpeg|png|bmp)" ) != -1 ?
@@ -76,34 +77,18 @@ const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) =
   return send
 }
 
-
-
-
-
-
-const verify_and_upload_image_put = (file,name_image,old_image) => {
+const verify_and_upload_image_put = (file,name_image,old_image,archive=false) => {
   let image_name = null;
   let identify = makeid(6);
-
-  if(old_image) delete_image(old_image)
-
-  upload_images(file,name_image,identify);
   image_name = get_image_name(file,name_image,identify).profile_photo;
   return image_name
 }
-
-
 
 const delete_image = (x) => {     
   fs.unlinkSync("./upload/"+x);
 }
 
 // ----------------------------------------------------------------------------------------
-
-
-
-
-
 
 function findRelation(relations, relation_model) {
   if (typeof relations[Symbol.iterator] === 'function') {
@@ -192,5 +177,6 @@ module.exports = {
   verify_and_upload_image_post,
   multi_verify_and_upload_image_post,
   verify_and_upload_image_put,
+  upload_images,
   delete_image
 };

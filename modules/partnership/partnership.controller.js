@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('partnership');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -74,7 +74,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-      delete_image(logo)
+      if(logo) delete_image(logo)
         this.response({
             res,
             success: false,
@@ -97,6 +97,7 @@ controller.putFunc = async function (req, res) {
         const fnd_image = find_image.logo ? find_image.logo : null;
         const avatar = req.files ? req.files.logo : null;
         const logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+        const archive = logo.split("_");
     
         let result = await this.update(
             {
@@ -112,6 +113,8 @@ controller.putFunc = async function (req, res) {
                 return_data
             });
         if (result) {
+            if(fnd_image) delete_image(fnd_image);
+            upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
