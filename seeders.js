@@ -436,7 +436,7 @@ let partnerships = [
     "name": "google company",
     "description": "test descrioption facebook",
     "registry_number": "c26174178",
-    "logo": "/uploads/partnership_BSGCMX.png",
+    "logo": "",
     "host": "35.122.343.2:871",
     "web": "google.com",
     "active": true
