@@ -44,11 +44,7 @@ const verify_and_upload_image_post = (file,name_image) => {
     let route = null;
     image_name = get_image_name(file,name_image,identify).profile_photo;
     route = "./upload/"+image_name;
-    //upload_images(file,name_image,identify);
-    //if(fs.existsSync(route)) {
-      return image_name;
-    //}
-    //return;
+    return image_name;
   }
 }
 

@@ -76,7 +76,6 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-      //if(logo) delete_image(logo)
         this.response({
             res,
             success: false,
@@ -135,11 +134,6 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
-
-      //console.log('logo --------------',logo)
-      console.log('name --------------',name)
-
-
         this.response({
             res,
             success: false,
