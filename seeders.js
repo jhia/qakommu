@@ -417,6 +417,7 @@ let repositories = [
   {
     "name": "repository test",
     "location": "test/www/122322/",
+    "id_community": 1,
     "active": true
   }
 ]
