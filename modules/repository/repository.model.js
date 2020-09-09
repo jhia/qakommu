@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.TEXT,
     location: DataTypes.TEXT,
     id_community: DataTypes.INTEGER,
+    active: DataTypes.BOOLEAN,
   });
 
   repository.associate = function (models) {
