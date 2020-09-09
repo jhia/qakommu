@@ -54,9 +54,10 @@ controller.postFunc = async function (req, res) {
 
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
     try {
+        let image = null;
         const host = req.headers.host
         const avatar = req.files ? req.files.image : null;
-        const image = verify_and_upload_image_post(avatar, "event");
+        image = verify_and_upload_image_post(avatar, "event");
 
         let newdate = await this.insert({
             name,
@@ -86,8 +87,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-        delete_image(logo);
-        console.log(error)
+        delete_image(image);
         this.response({
             res,
             success: false,
@@ -107,7 +107,6 @@ controller.putFunc = async function (req, res) {
         console.log(find_image);
         const fnd_image = find_image.image ? find_image.image : null;
         const avatar = req.files ? req.files.image : null;
-
         const image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
 
         let result = await this.update(
@@ -150,7 +149,7 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
-        console.log(error);
+        
         this.response({
             res,
             success: false,
