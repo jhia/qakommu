@@ -41,13 +41,17 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, location, id_repository, id_object_type } = req.body;
+    const { name, description, id_user, id_repository, id_object_type, size, privated, active } = req.body;
     try {
         let newdate = await this.insert({
             name,
-            location,
+            description,
+	    id_user,
             id_repository,
-            id_object_type
+            id_object_type,
+	    size,
+	    privated,
+	    active,
         });
         if (newdate) {
             return this.response({
