@@ -104,7 +104,7 @@ controller.putFunc = async function (req, res) {
         let find_image = await this.db.event.findOne({
             where: { id }
         });
-        console.log(find_image);
+
         const fnd_image = find_image.image ? find_image.image : null;
         const avatar = req.files ? req.files.image : null;
         const image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
