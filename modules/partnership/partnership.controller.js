@@ -114,7 +114,7 @@ controller.putFunc = async function (req, res) {
             });
         if (result) {
             if(fnd_image && logo) delete_image(fnd_image);
-            if(req.body.logo == 'not-image') delete_image(fnd_image);
+            if(req.body.logo == 'not-image' && fnd_image) delete_image(fnd_image);
             if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
