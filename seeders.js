@@ -329,11 +329,10 @@ let coupons = [
   {
     "name": "early bird",
     "description": "coupon available for morning purchases",
-    "free": false,
     "percentage": 50,
     "id_state": 1,
-    "applicable_amount": 1,
-    "applicable_total_amount": false,
+    "limit": 5,
+    "unlimited": false,
     "id_user_creator": 1,
     "active": true,
     "since": "2021-10-05", 

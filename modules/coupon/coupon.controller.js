@@ -72,7 +72,7 @@ controller.couponCalculator = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until } = req.body;
     let uuid;
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
@@ -98,11 +98,10 @@ controller.postFunc = async function (req, res) {
         let newdate = await this.insert({
             name,
             description,
-            free,
             percentage,
             id_state,
-            applicable_amount,
-            applicable_total_amount,
+            limit,
+            unlimited,
             id_user_creator,
             active,
             since,
@@ -128,7 +127,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until, return_data } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, return_data } = req.body;
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
         return this.response({
@@ -156,11 +155,10 @@ controller.putFunc = async function (req, res) {
                 data: {
                     name,
                     description,
-                    free,
                     percentage,
                     id_state,
-                    applicable_amount,
-                    applicable_total_amount,
+                    limit,
+                    unlimited,
                     id_user_creator,
                     active,
                     since,
@@ -219,6 +217,5 @@ controller.deleteFunc = async function (req, res) {
         });
     }
 }
-
 
 module.exports = controller;
