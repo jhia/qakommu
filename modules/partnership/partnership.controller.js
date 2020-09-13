@@ -93,7 +93,9 @@ controller.putFunc = async function (req, res) {
     });
     const fnd_image = find_image.logo ? find_image.logo : null;
     const avatar = req.files ? req.files.logo : undefined;
-    const logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+    let logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+    if(req.body.logo == 'not-image') logo = null;
+
     const archive = logo ? logo.split("_") : null;
    try {
 
@@ -112,6 +114,7 @@ controller.putFunc = async function (req, res) {
             });
         if (result) {
             if(fnd_image && logo) delete_image(fnd_image);
+            if(req.body.logo == 'not-image' && fnd_image) delete_image(fnd_image);
             if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
