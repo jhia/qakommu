@@ -74,6 +74,24 @@ controller.couponCalculator = async function (req, res) {
 controller.postFunc = async function (req, res) {
     const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until } = req.body;
     let uuid;
+    if(limit > 0 && unlimited === true)
+    {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
+        });
+    }
+
+    if(unlimited === false && limit === null ){
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
+        });
+    }
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
         return this.response({
@@ -94,6 +112,7 @@ controller.postFunc = async function (req, res) {
         }
     }
 
+    
     try {
         let newdate = await this.insert({
             name,
@@ -101,6 +120,7 @@ controller.postFunc = async function (req, res) {
             percentage,
             id_state,
             limit,
+            original_limit : limit,
             unlimited,
             id_user_creator,
             active,

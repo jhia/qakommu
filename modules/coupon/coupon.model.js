@@ -24,8 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER 
         },
         limit:{
-            allowNull: false,
             type: DataTypes.INTEGER 
+        },
+        original_limit:{
+            type: DataTypes.INTEGER,
         },
         unlimited:{
             type: DataTypes.BOOLEAN,

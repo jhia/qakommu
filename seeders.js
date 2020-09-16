@@ -332,6 +332,7 @@ let coupons = [
     "percentage": 50,
     "id_state": 1,
     "limit": 5,
+    "original_limit":5,
     "unlimited": false,
     "id_user_creator": 1,
     "active": true,
