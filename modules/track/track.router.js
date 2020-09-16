@@ -18,6 +18,11 @@ router.get('/:id',function(req, res){
   trackController.getFunc(req,res);
 });
 
+router.get('/module/:id',function(req, res){
+  //HTTP get route
+  trackController.getDataByModuleName(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   trackController.postFunc(req,res);
