@@ -148,11 +148,20 @@ controller.postFunc = async function (req, res) {
                     //we subtract the amount purchased with the availability of tickets
                     let resultofcurrent = requestedticket.quantity_current - count
                     //in this part we update the current amount of ticket
-                    await this.db.ticket.update({ quantity_current: resultofcurrent }, {
-                        where: {
-                            id: requestedticket.id
-                        }
-                    });
+                    if(resultofcurrent == 0){ //in this part  status change to Sold Out (id=2)
+                        await this.db.ticket.update({ quantity_current: resultofcurrent, id_state: 2 }, {
+                            where: {
+                                id: requestedticket.id
+                            }
+                        });
+                    }else{
+                        await this.db.ticket.update({ quantity_current: resultofcurrent }, {
+                            where: {
+                                id: requestedticket.id
+                            }
+                        });
+                    }
+                    
                     //if(newcouponlimit>-1){
                     if (flagcouponlimit) {
                         await this.db.coupon.update({ limit: newcouponlimit }, {
