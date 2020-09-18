@@ -2,9 +2,9 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
 const controller = new Base('repository');
-
+const fs = require('fs');
+const path = require('path');
 /*
  *Extend or overwrite the base functions
  *All the controllers already have implicit the models by:
@@ -17,6 +17,7 @@ controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
+
     try {
 	const data = await this.getData({
 	    id,
@@ -44,25 +45,38 @@ controller.postFunc = async function (req, res) {
 
     const { name, location, id_community, active } = req.body;
     try {
-	let newdate = await this.insert({
+	const create_folder = fs.mkdirSync("upload/"+location);
+	let newdata = await this.insert({
 	    name,
 	    location,
 	    id_community,
 	    active,
 	});
-	if (newdate) {
+	console.log(create_folder)
+	if (newdata) {
+	    //const create_folder = fs.mkdirSync("upload/"+newdata.location);
+	    console.log("paso")
 	    return this.response({
 		res,
 		statusCode: 201,
-		payload: [newdate]
+		payload: [newdata]
 	    });
 	}
     } catch (error) {
+
+	let curDir="";
+	if (error.code === 'EEXIST') { // curDir already exists!
+	    curDir = " folder exists!"
+	}
+
+
+
 	this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: 'something went wrong',
+	    //message: 'something went wrong',
+	    message: error.message,
 	});
     }
 }
@@ -70,7 +84,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, location, id_community, active, return_data } = req.body;
+    const { name, location, active, return_data } = req.body;
 
     try {
 	let result = await this.update(

@@ -1,19 +1,25 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-  const repository = sequelize.define('repository', {
-    name: DataTypes.TEXT,
-    location: DataTypes.TEXT,
-    id_community: DataTypes.INTEGER,
-    active: DataTypes.BOOLEAN,
-  });
+    const repository = sequelize.define('repository', {
+	name: DataTypes.TEXT,
+	location: DataTypes.TEXT,
+	id_community: {
+	    type: DataTypes.INTEGER,
+	    unique: {
+		msg: 'comunity exist'
+	    },
 
-  repository.associate = function (models) {
-    repository.belongsTo(models.community, {
-      foreignKey: 'id_community',
-      as: 'community'
+	},
+	active: DataTypes.BOOLEAN,
     });
-  }
 
-  return repository;
+    repository.associate = function (models) {
+	repository.belongsTo(models.community, {
+	    foreignKey: 'id_community',
+	    as: 'community'
+	});
+    }
+
+    return repository;
 }
