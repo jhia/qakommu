@@ -5,12 +5,23 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('repository');
 const fs = require('fs');
 const path = require('path');
+const dir = "./upload/";
 /*
  *Extend or overwrite the base functions
  *All the controllers already have implicit the models by:
  *this.db -> All models
  *this.model -> Current module model
  */
+
+const readdirSync = (p, a = []) => {
+
+    if (fs.statSync(p).isDirectory()){
+	a = [p];
+	fs.readdirSync(p).map(f => readdirSync(a[a.push(path.join(p, f)) - 1], a));
+    }
+
+    return a
+}
 
 
 controller.getFunc = async function (req, res) {
@@ -26,9 +37,17 @@ controller.getFunc = async function (req, res) {
 	    attributes,
 	    order
 	});
+
+	const ir = readdirSync(dir+data.location);
 	this.response({
 	    res,
-	    payload: [data]
+	    payload: {
+		name: data.name,
+		location: ir,
+		community: data.id_community,
+		active: data.active,
+	    }
+
 	});
     } catch (error) {
 	this.response({
@@ -45,17 +64,15 @@ controller.postFunc = async function (req, res) {
 
     const { name, location, id_community, active } = req.body;
     try {
-	const create_folder = fs.mkdirSync("upload/"+location);
+	if ( fs.existsSync(dir+location) ) throw new Error ('directory already exists');
 	let newdata = await this.insert({
 	    name,
 	    location,
 	    id_community,
 	    active,
 	});
-	console.log(create_folder)
 	if (newdata) {
-	    //const create_folder = fs.mkdirSync("upload/"+newdata.location);
-	    console.log("paso")
+	    if(location) fs.mkdirSync("upload/"+location);
 	    return this.response({
 		res,
 		statusCode: 201,
@@ -64,18 +81,14 @@ controller.postFunc = async function (req, res) {
 	}
     } catch (error) {
 
-	let curDir="";
-	if (error.code === 'EEXIST') { // curDir already exists!
-	    curDir = " folder exists!"
-	}
-
-
+	if( error.code == "EEXIST" ) error.message = "file already exists"
+	if( !id_community ) error.message = "required community"
+	if( !location ) error.message = "required location"
 
 	this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    //message: 'something went wrong',
 	    message: error.message,
 	});
     }
@@ -86,6 +99,7 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, location, active, return_data } = req.body;
 
+    fs.renameSync(dir+"one",dir+"otro");
     try {
 	let result = await this.update(
 	    {
@@ -125,6 +139,11 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
+	const find_repository = await this.db.repository.findOne({
+	    where: {id},
+	    attributes: ['location'],
+	});
+	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
@@ -141,11 +160,13 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
+	console.log('--------------',error.original.code)
+	if (error.original.code == 23503) error.message = "this folder is not empty"
 	this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: 'something went wrong'
+	    message: error.message
 	});
     }
 }

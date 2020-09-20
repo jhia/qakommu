@@ -3,9 +3,13 @@
 module.exports = (sequelize, DataTypes) => {
     const repository = sequelize.define('repository', {
 	name: DataTypes.TEXT,
-	location: DataTypes.TEXT,
+	location: {
+	    type: DataTypes.TEXT,
+	    allowNull: false,
+	},
 	id_community: {
 	    type: DataTypes.INTEGER,
+	    allowNull: false,
 	    unique: {
 		msg: 'comunity exist'
 	    },
