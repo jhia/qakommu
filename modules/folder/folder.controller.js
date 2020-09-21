@@ -49,23 +49,25 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_repository, location } = req.body;
+    const { id_repository, name,location } = req.body;
 
     const find_repository = await this.db.repository.findOne({
 	where: {id: id_repository},
 	attributes: ['location'],
     });
 
-    console.log('-----------------',dir+find_repository.location+"/"+location)
+    console.log('-----------------',dir+find_repository.location+"/"+name)
 
+    const current_directory = dir+find_repository.location+"/"+name;
     try {
-	if ( fs.existsSync(dir+location) ) throw new Error ('directory already exists');
+	if ( fs.existsSync(dir+name) ) throw new Error ('directory already exists');
 	let newdata = await this.insert({
 	    id_repository,
-	    location,
+	    name,
+	    location: current_directory,
 	});
 	if (newdata) {
-	    if(location) fs.mkdirSync("upload/"+location);
+	    if(name) fs.mkdirSync(dir+find_repository.location+"/"+name);
 	    return this.response({
 		res,
 		statusCode: 201,

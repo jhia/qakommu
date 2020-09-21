@@ -3,14 +3,20 @@
 module.exports = (sequelize, DataTypes) => {
     const folder = sequelize.define('folder', {
 	id_repository: DataTypes.INTEGER,
-	location: {
+	name: {
 	    type: DataTypes.TEXT,
 	    allowNull: false,
 	    unique: {
 		msg: 'location exist'
 	    },    
 	},   
-
+	location: {
+	    type: DataTypes.TEXT,
+	    allowNull: false,
+	    unique: {
+		msg: 'location exist'
+	    },    
+	},
     });
 
     folder.associate = function(models){
