@@ -42,10 +42,30 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, start, end } = req.body;
+	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved,limit_sale, max_ticket_sell, start, end,id_coupon } = req.body;
 	try {
+		if(max_ticket_sell <= 0 && limit_sale==true){
+			return this.response({
+				res,
+				success: false,
+				statusCode: 500,
+				message: 'something went wrong, the maximum amount cannot be 0',
+			});
+		}
 		let newdate = await this.insert({
-			name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, start, end
+			name, 
+			description, 
+			id_state, 
+			id_event, 
+			base_price, 
+			quantity_total, 
+			quantity_current, 
+			reserved, 
+			limit_sale,
+			max_ticket_sell, 
+			start, 
+			end,
+			id_coupon
 		});
 		if (newdate) {
 			return this.response({
@@ -67,13 +87,33 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, start, end, return_data } = req.body;
+	const { name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, limit_sale, max_ticket_sell, start, end, id_coupon, return_data } = req.body;
 	try {
+		if(max_ticket_sell <= 0 && limit_sale==true){
+			return this.response({
+				res,
+				success: false,
+				statusCode: 500,
+				message: 'something went wrong, the maximum amount cannot be 0',
+			});
+		}
 		let result = await this.update(
 			{
 				id,
 				data: {
-					name, description, id_state, id_event, base_price, quantity_total, quantity_current, reserved, max_ticket_sell, min_ticket_sell, start, end
+					name, 
+					description, 
+					id_state, 
+					id_event, 
+					base_price, 
+					quantity_total, 
+					quantity_current, 
+					reserved, 
+					limit_sale,
+					max_ticket_sell, 
+					start, 
+					end, 
+					id_coupon
 				},
 				return_data
 			});

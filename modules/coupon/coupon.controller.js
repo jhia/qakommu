@@ -39,43 +39,10 @@ controller.getFunc = async function (req, res) {
 
 }
 
-controller.couponCalculator = async function (req, res) {
-    const { p, d } = req.params;
-    const base = 100;
-    try {
-        if (p > 0 && d > 0 && d <= 100) {
-            let decimalPercentage = d / base;
-            let rest = p * decimalPercentage;
-            let result = p - rest;
-            return this.response({
-                res,
-                statusCode: 201,
-                payload: [result]
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'Does not comply with the indicated format.'
-            });
-        }
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
-    }
-
-}
-
 controller.postFunc = async function (req, res) {
     const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until } = req.body;
     let uuid;
-    if(limit > 0 && unlimited === true)
-    {
+    if (limit > 0 && unlimited === true) {
         return this.response({
             res,
             success: false,
@@ -84,7 +51,7 @@ controller.postFunc = async function (req, res) {
         });
     }
 
-    if(unlimited === false && limit === null ){
+    if (unlimited === false && limit === null) {
         return this.response({
             res,
             success: false,
@@ -112,7 +79,7 @@ controller.postFunc = async function (req, res) {
         }
     }
 
-    
+
     try {
         let newdate = await this.insert({
             name,
@@ -120,7 +87,7 @@ controller.postFunc = async function (req, res) {
             percentage,
             id_state,
             limit,
-            original_limit : limit,
+            original_limit: limit,
             unlimited,
             id_user_creator,
             active,
@@ -237,5 +204,106 @@ controller.deleteFunc = async function (req, res) {
         });
     }
 }
+
+/* ---------- special functions ---------- */
+
+/*this function is for test */
+controller.couponbetweenDate = async function (req, res) {
+
+    const { since, until } = req.params
+    const { limit, offset, order } = req.body;
+    try {
+        const { Op } = require("sequelize");
+        let date_since = new Date(since), date_until = new Date(until);
+        const data = await this.db.coupon.findAll({
+            limit,
+            offset,
+            //attributes: ['id', 'name', 'description', 'base_price', 'quantity_total', 'quantity_current'],
+            order,
+            where: {
+                [Op.and]: [
+                    {
+                        since: {
+                            [Op.lte]: new Date()
+                        }
+                    }, {
+                        until: {
+                            [Op.gte]: new Date()
+                        }
+                    }]
+            }
+            
+            /*where: {
+                [Op.and]: [
+                    {
+                        since: {
+                            [Op.between]: [date_since, date_until]
+                        }
+                    }, {
+                        until: {
+                            [Op.between]: [date_since, date_until]
+                        }
+                    }]
+            }*/
+
+
+            /*where: {since: 
+                {
+                    [Op.between]: [date_since, date_until]
+                    //[Op.between]: ["2018-07-08T14:06:48.000Z", "2020-09-19T15:05:20.170Z"]
+                }
+             },*/
+
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+controller.couponCalculator = async function (req, res) {
+    const { p, d } = req.params;
+    const base = 100;
+    try {
+        if (p > 0 && d > 0 && d <= 100) {
+            let decimalPercentage = d / base;
+            let rest = p * decimalPercentage;
+            let result = p - rest;
+            return this.response({
+                res,
+                statusCode: 201,
+                payload: [result]
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'Does not comply with the indicated format.'
+            });
+        }
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
+
+}
+
 
 module.exports = controller;

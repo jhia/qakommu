@@ -35,10 +35,11 @@ module.exports = (sequelize, DataTypes) => {
         reserved: {
             type: DataTypes.INTEGER
         },
-        max_ticket_sell: {
-            type: DataTypes.INTEGER
+        limit_sale:{
+            allowNull: false,
+            type: DataTypes.BOOLEAN
         },
-        min_ticket_sell: {
+        max_ticket_sell: {
             type: DataTypes.INTEGER
         },
         start:{
@@ -46,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         end:{
             type: DataTypes.DATE
+        },
+        id_coupon:{
+            allowNull: true,
+            type: DataTypes.INTEGER
         }
 
     });
@@ -57,6 +62,12 @@ module.exports = (sequelize, DataTypes) => {
         ticket.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        //ticket to coupon
+        ticket.belongsTo(models.coupon, {
+            foreignKey: 'id_coupon',
+            as: 'coupon'
         });
 
         //ticket to event
