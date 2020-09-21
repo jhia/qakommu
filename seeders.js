@@ -27,6 +27,7 @@ const {
     object_type,
     repository_object,
     repository,
+    reference_location,
     //partnership module
     partnership,
     partnership_position,
@@ -415,18 +416,28 @@ let object_types = [
 
 let repositories = [
     {
-	"name": "new repository",
+	"name": "repository test",
 	"location": "one",
 	"id_community": 1,
-	"active": false
+	"active": true
     },
     {
-	"name": "new repository",
+	"name": "repository two",
 	"location": "two",
 	"id_community": 2,
-	"active": false,
-    },
+	"active": true
+    }
 ]
+
+let reference_locations = [
+    {
+	"id_repository": 2,
+	"reference": "two"
+    }
+]
+
+
+
 
 let repository_objects = [
     {
@@ -587,6 +598,7 @@ let loadtables = async () => {
 
     await object_type.bulkCreate(object_types, { returning: true });
     await repository.bulkCreate(repositories, { returning: true });
+    await reference_location.bulkCreate(reference_locations, { returning: true });
     await repository_object.bulkCreate(repository_objects, { returning: true });
 
     await event.bulkCreate(events, { returning: true });
@@ -606,7 +618,6 @@ let loadtables = async () => {
 
     await type_booth.bulkCreate(type_booths, { returning: true });
     await exhibitor.bulkCreate(exhibitors, { returning: true });
-
 
     await track_session.bulkCreate(track_sessions, {returning:true});
     await session_attendee.bulkCreate(session_attendees, {returning:true});

@@ -49,25 +49,28 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_repository, name,location } = req.body;
+    const { id_reference_location, name } = req.body;
 
-    const find_repository = await this.db.repository.findOne({
-	where: {id: id_repository},
-	attributes: ['location'],
+    const find_reference = await this.db.reference_location.findOne({
+	where: {id: id_reference_location},
+	attributes: ['reference'],
     });
 
-    console.log('-----------------',dir+find_repository.location+"/"+name)
 
-    const current_directory = dir+find_repository.location+"/"+name;
+    const current_directory = dir+find_reference.reference+"/"+name; 
+    console.log('-----------------',current_directory)
+
+
+
+
     try {
-	if ( fs.existsSync(dir+name) ) throw new Error ('directory already exists');
+	if ( fs.existsSync(current_directory) ) throw new Error ('directory already exists');
 	let newdata = await this.insert({
-	    id_repository,
-	    name,
-	    location: current_directory,
+	    id_reference_location,
+	    name
 	});
 	if (newdata) {
-	    if(name) fs.mkdirSync(dir+find_repository.location+"/"+name);
+	    if(name) fs.mkdirSync(current_directory);
 	    return this.response({
 		res,
 		statusCode: 201,
@@ -131,6 +134,7 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
+/*	
 	const find_repository = await this.db.repository.findOne({
 	    where: {id},
 	    attributes: ['location'],
@@ -140,6 +144,7 @@ controller.deleteFunc = async function (req, res) {
 	console.log(dir+find_repository.location);
 	console.log(fs);
 	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
+*/	
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({

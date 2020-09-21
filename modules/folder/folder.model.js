@@ -2,27 +2,20 @@
 
 module.exports = (sequelize, DataTypes) => {
     const folder = sequelize.define('folder', {
-	id_repository: DataTypes.INTEGER,
+	id_reference_location: DataTypes.INTEGER,
 	name: {
 	    type: DataTypes.TEXT,
 	    allowNull: false,
 	    unique: {
-		msg: 'location exist'
+		msg: 'name exist'
 	    },    
-	},   
-	location: {
-	    type: DataTypes.TEXT,
-	    allowNull: false,
-	    unique: {
-		msg: 'location exist'
-	    },    
-	},
+	}   
     });
 
     folder.associate = function(models){
-	folder.belongsTo(models.repository, {
-	    foreignKey: 'id_repository',
-	    as: 'repository'
+	folder.belongsTo(models.reference_location, {
+	    foreignKey: 'id_reference_location',
+	    as: 'reference_location'
 	});
     }
 
