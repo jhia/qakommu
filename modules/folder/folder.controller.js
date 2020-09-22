@@ -134,17 +134,24 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
-/*	
-	const find_repository = await this.db.repository.findOne({
+	const find_folder = await this.db.folder.findOne({
 	    where: {id},
-	    attributes: ['location'],
+	    attributes: ['id_reference_location','name'],
 	});
+
+
+	const find_reference = await this.db.reference_location.findOne({
+	    where: {id: find_folder.id_reference_location},
+	    attributes: ['reference'],
+	});
+
 	console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+	const current_dir = dir+find_reference.reference+"/"+find_folder.name;
 	console.log(id);
-	console.log(dir+find_repository.location);
-	console.log(fs);
-	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
-*/	
+	console.log(current_dir);
+	fs.rmdirSync(current_dir,{ recursive: true })
+
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
