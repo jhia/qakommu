@@ -327,37 +327,37 @@ let events = [
 
 
 let coupons = [
-    {
-	"name": "early bird",
-	"description": "coupon available for morning purchases",
-	"free": false,
-	"percentage": 50,
-	"id_state": 1,
-	"applicable_amount": 1,
-	"applicable_total_amount": false,
-	"id_user_creator": 1,
-	"active": true,
-	"since": "2021-10-05", 
-	"until": "2021-10-25"
-    }
+  {
+    "name": "early bird",
+    "description": "coupon available for morning purchases",
+    "percentage": 50,
+    "id_state": 1,
+    "limit": 5,
+    "original_limit":5,
+    "unlimited": false,
+    "id_user_creator": 1,
+    "active": true,
+    "since": "2021-10-05", 
+    "until": "2021-10-25"
+  }
 ]
 
 
 let tickets = [
-    {
-	"name": "Early Bird",
-	"description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
-	"id_state": 1,
-	"id_event": 1,
-	"base_price": 120,
-	"quantity_total": 100,
-	"quantity_current": 100,
-	"reserved": 0,
-	"max_ticket_sell": 5,
-	"min_ticket_sell": 1,
-	"start": "2020-05-05",
-	"end": "2020-05-15"
-    }
+  {
+    "name": "Early Bird",
+    "description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
+    "id_state": 1,
+    "id_event": 1,
+    "base_price": 120,
+    "quantity_total": 100,
+    "quantity_current": 100,
+    "reserved": 0,
+    "limit_sale": true,
+    "max_ticket_sell": 5,
+    "start": "2020-05-05",
+    "end": "2020-05-15"
+  }
 ]
 
 let ticket_sales = [

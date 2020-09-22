@@ -15,9 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         description:{
             type: DataTypes.TEXT
         },
-        free:{
-            type: DataTypes.BOOLEAN
-        },
         percentage:{
             allowNull: false,
             type: DataTypes.FLOAT
@@ -26,12 +23,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.INTEGER 
         },
-        applicable_amount:{
-            allowNull: false,
+        limit:{
             type: DataTypes.INTEGER 
         },
-        applicable_total_amount:{
-            type: DataTypes.BOOLEAN
+        original_limit:{
+            type: DataTypes.INTEGER,
+        },
+        unlimited:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
         id_user_creator:{
             //this is user creator

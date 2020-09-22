@@ -39,41 +39,26 @@ controller.getFunc = async function (req, res) {
 
 }
 
-controller.couponCalculator = async function (req, res) {
-    const { p, d } = req.params;
-    const base = 100;
-    try {
-        if (p > 0 && d > 0 && d <= 100) {
-            let decimalPercentage = d / base;
-            let rest = p * decimalPercentage;
-            let result = p - rest;
-            return this.response({
-                res,
-                statusCode: 201,
-                payload: [result]
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'Does not comply with the indicated format.'
-            });
-        }
-    } catch (error) {
-        this.response({
+controller.postFunc = async function (req, res) {
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until } = req.body;
+    let uuid;
+    if (limit > 0 && unlimited === true) {
+        return this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong'
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
         });
     }
 
-}
-
-controller.postFunc = async function (req, res) {
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until } = req.body;
-    let uuid;
+    if (unlimited === false && limit === null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
+        });
+    }
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
         return this.response({
@@ -94,15 +79,16 @@ controller.postFunc = async function (req, res) {
         }
     }
 
+
     try {
         let newdate = await this.insert({
             name,
             description,
-            free,
             percentage,
             id_state,
-            applicable_amount,
-            applicable_total_amount,
+            limit,
+            original_limit: limit,
+            unlimited,
             id_user_creator,
             active,
             since,
@@ -128,7 +114,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, free, percentage, id_state, applicable_amount, applicable_total_amount, id_user_creator, active, since, until, return_data } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, return_data } = req.body;
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
         return this.response({
@@ -156,11 +142,10 @@ controller.putFunc = async function (req, res) {
                 data: {
                     name,
                     description,
-                    free,
                     percentage,
                     id_state,
-                    applicable_amount,
-                    applicable_total_amount,
+                    limit,
+                    unlimited,
                     id_user_creator,
                     active,
                     since,
@@ -218,6 +203,106 @@ controller.deleteFunc = async function (req, res) {
             message: 'something went wrong'
         });
     }
+}
+
+/* ---------- special functions ---------- */
+
+/*this function is for test */
+controller.couponbetweenDate = async function (req, res) {
+
+    const { since, until } = req.params
+    const { limit, offset, order } = req.body;
+    try {
+        const { Op } = require("sequelize");
+        let date_since = new Date(since), date_until = new Date(until);
+        const data = await this.db.coupon.findAll({
+            limit,
+            offset,
+            //attributes: ['id', 'name', 'description', 'base_price', 'quantity_total', 'quantity_current'],
+            order,
+            where: {
+                [Op.and]: [
+                    {
+                        since: {
+                            [Op.lte]: new Date()
+                        }
+                    }, {
+                        until: {
+                            [Op.gte]: new Date()
+                        }
+                    }]
+            }
+            
+            /*where: {
+                [Op.and]: [
+                    {
+                        since: {
+                            [Op.between]: [date_since, date_until]
+                        }
+                    }, {
+                        until: {
+                            [Op.between]: [date_since, date_until]
+                        }
+                    }]
+            }*/
+
+
+            /*where: {since: 
+                {
+                    [Op.between]: [date_since, date_until]
+                    //[Op.between]: ["2018-07-08T14:06:48.000Z", "2020-09-19T15:05:20.170Z"]
+                }
+             },*/
+
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+controller.couponCalculator = async function (req, res) {
+    const { p, d } = req.params;
+    const base = 100;
+    try {
+        if (p > 0 && d > 0 && d <= 100) {
+            let decimalPercentage = d / base;
+            let rest = p * decimalPercentage;
+            let result = p - rest;
+            return this.response({
+                res,
+                statusCode: 201,
+                payload: [result]
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'Does not comply with the indicated format.'
+            });
+        }
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
+
 }
 
 

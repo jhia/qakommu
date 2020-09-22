@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('event');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -51,13 +51,13 @@ controller.getFunc = async function (req, res) {
 
 
 controller.postFunc = async function (req, res) {
-
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
     try {
+        let image = null;
         const host = req.headers.host
         const avatar = req.files ? req.files.image : null;
-        const image = verify_and_upload_image_post(avatar, "event");
-
+        image = verify_and_upload_image_post(avatar, "event");
+        const archive = image ? image.split("_") : null;
         let newdate = await this.insert({
             name,
             description,
@@ -79,6 +79,7 @@ controller.postFunc = async function (req, res) {
             host
         });
         if (newdate) {
+            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -86,8 +87,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
-        delete_image(logo);
-        console.log(error)
+        console.log(error);
         this.response({
             res,
             success: false,
@@ -104,11 +104,11 @@ controller.putFunc = async function (req, res) {
         let find_image = await this.db.event.findOne({
             where: { id }
         });
-        console.log(find_image);
         const fnd_image = find_image.image ? find_image.image : null;
-        const avatar = req.files ? req.files.image : null;
-
-        const image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
+        const avatar = req.files ? req.files.image : undefined;
+        let image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
+        if(req.body.image == 'not-image') image = null;
+        const archive = image ? image.split("_") : null;
 
         let result = await this.update(
             {
@@ -136,6 +136,9 @@ controller.putFunc = async function (req, res) {
                 return_data
             });
         if (result) {
+            if(fnd_image && image) delete_image(fnd_image);
+            if(req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
+            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
@@ -150,7 +153,6 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
-        console.log(error);
         this.response({
             res,
             success: false,
@@ -167,7 +169,6 @@ controller.deleteFunc = async function (req, res) {
             where: { id }
         });
         if (find_image.image) delete_image(find_image.image);
-
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {
             return this.response({
