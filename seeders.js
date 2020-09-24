@@ -27,7 +27,6 @@ const {
     object_type,
     repository_object,
     repository,
-    reference_location,
     //partnership module
     partnership,
     partnership_position,
@@ -429,12 +428,7 @@ let repositories = [
     }
 ]
 
-let reference_locations = [
-    {
-	"id_repository": 2,
-	"reference": "two"
-    }
-]
+
 
 
 
@@ -598,7 +592,6 @@ let loadtables = async () => {
 
     await object_type.bulkCreate(object_types, { returning: true });
     await repository.bulkCreate(repositories, { returning: true });
-    await reference_location.bulkCreate(reference_locations, { returning: true });
     await repository_object.bulkCreate(repository_objects, { returning: true });
 
     await event.bulkCreate(events, { returning: true });
