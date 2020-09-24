@@ -103,14 +103,10 @@ controller.putFunc = async function (req, res) {
 	where: {id},
 	attributes: ["location"]
     });
-    console.log('-------------',find_repository.location)
-
-    //fs.renameSync(dir+"one",dir+"otro");
-
-
 
     try {
         if ( location ) fs.renameSync(dir+find_repository.location, dir+location);
+
 
 	let result = await this.update(
 	    {
