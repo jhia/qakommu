@@ -2,29 +2,27 @@
 
 module.exports = (sequelize, DataTypes) => {
     const repository = sequelize.define('repository', {
-        id: {
-            allowNull: false,
-            autoIncrement: true,
-            primaryKey: true,
-            type: DataTypes.INTEGER
-        },
-        name: {
-            allowNull: false,
-            type: DataTypes.TEXT
-        },
-        location: {
-            allowNull: false,
-            type: DataTypes.TEXT
-        },
-        active: {
-            allowNull: false,
-            type: DataTypes.BOOLEAN
-        }
+	name: DataTypes.TEXT,
+	location: {
+	    type: DataTypes.TEXT,
+	    allowNull: false,
+	},
+	id_community: {
+	    type: DataTypes.INTEGER,
+	    allowNull: false,
+	    unique: {
+		msg: 'comunity exist'
+	    },
+
+	},
+	active: DataTypes.BOOLEAN,
     });
 
     repository.associate = function (models) {
-        //To create model associations
-
+	repository.belongsTo(models.community, {
+	    foreignKey: 'id_community',
+	    as: 'community'
+	});
     }
 
     return repository;

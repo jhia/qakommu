@@ -2,26 +2,18 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-const controller = new Base('repository');
+
+const controller = new Base('folder');
 const fs = require('fs');
 const path = require('path');
 const dir = "./upload/";
+
 /*
  *Extend or overwrite the base functions
  *All the controllers already have implicit the models by:
  *this.db -> All models
  *this.model -> Current module model
  */
-
-const readdirSync = (p, a = []) => {
-
-    if (fs.statSync(p).isDirectory()){
-	a = [p];
-	fs.readdirSync(p).map(f => readdirSync(a[a.push(path.join(p, f)) - 1], a));
-    }
-
-    return a
-}
 
 
 controller.getFunc = async function (req, res) {
@@ -38,15 +30,10 @@ controller.getFunc = async function (req, res) {
 	    order
 	});
 
-	const ir = readdirSync(dir+data.location);
 	this.response({
 	    res,
-	    payload: {
-		name: data.name,
-		location: ir,
-		community: data.id_community,
-		active: data.active,
-	    }
+	    payload: [data], 
+
 
 	});
     } catch (error) {
@@ -62,17 +49,28 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, location, id_community, active } = req.body;
+    const { id_reference_location, name } = req.body;
+
+    const find_reference = await this.db.reference_location.findOne({
+	where: {id: id_reference_location},
+	attributes: ['reference'],
+    });
+
+
+    const current_directory = dir+find_reference.reference+"/"+name; 
+    console.log('-----------------',current_directory)
+
+
+
+
     try {
-	if ( fs.existsSync(dir+location) ) throw new Error ('directory already exists');
+	if ( fs.existsSync(current_directory) ) throw new Error ('directory already exists');
 	let newdata = await this.insert({
-	    name,
-	    location,
-	    id_community,
-	    active,
+	    id_reference_location,
+	    name
 	});
 	if (newdata) {
-	    if(location) fs.mkdirSync("upload/"+location);
+	    if(name) fs.mkdirSync(current_directory);
 	    return this.response({
 		res,
 		statusCode: 201,
@@ -80,10 +78,6 @@ controller.postFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-
-	if( error.code == "EEXIST" ) error.message = "file already exists"
-	if( !id_community ) error.message = "required community"
-	if( !location ) error.message = "required location"
 
 	this.response({
 	    res,
@@ -99,6 +93,7 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, location, active, return_data } = req.body;
 
+    console.log(dir+"one",dir+"otro")
     fs.renameSync(dir+"one",dir+"otro");
     try {
 	let result = await this.update(
@@ -139,11 +134,24 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
-	const find_repository = await this.db.repository.findOne({
+	const find_folder = await this.db.folder.findOne({
 	    where: {id},
-	    attributes: ['location'],
+	    attributes: ['id_reference_location','name'],
 	});
-	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
+
+
+	const find_reference = await this.db.reference_location.findOne({
+	    where: {id: find_folder.id_reference_location},
+	    attributes: ['reference'],
+	});
+
+	console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+	const current_dir = dir+find_reference.reference+"/"+find_folder.name;
+	console.log(id);
+	console.log(current_dir);
+	fs.rmdirSync(current_dir,{ recursive: true })
+
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
@@ -160,15 +168,25 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-	console.log('--------------',error.original.code)
-	if (error.original.code == 23503) error.message = "this folder is not empty"
 	this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: error.message
+	    message: 'something went wrong'
 	});
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = controller;
