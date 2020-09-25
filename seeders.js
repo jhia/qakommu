@@ -355,7 +355,8 @@ let tickets = [
     "limit_sale": true,
     "max_ticket_sell": 5,
     "start": "2020-05-05",
-    "end": "2020-05-15"
+    "end": "2020-05-15",
+    "use_multiple_price": false
   }
 ]
 

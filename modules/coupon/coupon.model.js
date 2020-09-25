@@ -61,11 +61,6 @@ module.exports = (sequelize, DataTypes) => {
             as: 'state'
         });
 
-        coupon.hasMany(models.ticket, {
-            foreignKey: 'id_coupon',
-            as: 'coupon_ticket'
-        });
-
         coupon.hasMany(models.ticket_sale, {
             foreignKey: 'id_coupon',
             as: 'coupon_ticket_sale'

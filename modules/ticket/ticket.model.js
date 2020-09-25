@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         limit_sale:{
             allowNull: false,
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
         max_ticket_sell: {
             type: DataTypes.INTEGER
@@ -48,11 +49,110 @@ module.exports = (sequelize, DataTypes) => {
         end:{
             type: DataTypes.DATE
         },
-        id_coupon:{
+        //price1
+        use_multiple_price1: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        price1:{
             allowNull: true,
-            type: DataTypes.INTEGER
+            type: DataTypes.FLOAT
+        },
+        since1:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        until1:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        percentage1:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        is_discount1:{
+            allowNull: true,
+            type: DataTypes.BOOLEAN
+        },
+        //price2
+        use_multiple_price2: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        price2:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        since2:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        until2:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        percentage2:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        is_discount2:{
+            allowNull: true,
+            type: DataTypes.BOOLEAN
+        },
+        //price 3
+        use_multiple_price3: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        price3:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        since3:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        until3:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        percentage3:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        is_discount3:{
+            allowNull: true,
+            type: DataTypes.BOOLEAN
+        },
+        // price 4
+        use_multiple_price4: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        price4:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        since4:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        until4:{
+            allowNull: true,
+            type: DataTypes.DATE
+        },
+        percentage4:{
+            allowNull: true,
+            type: DataTypes.FLOAT
+        },
+        is_discount4:{
+            allowNull: true,
+            type: DataTypes.BOOLEAN
         }
-
     });
 
     ticket.associate = function (models) {
@@ -62,12 +162,6 @@ module.exports = (sequelize, DataTypes) => {
         ticket.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
-        });
-
-        //ticket to coupon
-        ticket.belongsTo(models.coupon, {
-            foreignKey: 'id_coupon',
-            as: 'coupon'
         });
 
         //ticket to event
