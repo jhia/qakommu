@@ -25,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'user'
 	});
 
-	repository_object.belongsTo(models.repository, {
-	    foreignKey: 'id_repository',
-	    as: 'repository'
+	repository_object.belongsTo(models.folder, {
+	    foreignKey: 'id_folder',
+	    as: 'folder'
 	});
 
 	repository_object.belongsTo(models.object_type, {
