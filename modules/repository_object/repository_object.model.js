@@ -2,11 +2,16 @@
 
 module.exports = (sequelize, DataTypes) => {
     const repository_object = sequelize.define('repository_object', {
-
-	name: DataTypes.STRING,
+	name: {
+	    type: DataTypes.TEXT,
+	    allowNull: false,
+	    unique: {
+		msg: 'name exist'
+	    },    
+	},
 	description: DataTypes.TEXT,
 	id_user: DataTypes.INTEGER,        
-	id_repository: DataTypes.INTEGER,        
+	id_folder: DataTypes.INTEGER,        
 	id_object_type: DataTypes.INTEGER,        
 	size: DataTypes.INTEGER,        
 	privated: DataTypes.BOOLEAN,        
@@ -20,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'user'
 	});
 
-	repository_object.belongsTo(models.repository, {
-	    foreignKey: 'id_repository',
-	    as: 'repository'
+	repository_object.belongsTo(models.folder, {
+	    foreignKey: 'id_folder',
+	    as: 'folder'
 	});
 
 	repository_object.belongsTo(models.object_type, {

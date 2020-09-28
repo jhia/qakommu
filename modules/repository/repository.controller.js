@@ -97,16 +97,24 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, location, active, return_data } = req.body;
+    const { name, location, id_community, active, return_data } = req.body;
 
-    fs.renameSync(dir+"one",dir+"otro");
+    const find_repository = await this.db.repository.findOne({
+	where: {id},
+	attributes: ["location"]
+    });
+
     try {
+        if ( location ) fs.renameSync(dir+find_repository.location, dir+location);
+
+
 	let result = await this.update(
 	    {
 		id,
 		data: {
 		    name,
 		    location,
+		    id_community,
 		    active
 		},
 		return_data
@@ -133,6 +141,7 @@ controller.putFunc = async function (req, res) {
 	    message: 'something went wrong'
 	});
     }
+    
 }
 
 

@@ -27,7 +27,7 @@ const {
     object_type,
     repository_object,
     repository,
-    reference_location,
+    folder,
     //partnership module
     partnership,
     partnership_position,
@@ -429,13 +429,13 @@ let repositories = [
     }
 ]
 
-let reference_locations = [
+
+let folders = [
     {
 	"id_repository": 2,
-	"reference": "two"
+	"name": "three"
     }
 ]
-
 
 
 
@@ -443,7 +443,7 @@ let repository_objects = [
     {
 	"name": "document",
 	"location": "www/kommu/ejemplo/",
-	"id_repository": 1,
+	"id_folder": 1,
 	"id_object_type": 1
     }
 ]
@@ -598,7 +598,7 @@ let loadtables = async () => {
 
     await object_type.bulkCreate(object_types, { returning: true });
     await repository.bulkCreate(repositories, { returning: true });
-    await reference_location.bulkCreate(reference_locations, { returning: true });
+    await folder.bulkCreate(folders, {returning: true});
     await repository_object.bulkCreate(repository_objects, { returning: true });
 
     await event.bulkCreate(events, { returning: true });

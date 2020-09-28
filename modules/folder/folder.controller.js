@@ -49,15 +49,16 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_reference_location, name } = req.body;
+    const { id_repository, name } = req.body;
 
-    const find_reference = await this.db.reference_location.findOne({
-	where: {id: id_reference_location},
-	attributes: ['reference'],
+    console.log('-------------',id_repository)
+    const find_reference = await this.db.repository.findOne({
+	where: {id: id_repository},
+	attributes: ['location'],
     });
 
 
-    const current_directory = dir+find_reference.reference+"/"+name; 
+    const current_directory = dir+find_reference.location+"/"+name; 
     console.log('-----------------',current_directory)
 
 
@@ -66,7 +67,7 @@ controller.postFunc = async function (req, res) {
     try {
 	if ( fs.existsSync(current_directory) ) throw new Error ('directory already exists');
 	let newdata = await this.insert({
-	    id_reference_location,
+	    id_repository,
 	    name
 	});
 	if (newdata) {
@@ -136,13 +137,13 @@ controller.deleteFunc = async function (req, res) {
     try {
 	const find_folder = await this.db.folder.findOne({
 	    where: {id},
-	    attributes: ['id_reference_location','name'],
+	    attributes: ['id_repository','name'],
 	});
 
 
-	const find_reference = await this.db.reference_location.findOne({
-	    where: {id: find_folder.id_reference_location},
-	    attributes: ['reference'],
+	const find_reference = await this.db.repository.findOne({
+	    where: {id: find_folder.id_repository},
+	    attributes: ['location'],
 	});
 
 	console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
