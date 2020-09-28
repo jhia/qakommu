@@ -13,6 +13,22 @@ function makeid(length) {
 }
 
 
+//calculate discount percentage
+const calculate_discount_percentage = (percentage, base_price) => {
+  let decimalPercentage = percentage / 100;
+  let rest = base_price * decimalPercentage;
+  let result = base_price - rest;
+  return result;
+};
+
+//calculate percentage increase
+const calculate_percentage_increase = (percentage, base_price) => {
+  let decimalPercentage = percentage / 100;
+  let rest = base_price * decimalPercentage;
+  let result = base_price + rest;
+  return result;
+};
+
 // UPLOAD IMAGE
 
 const parse_image = (file,name_image,identify) => ({
@@ -35,7 +51,7 @@ const upload_images = (file,name_image,identify) => {
     )
 }
 
-let get_image_name = (file,name_image,identify) => create_image_name(parse_image(file,name_image,identify)) 
+let get_image_name = (file, name_image, identify) => create_image_name(parse_image(file, name_image, identify))
 
 const verify_and_upload_image_post = (file,name_image) => {
     let image_name = null;
@@ -48,7 +64,7 @@ const verify_and_upload_image_post = (file,name_image) => {
     }
 }
 
-const multi_verify_and_upload_image_post = ( file, id_post , old_image = null) => {
+const multi_verify_and_upload_image_post = (file, id_post, old_image = null) => {
 
     let send = []
     if(!file) {
@@ -114,7 +130,7 @@ function cleanAttributes(relations) {
     });
 }
 
-function response(obj,resp = null){
+function response(obj, resp = null) {
 
     const httpStatusCode = {
 	"200": "Everything is OK",
@@ -158,7 +174,6 @@ function response(obj,resp = null){
 	    httpStatusCode[obj] : "Successfull request",
 	    payload: payload || []
 	})
-
 
 }
 
