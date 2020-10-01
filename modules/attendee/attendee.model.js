@@ -13,13 +13,21 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
         },
         name: {
+            allowNull: false,
             type: DataTypes.TEXT
         },
         dni:{
+            allowNull: false,
+            type: DataTypes.TEXT
+        },
+        email:{
+            allowNull: false,
             type: DataTypes.TEXT
         },
         is_present: {
-            type: DataTypes.BOOLEAN
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
         id_ticket_sale_detail:{
             allowNull: false,

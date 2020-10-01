@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
+const { validateEmail } = require('../../helpers/utilities');
 
 const controller = new Base('attendee');
 
@@ -41,12 +42,30 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_user, name, dni, is_present, id_ticket_sale_detail, rate, id_state, id_event } = req.body;
+    const { id_user, name, dni,email, is_present, id_ticket_sale_detail, rate, id_state, id_event } = req.body;
+    
     try {
+        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1 || dni.length < 1 || email < 1 ) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, verify the data sent!',
+            });
+        }
+        if(!validateEmail(email)){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, el formato del email no es valido',
+            });
+        }
         let newdate = await this.insert({
             id_user,
             name,
             dni,
+            email : email.toLowerCase(),
             is_present,
             id_ticket_sale_detail,
             rate,
@@ -72,8 +91,25 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, name, dni, is_present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
+    const { id_user, name, dni, email, is_present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
+
     try {
+        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1 || dni.length < 1 || email < 1 ) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, verify the data sent!',
+            });
+        }
+        if(!validateEmail(email)){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, el formato del email no es valido',
+            });
+        }
         let result = await this.update(
             {
                 id,
@@ -81,6 +117,7 @@ controller.putFunc = async function (req, res) {
                     id_user,
                     name,
                     dni,
+                    email,
                     is_present,
                     id_ticket_sale_detail,
                     rate,

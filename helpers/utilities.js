@@ -12,9 +12,14 @@ function makeid(length) {
     return result;
 }
 
+//Validate Email
+const validateEmail = (email) => {
+	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  	return re.test(email);
+}
 
 //calculate discount percentage
-const calculate_discount_percentage = (percentage, base_price) => {
+const calculateDiscountPercentage = (percentage, base_price) => {
   let decimalPercentage = percentage / 100;
   let rest = base_price * decimalPercentage;
   let result = base_price - rest;
@@ -22,7 +27,7 @@ const calculate_discount_percentage = (percentage, base_price) => {
 };
 
 //calculate percentage increase
-const calculate_percentage_increase = (percentage, base_price) => {
+const calculatePercentageIncrease = (percentage, base_price) => {
   let decimalPercentage = percentage / 100;
   let rest = base_price * decimalPercentage;
   let result = base_price + rest;
@@ -187,5 +192,8 @@ module.exports = {
     multi_verify_and_upload_image_post,
     verify_and_upload_image_put,
     upload_images,
-    delete_image
+	delete_image,
+	calculateDiscountPercentage,
+	calculatePercentageIncrease,
+	validateEmail
 };
