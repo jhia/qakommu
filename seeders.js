@@ -358,6 +358,45 @@ let tickets = [
     "start": "2020-05-05",
     "end": "2020-05-15",
     "use_multiple_price": false
+  },
+  {
+    "name": "test ticket",
+	"description": "test description of pruebe", 
+	"id_state": 1,
+	"id_event": 1,
+	"base_price": 100,
+	"quantity_total": 100, 
+	"quantity_current": 100,
+	"reserved": 0,
+    "limit_sale": true,
+	"max_ticket_sell": 50, 
+	"start": "2020-05-01",
+	"end": "2020-12-20",
+    
+
+    "use_multiple_price1": true,
+    "since1":"2020-05-10",
+    "until1": "2020-05-15",
+    "percentage1": 30,
+    "is_discount1": true,
+    
+    "use_multiple_price2": true,
+    "since2":"2020-08-2",
+    "until2": "2020-09-20",
+    "percentage2": 20,
+    "is_discount2": true,
+    
+    "use_multiple_price3": true,
+    "since3":"2020-09-21",
+    "until3": "2020-11-20",
+    "percentage3": 10,
+    "is_discount3": true,
+    
+    "use_multiple_price4": true,
+    "since4":"2020-11-21",
+    "until4": "2020-12-1",
+    "percentage4": 5,
+    "is_discount4": false
   }
 ]
 
