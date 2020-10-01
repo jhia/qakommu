@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
+const { calculateDiscountPercentage  } = require('../../helpers/utilities');
 const controller = new Base('ticket_sale');
 
 /*
@@ -99,7 +99,7 @@ controller.postFunc = async function (req, res) {
                 //end calculate price to ticket
 
                 let ticket_total_amount = count * price_current
-                let ticket_total_amount_paid = null;
+                let ticket_total_amount_paid = ticket_total_amount;
                 let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false;
                 //in this part we are going to verify and calculate the coupon  
                 if (id_coupon > 0) {
@@ -126,10 +126,13 @@ controller.postFunc = async function (req, res) {
                         }
                         //coupon calculator
                         if (ticket_total_amount > 0 && ticketsalecoupon.percentage > 0 && ticketsalecoupon.percentage <= 100) {
+                            /*
                             let decimalPercentage = ticketsalecoupon.percentage / 100;
                             let rest = ticket_total_amount * decimalPercentage;
                             ticket_total_amount_paid = ticket_total_amount - rest;
-                            if (!ticketsalecoupon.unlimited) {
+                            */
+                           ticket_total_amount_paid = calculateDiscountPercentage(ticketsalecoupon.percentage, ticket_total_amount);
+                            if ( !ticketsalecoupon.unlimited) {
                                 newcouponlimit = ticketsalecoupon.limit - 1;
                                 flagcouponlimit = true;
                             }
@@ -150,7 +153,7 @@ controller.postFunc = async function (req, res) {
                     count,
                     unit_amount: price_current,
                     total_amount: ticket_total_amount,
-                    total_amount_paid: ticket_total_amount_paid ? ticket_total_amount_paid : ticket_total_amount,
+                    total_amount_paid: ticket_total_amount_paid ,
                     paying_name,
                     paying_address,
                     dni_payer,
