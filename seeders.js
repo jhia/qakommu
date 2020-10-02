@@ -412,7 +412,7 @@ let ticket_sales = [
 	"paying_address": "Cartagena street, number 25, 66534",
 	"dni_payer": "E25331234",
 	"name_ticket": "any name ticket",
-	"name_event": "any name event",
+	"price_type": "PB",
 	"id_coupon": null
     }
 ]
