@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
 const jwt = require('jsonwebtoken');
-const { makeid, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
+const { makeid, verify_and_upload_image_put, upload_images,  delete_image } = require('../../helpers/utilities')
 
 const fs = require('fs');
 
@@ -33,7 +33,7 @@ controller.getFunc = async function (req, res) {
 		name: data.name,
 		last_name: data.last_name,
 		username: data.username,
-		profile_photo: data.profile_photo ? req.headers.host+data.profile_photo : null,
+		profile_photo: data.profile_photo ? req.headers.host+"/uploads/"+data.profile_photo : null,
 		country: data.country,
 		city: data.city,
 		address: data.address,
@@ -103,72 +103,100 @@ controller.postFunc = async function (req, res) {
     }
 }
 
+
 controller.putFunc = async function (req, res) {
+
 
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
 
     const id = decoded.user_id;
 
-    //const { id } = req.params;
+
+
     const { name, last_name, username, country, city, address, country_code, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
     let find_image = await this.db.user.findOne({
 	where: { id }
     });
 
-    const fnd_image = find_image ? find_image.profile_photo : null
-    const avatar = req.files ? req.files.avatar : null;
-    const rm_image = remove_image ? remove_image : '0';
 
-    const profile_photo = verify_and_upload_image_put( avatar, "profile_photo", fnd_image, rm_image );
 
-    await this.update(
-	{
-	    id,
-	    data: {
-		name,
-		last_name,
-		username,
-		profile_photo,
-		country,
-		city,
-		address,
-		country_code,
-		phone,
-		email,
-		password,
-		gender,
-		id_repository,
-		id_rol,
-		id_community
-	    },
-	    return_data
-	})
-	.then(( result )=>{
-	    this.response({
+
+    const fnd_image = find_image.profile_photo ? find_image.profile_photo : null;
+    const avatar = req.files ? req.files.avatar : undefined;
+    let profile_photo = avatar && verify_and_upload_image_put(avatar, "profile_photo", fnd_image);
+    if(req.body.avatar == 'not-image') profile_photo = null;
+
+    const archive = profile_photo ? profile_photo.split("_") : null;
+    try {
+
+	let result = await this.update(
+	    {
+		id,
+		data: {
+		    name,
+		    last_name,
+		    username,
+		    profile_photo,
+		    country,
+		    city,
+		    address,
+		    country_code,
+		    phone,
+		    email,
+		    password,
+		    gender,
+		    id_repository,
+		    id_rol,
+		    id_community
+		},
+		return_data
+	    });
+	if (result) {
+	    if(fnd_image && profile_photo) delete_image(fnd_image);
+	    if(req.body.avatar == 'not-image' && fnd_image) delete_image(fnd_image);
+
+	    if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
+
+	    return this.response({
+
 		res,
 		statusCode: 200,
 		payload: return_data ? result : []
-	    })
-	}).catch((err)=>{
+
+	    });
+	} else {
 	    this.response({
 		res,
 		success: false,
-		statusCode: 500,
-		message: err.message
-	    })
+		statusCode: 202,
+		message: 'Could not update this element, possibly does not exist'
+	    });
+	}
+    } catch (error) {
+	this.response({
+	    res,
+	    success: false,
+	    statusCode: 500,
+	    message: error.message 
 	});
+    }
 }
 
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
+        let find_image = await this.db.user.findOne({
+            where: { id }
+        });
+        if (find_image.profile_photo) delete_image(find_image.profile_photo);
 
-    let find_image = await this.db.user.findOne({
-	where: { id }
-    });
 
-    delete_image( find_image.profile_photo.split("/")[2] );
+
+
+
+
+
 
     try {
 	let deleterows = await this.delete({ id });
