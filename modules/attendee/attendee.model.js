@@ -67,6 +67,12 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_user',
             as: 'user'
         });
+
+
+        attendee.hasMany(models.session_attendee, {
+            foreignKey: 'id_attendee',
+            as: 'attendee_session_attendee'
+        });
     }
 
     return attendee;

@@ -179,4 +179,48 @@ controller.deleteFunc = async function (req, res) {
 }
 
 
+//--------------------sepcial functions--------------------
+
+controller.getSessionsByAttendee = async function (req, res) {
+    const { id } = req.params;
+    const { limit, offset, order } = req.body;
+
+    try {
+        const data = await this.db.session_attendee.findAll({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: { id_attendee: id },
+            include: [{
+                attributes: ['name', 'description', 'order', 'start', 'end', 'is_break'],
+                model: this.db.session,
+                as: 'session',
+                include: [{
+                    attributes: ['name', 'description'],
+                    model: this.db.room,
+                    as: 'room'
+                }]
+            }]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        console.log(error);
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+
 module.exports = controller;

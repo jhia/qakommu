@@ -18,6 +18,11 @@ router.get('/:id',function(req, res){
   attendeeController.getFunc(req,res);
 });
 
+router.get('/:id/sessions/all',function(req, res){
+  //HTTP get route
+  attendeeController.getSessionsByAttendee(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   attendeeController.postFunc(req,res);

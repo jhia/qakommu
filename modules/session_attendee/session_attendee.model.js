@@ -25,7 +25,19 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     session_attendee.associate = function(models){
-    	//To create model associations
+        //To create model associations
+
+        //sessions_attendee to session
+        session_attendee.belongsTo(models.session, {
+            foreignKey: 'id_session',
+            as: 'session'
+        });
+
+        //sessions_attendee to attendee
+        session_attendee.belongsTo(models.attendee, {
+            foreignKey: 'id_attendee',
+            as: 'attendee'
+        });
     }
 
     return session_attendee;
