@@ -13,8 +13,8 @@ controller.getFunc = async function (req, res) {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
     const email = decoded.email;
+    console.log(decoded)
 
-    //const { id } = req.params;
     const id = decoded.user_id;
     const { limit, offset, order, attributes } = req.body;
 
@@ -104,7 +104,14 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
+
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, 'secret');
+    const email = decoded.email;
+
+    const id = decoded.user_id;
+
+    //const { id } = req.params;
     const { name, last_name, username, country, city, address, country_code, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
     let find_image = await this.db.user.findOne({
