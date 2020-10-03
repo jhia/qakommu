@@ -23,7 +23,7 @@ router.post('/',(req, res) => {
   userController.postFunc(req,res);
 });
 
-router.put('/:id',(req, res) => {
+router.put('/:id?',(req, res) => {
   //HTTP put route
   userController.putFunc(req,res);
 });

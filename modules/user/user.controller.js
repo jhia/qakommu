@@ -12,7 +12,6 @@ controller.getFunc = async function (req, res) {
 
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
-    const email = decoded.email;
     console.log(decoded)
 
     const id = decoded.user_id;
@@ -30,6 +29,7 @@ controller.getFunc = async function (req, res) {
 	    res,
 	    payload: {
 		id: data.id,
+		id_community: decoded.community_id,
 		name: data.name,
 		last_name: data.last_name,
 		username: data.username,
@@ -107,7 +107,6 @@ controller.putFunc = async function (req, res) {
 
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
-    const email = decoded.email;
 
     const id = decoded.user_id;
 
