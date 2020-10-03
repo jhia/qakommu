@@ -100,6 +100,7 @@ base.prototype.getData = async function (data) {
 	const { id, limit, offset, order, attributes, modelstoextended } = data;
 	
 	if (id) {
+	  console.log('yes')
 		const one = await this.model.findOne({
 			where: {
 				id

@@ -18,6 +18,10 @@ router.get('/:id',function(req, res){
   stateController.getFunc(req,res);
 });
 
+router.get('/module/:id',function(req, res){
+  //HTTP get route
+  stateController.getDataByModuleName(req,res);
+});
 
 router.post('/',(req, res) => {
   ///HTTP post route

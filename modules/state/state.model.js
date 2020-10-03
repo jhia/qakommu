@@ -3,33 +3,40 @@
 module.exports = (sequelize, DataTypes) => {
     const state = sequelize.define('state', {
         id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
         },
         name: {
             type: DataTypes.TEXT
         },
-        description:{
+        description: {
             type: DataTypes.TEXT
         },
         active: {
             type: DataTypes.BOOLEAN
         },
-        module_name:{
-            type: DataTypes.TEXT
+        id_module_name: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         },
-        blocker:{
+        blocker: {
             type: DataTypes.BOOLEAN
         }
     });
 
-    state.associate = function(models){
+    state.associate = function (models) {
         //To create model associations
 
+        // state to module
+        state.belongsTo(models.module_name, {
+            foreignKey: 'id_module_name',
+            as: 'module_name'
+        });
+
         //state to coupon
-        state.hasMany(models.coupon ,{
+        state.hasMany(models.coupon, {
             foreignKey: 'id_state',
             as: 'state_coupon'
         });
@@ -57,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_state',
             as: 'state_speaker'
         });
+
     }
 
     return state;

@@ -29,8 +29,8 @@ router.put('/:id',(req, res) => {
 });
 
 router.delete('/:id',(req, res) => {
-  //HTTP delete route
   postController.deleteFunc(req,res);
 });
+
 
 module.exports = router;

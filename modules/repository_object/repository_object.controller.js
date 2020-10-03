@@ -4,6 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('repository_object');
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -41,15 +42,39 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, location, id_repository, id_object_type } = req.body;
+    const { description, id_user, id_folder, id_object_type, size, privated, active } = req.body;
+
+    const find_folder = await this.db.folder.findOne({
+	where: { id: id_folder },
+	attributes: ["id_repository","name"],
+	include: [{
+	    model: this.db.repository,
+	    as: "repository",
+	    attributes: ["location"],
+	}]
+    });
+    const dir = find_folder.repository.location+"/"+find_folder.name+"/";
+
+    let name = null;
     try {
+
+        const avatar = req.files ? req.files.name: null;
+        name = verify_and_upload_image_post(avatar,"reposotory");
+        const archive = name ? name.split("_") : null;
+
         let newdate = await this.insert({
             name,
-            location,
-            id_repository,
-            id_object_type
+            description,
+	    id_user,
+            id_folder,
+            id_object_type,
+	    size,
+	    privated,
+	    active,
         });
+
         if (newdate) {
+            if(name) upload_images(avatar,dir+archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -57,11 +82,13 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
+	const { path, value } = error.errors[0];
+	if ( path == "name" && value == null ) error.message = "select File"
         this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong',
+            message: error.message,
         });
     }
 }

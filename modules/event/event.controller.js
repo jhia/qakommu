@@ -4,6 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('event');
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -26,9 +27,16 @@ controller.getFunc = async function (req, res) {
             attributes,
             order
         });
+
+        const update_logo_path = x => x.map(x => {
+            x.logo = x.logo && '/uploads/' + x.logo;
+            return x;
+        })
+        data.logo = data.logo && '/uploads/' + data.logo;
+
         this.response({
             res,
-            payload: [data]
+            payload: id ? data : update_logo_path(data)
         });
     } catch (error) {
         this.response({
@@ -43,9 +51,13 @@ controller.getFunc = async function (req, res) {
 
 
 controller.postFunc = async function (req, res) {
-
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
     try {
+        let image = null;
+        const host = req.headers.host
+        const avatar = req.files ? req.files.image : null;
+        image = verify_and_upload_image_post(avatar, "event");
+        const archive = image ? image.split("_") : null;
         let newdate = await this.insert({
             name,
             description,
@@ -62,9 +74,12 @@ controller.postFunc = async function (req, res) {
             //id_call_for_paper, 
             prom_rate,
             id_repository,
-            id_state
+            id_state,
+            image,
+            host
         });
         if (newdate) {
+            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -72,6 +87,7 @@ controller.postFunc = async function (req, res) {
             });
         }
     } catch (error) {
+        console.log(error);
         this.response({
             res,
             success: false,
@@ -85,6 +101,15 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state, return_data } = req.body;
     try {
+        let find_image = await this.db.event.findOne({
+            where: { id }
+        });
+        const fnd_image = find_image.image ? find_image.image : null;
+        const avatar = req.files ? req.files.image : undefined;
+        let image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
+        if(req.body.image == 'not-image') image = null;
+        const archive = image ? image.split("_") : null;
+
         let result = await this.update(
             {
                 id,
@@ -105,11 +130,15 @@ controller.putFunc = async function (req, res) {
                     //id_call_for_paper, 
                     prom_rate,
                     id_repository,
-                    id_state
+                    id_state,
+                    image
                 },
                 return_data
             });
         if (result) {
+            if(fnd_image && image) delete_image(fnd_image);
+            if(req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
+            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
@@ -136,6 +165,10 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
+        let find_image = await this.db.event.findOne({
+            where: { id }
+        });
+        if (find_image.image) delete_image(find_image.image);
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {
             return this.response({
@@ -265,7 +298,7 @@ controller.getAttendeesByEvent = async function (req, res) {
         const data = await this.db.attendee.findAll({
             limit,
             offset,
-            attributes: ['id', 'id_user', 'name', 'dni', 'present', 'rate'],
+            attributes: ['id', 'id_user', 'name', 'dni', 'is_present', 'rate'],
             order,
             where: {
                 id_event
@@ -280,7 +313,7 @@ controller.getAttendeesByEvent = async function (req, res) {
                     }
                 },
                 {
-                    attributes: ['name','last_name', 'profile_photo','address','email'],
+                    attributes: ['name', 'last_name', 'username', 'profile_photo', 'address', 'email', 'phone'],
                     model: this.db.user,
                     as: 'user'
                 },

@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('partnership');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image } = require('../../helpers/utilities')
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 
 /*
 *Extend or overwrite the base functions
@@ -18,16 +18,24 @@ controller.getFunc = async function (req, res) {
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
     try {
-        const data = await this.getData({
+        const data1 = await this.getData({
             id,
             limit,
             offset,
             attributes,
             order
         });
+
+        const update_logo_path = x => x.map(x => {
+            x.logo = x.logo && '/uploads/' + x.logo;
+            return x;
+        })
+
+        data1.logo = data1.logo && '/uploads/' + data1.logo;
+
         this.response({
             res,
-            payload: { data }
+            payload: id ? data1 : update_logo_path(data1)
         });
     } catch (error) {
         this.response({
@@ -43,10 +51,12 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
     const { name, description, registry_number, web, active } = req.body;
 
+    let logo = null;
     try {
         const host = req.headers.host
         const avatar = req.files ? req.files.logo: null;
-        const logo = verify_and_upload_image_post(avatar,"partnership");
+        logo = verify_and_upload_image_post(avatar,"partnership");
+        const archive = logo ? logo.split("_") : null;
 
         let newdate = await this.insert({
             name,
@@ -58,6 +68,7 @@ controller.postFunc = async function (req, res) {
             active
         });
         if (newdate) {
+            if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -75,21 +86,19 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-
     const { id } = req.params;
-    const { name, description, registry_number, active, web, return_data, remove_image } = req.body;
-    try {
+    const { name, description, registry_number, active, web, return_data } = req.body;
+    let find_image = await this.db.partnership.findOne({
+        where: { id }
+    });
+    const fnd_image = find_image.logo ? find_image.logo : null;
+    const avatar = req.files ? req.files.logo : undefined;
+    let logo = avatar && verify_and_upload_image_put(avatar, "partnership", fnd_image);
+    if(req.body.logo == 'not-image') logo = null;
 
-        let find_image = await this.db.partnership.findOne({
-            where: { id }
-        });
-    
-        const fnd_image = find_image ? find_image.logo : null
-        const avatar = req.files ? req.files.logo : null;
-        const rm_image = remove_image ? remove_image : '0';
-    
-        const logo = verify_and_upload_image_put( avatar, "partnership", fnd_image, rm_image );
-    
+    const archive = logo ? logo.split("_") : null;
+   try {
+
         let result = await this.update(
             {
                 id,
@@ -104,6 +113,9 @@ controller.putFunc = async function (req, res) {
                 return_data
             });
         if (result) {
+            if(fnd_image && logo) delete_image(fnd_image);
+            if(req.body.logo == 'not-image' && fnd_image) delete_image(fnd_image);
+            if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
@@ -142,9 +154,8 @@ controller.deleteFunc = async function (req, res) {
         let find_image = await this.db.partnership.findOne({
             where: { id }
         });
-         
-        delete_image( find_image.logo.split("/")[2] );
-    
+        if (find_image.logo) delete_image(find_image.logo);
+
 
         let deleterows = await this.delete({ id });
         if (deleterows > 0) {

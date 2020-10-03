@@ -18,6 +18,17 @@ router.get('/:id',function(req, res){
   couponController.getFunc(req,res);
 });
 
+router.get('/calculator/:p/:d',function(req, res){
+  //HTTP get route
+  couponController.couponCalculator(req,res);
+});
+
+router.get('/range/:since/:until',function(req, res){
+  //HTTP get route
+  couponController.couponbetweenDate(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   couponController.postFunc(req,res);

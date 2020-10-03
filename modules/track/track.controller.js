@@ -42,13 +42,14 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, module_name } = req.body;
+	const { name, description, active, id_module_name, color } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			module_name
+			id_module_name,
+			color
 		});
 		if (newdate) {
 			return this.response({
@@ -69,7 +70,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, module_name, return_data } = req.body;
+	const { name, description, active, id_module_name, color, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -79,7 +80,8 @@ controller.putFunc = async function (req, res) {
 					name,
 					description,
 					active,
-					module_name
+					id_module_name,
+					color
 				},
 				return_data
 			}
@@ -135,5 +137,35 @@ controller.deleteFunc = async function (req, res) {
 		});
 	}
 }
+
+
+/* ---------- special functions ---------- */
+
+controller.getDataByModuleName = async function(req, res){
+	const { id } = req.params;
+	const { limit, offset, order } = req.body;
+	try {
+		const data = await this.db.track.findAll({
+            limit,
+			offset,
+			attributes: ['id', 'name', 'description', 'active', 'color'],
+            order,
+            where: { id_module_name: id, active: true }
+        });
+		this.response({
+            res,
+            payload: [data]
+        });
+	} catch (error) {
+		this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+	}
+}
+
+
 
 module.exports = controller;
