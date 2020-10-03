@@ -37,11 +37,20 @@ module.exports = (sequelize, DataTypes) => {
 
     session.associate = function (models) {
         //To create model associations
-
-        //event to ticket
+        session.belongsTo(models.room, {
+            foreignKey: 'id_room',
+            as: 'room'
+        });
+        
         session.hasMany(models.speaker, {
             foreignKey: 'id_session',
             as: 'session_speaker'
+        });
+
+        
+        session.hasMany(models.session_attendee, {
+            foreignKey: 'id_session',
+            as: 'session_session_attendee'
         });
     }
 

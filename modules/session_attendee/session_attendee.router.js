@@ -18,6 +18,7 @@ router.get('/:id',function(req, res){
   session_attendeeController.getFunc(req,res);
 });
 
+
 router.post('/',(req, res) => {
   ///HTTP post route
   session_attendeeController.postFunc(req,res);

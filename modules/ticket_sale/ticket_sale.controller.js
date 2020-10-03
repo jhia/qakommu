@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
+const { calculateDiscountPercentage } = require('../../helpers/utilities');
 const controller = new Base('ticket_sale');
 
 /*
@@ -42,7 +42,8 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, name_event, id_coupon } = req.body;
+    const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, id_coupon } = req.body;
+
     try {
         if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 || name_event.length <= 0) {
             return this.response({
@@ -74,8 +75,36 @@ controller.postFunc = async function (req, res) {
                         message: 'the amount of ticket you want to buy exceeds stock',
                     });
                 }
-                let ticket_total_amount = count * requestedticket.base_price
-                let ticket_total_amount_paid = null;
+                //start calculate price to ticket
+                let price_current,price_type_current, today = new Date();
+
+                if (requestedticket.use_multiple_price1 == true && (requestedticket.since1 <= today && requestedticket.until1 >= today)) {
+                    price_current = requestedticket.price1;
+                    price_type_current = "P1";
+                } else {
+                    if (requestedticket.use_multiple_price2 == true && (requestedticket.since2 <= today && requestedticket.until2 >= today)) {
+                        price_current = requestedticket.price2;
+                        price_type_current = "P2";
+                    } else {
+                        if (requestedticket.use_multiple_price3 == true && (requestedticket.since3 <= today && requestedticket.until3 >= today)) {
+                            price_current = requestedticket.price3;
+                            price_type_current = "P3";
+                        } else {
+                            if (requestedticket.use_multiple_price4 == true && (requestedticket.since4 <= today && requestedticket.until4 >= today)) {
+                                price_current = requestedticket.price4;
+                                price_type_current = "P4";
+                            } else {
+                                price_current = requestedticket.base_price;
+                                price_type_current = "PB";
+                            }
+                        }
+                    }
+                }
+
+                //end calculate price to ticket
+
+                let ticket_total_amount = count * price_current
+                let ticket_total_amount_paid = ticket_total_amount;
                 let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false;
                 //in this part we are going to verify and calculate the coupon  
                 if (id_coupon > 0) {
@@ -92,7 +121,7 @@ controller.postFunc = async function (req, res) {
                     } else {
 
                         //coupon limit verification
-                        if (ticketsalecoupon.limit <= 0 && ticketsalecoupon.unlimited===false) {
+                        if (ticketsalecoupon.limit <= 0 && ticketsalecoupon.unlimited === false) {
                             return this.response({
                                 res,
                                 success: false,
@@ -102,9 +131,8 @@ controller.postFunc = async function (req, res) {
                         }
                         //coupon calculator
                         if (ticket_total_amount > 0 && ticketsalecoupon.percentage > 0 && ticketsalecoupon.percentage <= 100) {
-                            let decimalPercentage = ticketsalecoupon.percentage / 100;
-                            let rest = ticket_total_amount * decimalPercentage;
-                            ticket_total_amount_paid = ticket_total_amount - rest;
+
+                            ticket_total_amount_paid = calculateDiscountPercentage(ticketsalecoupon.percentage, ticket_total_amount);
                             if (!ticketsalecoupon.unlimited) {
                                 newcouponlimit = ticketsalecoupon.limit - 1;
                                 flagcouponlimit = true;
@@ -124,14 +152,14 @@ controller.postFunc = async function (req, res) {
                     id_ticket,
                     id_user,
                     count,
-                    unit_amount: requestedticket.base_price,
+                    unit_amount: price_current,
                     total_amount: ticket_total_amount,
-                    total_amount_paid: ticket_total_amount_paid ? ticket_total_amount_paid : ticket_total_amount,
+                    total_amount_paid: ticket_total_amount_paid,
                     paying_name,
                     paying_address,
                     dni_payer,
-                    name_ticket,
-                    name_event,
+                    name_ticket: requestedticket.name,
+                    price_type: price_type_current,
                     id_coupon
                 });
 
@@ -148,21 +176,21 @@ controller.postFunc = async function (req, res) {
                     //we subtract the amount purchased with the availability of tickets
                     let resultofcurrent = requestedticket.quantity_current - count
                     //in this part we update the current amount of ticket
-                    if(resultofcurrent == 0){ //in this part  status change to Sold Out (id=2)
+                    if (resultofcurrent == 0) { //in this part  status change to Sold Out (id=2)
                         await this.db.ticket.update({ quantity_current: resultofcurrent, id_state: 2 }, {
                             where: {
                                 id: requestedticket.id
                             }
                         });
-                    }else{
+                    } else {
                         await this.db.ticket.update({ quantity_current: resultofcurrent }, {
                             where: {
                                 id: requestedticket.id
                             }
                         });
                     }
-                    
-                    //if(newcouponlimit>-1){
+
+
                     if (flagcouponlimit) {
                         await this.db.coupon.update({ limit: newcouponlimit }, {
                             where: {
@@ -189,9 +217,7 @@ controller.postFunc = async function (req, res) {
         }
 
     } catch (error) {
-        console.log("+++++++++++++++++++++++++++");
-        console.log(error);
-        console.log("+++++++++++++++++++++++++++");
+        
         this.response({
             res,
             success: false,
@@ -201,26 +227,29 @@ controller.postFunc = async function (req, res) {
     }
 }
 
+
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_ticket, id_user, count, unit_amount, total_amount, total_amount_paid, paying_name, paying_address, dni_payer, name_ticket, name_event, id_coupon, return_data } = req.body;
+    const {  id_user, paying_name, paying_address, dni_payer,  return_data } = req.body;
     try {
+        if ( paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0  ) {
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, verify the data sent!',
+            });
+        } else {
+
+        }
         let result = await this.update(
             {
                 id,
                 data: {
-                    id_ticket,
                     id_user,
-                    count,
-                    unit_amount,
-                    total_amount,
-                    total_amount_paid,
                     paying_name,
                     paying_address,
-                    dni_payer,
-                    name_ticket,
-                    name_event,
-                    id_coupon
+                    dni_payer
                 },
                 return_data
             });
@@ -239,6 +268,7 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
+        console.log(error);
         this.response({
             res,
             success: false,

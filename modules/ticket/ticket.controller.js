@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
-const { calculate_discount_percentage, calculate_percentage_increase } = require('../../helpers/utilities');
+const { calculateDiscountPercentage, calculatePercentageIncrease } = require('../../helpers/utilities');
 
 const controller = new Base('ticket');
 
@@ -82,9 +82,9 @@ controller.postFunc = async function (req, res) {
 			let date_since1 = new Date(since1), date_until1 = new Date(until1);
 			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
 				if (is_discount1) {
-					result1 = calculate_discount_percentage(percentage1, base_price);
+					result1 = calculateDiscountPercentage(percentage1, base_price);
 				} else {
-					result1 = calculate_percentage_increase(percentage1, base_price)
+					result1 = calculatePercentageIncrease(percentage1, base_price)
 				}
 
 				//multiple price condition 2
@@ -92,9 +92,9 @@ controller.postFunc = async function (req, res) {
 					let date_since2 = new Date(since2), date_until2 = new Date(until2);
 					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
 						if (is_discount2) {
-							result2 = calculate_discount_percentage(percentage2, base_price);
+							result2 = calculateDiscountPercentage(percentage2, base_price);
 						} else {
-							result2 = calculate_percentage_increase(percentage2, base_price)
+							result2 = calculatePercentageIncrease(percentage2, base_price)
 						}
 
 						//multiple price condition 3
@@ -102,9 +102,9 @@ controller.postFunc = async function (req, res) {
 							let date_since3 = new Date(since3), date_until3 = new Date(until3);
 							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
 								if (is_discount3) {
-									result3 = calculate_discount_percentage(percentage3, base_price);
+									result3 = calculateDiscountPercentage(percentage3, base_price);
 								} else {
-									result3 = calculate_percentage_increase(percentage3, base_price)
+									result3 = calculateDiscountPercentage(percentage3, base_price)
 								}
 
 
@@ -114,9 +114,9 @@ controller.postFunc = async function (req, res) {
 									let date_since4 = new Date(since4), date_until4 = new Date(until4);
 									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
 										if (is_discount4) {
-											result4 = calculate_discount_percentage(percentage4, base_price);
+											result4 = calculateDiscountPercentage(percentage4, base_price);
 										} else {
-											result4 = calculate_percentage_increase(percentage4, base_price)
+											result4 = calculatePercentageIncrease(percentage4, base_price)
 										}
 									} else {
 										return this.response({
@@ -262,6 +262,7 @@ controller.postFunc = async function (req, res) {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		this.response({
 			res,
 			success: false,
@@ -314,9 +315,9 @@ controller.putFunc = async function (req, res) {
 			let date_since1 = new Date(since1), date_until1 = new Date(until1);
 			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
 				if (is_discount1) {
-					result1 = calculate_discount_percentage(percentage1, base_price);
+					result1 = calculateDiscountPercentage(percentage1, base_price);
 				} else {
-					result1 = calculate_percentage_increase(percentage1, base_price)
+					result1 = calculateDiscountPercentage(percentage1, base_price)
 				}
 
 				//multiple price condition 2
@@ -324,9 +325,9 @@ controller.putFunc = async function (req, res) {
 					let date_since2 = new Date(since2), date_until2 = new Date(until2);
 					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
 						if (is_discount2) {
-							result2 = calculate_discount_percentage(percentage2, base_price);
+							result2 = calculateDiscountPercentage(percentage2, base_price);
 						} else {
-							result2 = calculate_percentage_increase(percentage2, base_price)
+							result2 = calculateDiscountPercentage(percentage2, base_price)
 						}
 
 						//multiple price condition 3
@@ -334,9 +335,9 @@ controller.putFunc = async function (req, res) {
 							let date_since3 = new Date(since3), date_until3 = new Date(until3);
 							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
 								if (is_discount3) {
-									result3 = calculate_discount_percentage(percentage3, base_price);
+									result3 = calculateDiscountPercentage(percentage3, base_price);
 								} else {
-									result3 = calculate_percentage_increase(percentage3, base_price)
+									result3 = calculateDiscountPercentage(percentage3, base_price)
 								}
 
 
@@ -346,9 +347,9 @@ controller.putFunc = async function (req, res) {
 									let date_since4 = new Date(since4), date_until4 = new Date(until4);
 									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
 										if (is_discount4) {
-											result4 = calculate_discount_percentage(percentage4, base_price);
+											result4 = calculateDiscountPercentage(percentage4, base_price);
 										} else {
-											result4 = calculate_percentage_increase(percentage4, base_price)
+											result4 = calculateDiscountPercentage(percentage4, base_price)
 										}
 									} else {
 										return this.response({

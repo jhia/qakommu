@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.TEXT,
         },
-        name_event: {
+        price_type: {
             allowNull: false,
             type: DataTypes.TEXT
         },

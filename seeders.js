@@ -38,6 +38,7 @@ const {
     type_booth,
     exhibitor,
     //session module
+    room,
     session,
     track_session,
     session_attendee,
@@ -61,8 +62,8 @@ let resources = [
     { "name": "event", "url_resource": "/api/event" },
     { "name": "user", "url_resource": "/api/user" },
     { "name": "partnership", "url_resource": "/api/partnership" },
-    { "name": "ticket", "url_resource": "/api/ticket" },  
-    { "name": "speaker", "url_resource": "/api/speaker" }  
+    { "name": "ticket", "url_resource": "/api/ticket" },
+    { "name": "speaker", "url_resource": "/api/speaker" }
 ];
 
 let roles = [
@@ -96,8 +97,8 @@ let communities = [
 
 
 let users = [
-    { "name": "Juan", "last_name": "Perez", "username": "juanperez", "profile_photo":"", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
-    { "name": "Romulo", "last_name": "Gomez", "username": "romulogomez", "profile_photo":"",  "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
+    { "name": "Juan", "last_name": "Perez", "username": "juanperez", "profile_photo": "", "address": "micasa", "email": "user01@email.com", "password": "$2b$10$FjtY9xK0No9ko22Ijqvm7.iovnaVCpKimZydaQ5gG.v9Uy4zAAMli", "gender": "M", "id_repository": 0 },
+    { "name": "Romulo", "last_name": "Gomez", "username": "romulogomez", "profile_photo": "", "address": "micasa", "email": "user02@email.com", "password": "$2b$10$JsAWE3LlyR/vtYEkS/.OMeYt60JiQQmUAJoAqMzrcU69vALqQzOvG", "gender": "M", "id_repository": 0 }
 ]
 
 let user_types = [
@@ -106,75 +107,75 @@ let user_types = [
 ]
 let posts = [
     {
-	"id_community": 1,
-	"id_user": 1,
-	"title": "Aprende a Leer",
-	"content": "Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.",
-	"active": true,
-	"value": 3,
-	"fixed": true,
-	"track": [1]
+        "id_community": 1,
+        "id_user": 1,
+        "title": "Aprende a Leer",
+        "content": "Todos menos usted escriben un código terrible. Es por eso que una gran habilidad que tiene múltiples beneficios es poder seguir el código de otras personas. No importa cuán desordenado o mal pensado sea el código de un ingeniero anterior, aún debe ser capaz de leerlo. Después de todo, es tu trabajo. Incluso cuando ese ingeniero era usted un año antes.",
+        "active": true,
+        "value": 3,
+        "fixed": true,
+        "track": [1]
     }
 ]
 
 let comments = [
     {
-	"id_user": 2,        
-	"id_post": 1,        
-	"active": true,
-	"content": "Todos menos usted escriben un código terrible",
-	"image": "",
-	"video": "",
-	"file": "",
-	"fixed": true,
-	"reference": null,
-    },  
+        "id_user": 2,
+        "id_post": 1,
+        "active": true,
+        "content": "Todos menos usted escriben un código terrible",
+        "image": "",
+        "video": "",
+        "file": "",
+        "fixed": true,
+        "reference": null,
+    },
     {
-	"id_user": 1,        
-	"id_post": 1,        
-	"active": true,
-	"content": "Es por eso que una gran habilidad que tiene múltiples beneficios",
-	"image": "",
-	"video": "",
-	"file": "",
-	"fixed": true,
-	"reference": 2,
-    },  
+        "id_user": 1,
+        "id_post": 1,
+        "active": true,
+        "content": "Es por eso que una gran habilidad que tiene múltiples beneficios",
+        "image": "",
+        "video": "",
+        "file": "",
+        "fixed": true,
+        "reference": 2,
+    },
     {
-	"id_user": 1,        
-	"id_post": 1,        
-	"active": true,
-	"content": "Después de todo, es tu trabajo",
-	"image": "",
-	"video": "",
-	"file": "",
-	"fixed": false,
-	"reference": 2,
-    }  
+        "id_user": 1,
+        "id_post": 1,
+        "active": true,
+        "content": "Después de todo, es tu trabajo",
+        "image": "",
+        "video": "",
+        "file": "",
+        "fixed": false,
+        "reference": 2,
+    }
 ]
 
 let likes = [
     {
-	"id_post": 1,
-	"id_user": 1,
-	"reference_message": null
+        "id_post": 1,
+        "id_user": 1,
+        "reference_message": null
     },
     {
-	"id_post": 1,
-	"id_user": 2,
-	"reference_message": 1
+        "id_post": 1,
+        "id_user": 2,
+        "reference_message": 1
     },
     {
-	"id_post": 1,
-	"id_user": 2,
-	"reference_message": 1
+        "id_post": 1,
+        "id_user": 2,
+        "reference_message": 1
     }
 ]
 
 
 let channels = [
-    { "name": "python", "description": "descrition python", "id_community": 1 },  
-    { "name": "node", "description": "descrition node", "id_community": 2 }  
+    { "name": "python", "description": "descrition python", "id_community": 1 },
+    { "name": "node", "description": "descrition node", "id_community": 2 }
 ]
 
 
@@ -183,258 +184,298 @@ let channels = [
 let module_names = [
     //1
     {
-	"name": "community",
-	"active": true
+        "name": "community",
+        "active": true
     },
     //2
     {
-	"name": "event",
-	"active":true
+        "name": "event",
+        "active": true
     },
     //3
     {
-	"name": "ticket",
-	"active":true
+        "name": "ticket",
+        "active": true
     },
     //4
     {
-	"name": "speaker",
-	"active": true
+        "name": "speaker",
+        "active": true
     },
     //5
     {
-	"name": "attendee",
-	"active":true
+        "name": "attendee",
+        "active": true
     },
     //6
     {
-	"name": "coupon",
-	"active": true
+        "name": "coupon",
+        "active": true
     }
 ]
 
 let states = [
     //ticket seeders
     {
-	"name": "Avaliable",
-	"description": "Ready for immediate use",
-	"active": true,
-	"id_module_name": 3,
-	"blocker": false
+        "name": "Avaliable",
+        "description": "Ready for immediate use",
+        "active": true,
+        "id_module_name": 3,
+        "blocker": false
     },
     {
-	"name": "Sold Out",
-	"description": "Is having all available tickets or accommodations sold completely and especially in advance",
-	"active": true,
-	"id_module_name": 3,
-	"blocker": true
+        "name": "Sold Out",
+        "description": "Is having all available tickets or accommodations sold completely and especially in advance",
+        "active": true,
+        "id_module_name": 3,
+        "blocker": true
     },
     {
-	"name": "Reserved",
-	"description": "Is when it is no longer available to you",
-	"active": true,
-	"id_module_name": 3,
-	"blocker": false
+        "name": "Reserved",
+        "description": "Is when it is no longer available to you",
+        "active": true,
+        "id_module_name": 3,
+        "blocker": false
     },
     //Event
     {
-	"name": "Progress",
-	"description": "Revent that unfolds at that precise moment before reaching its final phase",
-	"active": true,
-	"id_module_name": 2,
-	"blocker": false
+        "name": "Progress",
+        "description": "Revent that unfolds at that precise moment before reaching its final phase",
+        "active": true,
+        "id_module_name": 2,
+        "blocker": false
     },
     {
-	"name": "Draft",
-	"description": "Sketch of ideas embodied in an organized way, which the author will modify over time before reaching the final or publication form.",
-	"active": true,
-	"id_module_name": 2,
-	"blocker": true
+        "name": "Draft",
+        "description": "Sketch of ideas embodied in an organized way, which the author will modify over time before reaching the final or publication form.",
+        "active": true,
+        "id_module_name": 2,
+        "blocker": true
     },
     {
-	"name": "Previews",
-	"description": "event that has already ended or concluded.",
-	"active": true,
-	"id_module_name": 2,
-	"blocker": false
+        "name": "Previews",
+        "description": "event that has already ended or concluded.",
+        "active": true,
+        "id_module_name": 2,
+        "blocker": false
     },
     //Attendes
     {
-	"name": "Confirmed",
-	"description": "give definitive proof of a claim",
-	"active": true,
-	"id_module_name": 5,
-	"blocker": false
+        "name": "Confirmed",
+        "description": "give definitive proof of a claim",
+        "active": true,
+        "id_module_name": 5,
+        "blocker": false
     },
     {
-	"name": "Unconfirmed",
-	"description": "Waiting for the veracity of something that is in doubt",
-	"active": true,
-	"id_module_name": 5,
-	"blocker": true
+        "name": "Unconfirmed",
+        "description": "Waiting for the veracity of something that is in doubt",
+        "active": true,
+        "id_module_name": 5,
+        "blocker": true
     },
 ]
 
 let tracks = [
     {
-	"name": "back-end",
-	"description": "is the logic that is processed on the server side",
-	"active": true,
-	"id_module_name": 1,
-	"color": "#333333"
+        "name": "back-end",
+        "description": "is the logic that is processed on the server side",
+        "active": true,
+        "id_module_name": 1,
+        "color": "#333333"
     }
 ]
 
 let events = [
     {
-	"name": "python for everyone",
-	"description": "This is one of the most important conferences for python language lovers",
-	"id_community": 1,
-	"type": "w",
-	"online": false,
-	"no_cfp": true,
-	"url_code": "www.test.python.com/event/12",
-	"id_webside": 1,
-	"is_private": false,
-	"start": "2020-02-10",
-	"end": "2020-02-11",
-	"active": true,
-	//"id_call_for_paper": 1, 
-	"prom_rate": 89.8,
-	"id_repository": 1,
-	"id_state": 4
+        "name": "python for everyone",
+        "description": "This is one of the most important conferences for python language lovers",
+        "id_community": 1,
+        "type": "w",
+        "online": false,
+        "no_cfp": true,
+        "url_code": "www.test.python.com/event/12",
+        "id_webside": 1,
+        "is_private": false,
+        "start": "2020-02-10",
+        "end": "2020-02-11",
+        "active": true,
+        //"id_call_for_paper": 1, 
+        "prom_rate": 89.8,
+        "id_repository": 1,
+        "id_state": 4
     },
     {
-	"name": "node for everyone",
-	"description": "This is one of the most important conferences for node language lovers",
-	"id_community": 2,
-	"type": "w",
-	"online": false,
-	"no_cfp": true,
-	"url_code": "www.test.node.com/event/12",
-	"id_webside": 1,
-	"is_private": false,
-	"start": "2020-02-10",
-	"end": "2020-02-11",
-	"active": true,
-	//"id_call_for_paper": 1, 
-	"prom_rate": 89.8,
-	"id_repository": 1,
-	"id_state": 1
+        "name": "node for everyone",
+        "description": "This is one of the most important conferences for node language lovers",
+        "id_community": 2,
+        "type": "w",
+        "online": false,
+        "no_cfp": true,
+        "url_code": "www.test.node.com/event/12",
+        "id_webside": 1,
+        "is_private": false,
+        "start": "2020-02-10",
+        "end": "2020-02-11",
+        "active": true,
+        //"id_call_for_paper": 1, 
+        "prom_rate": 89.8,
+        "id_repository": 1,
+        "id_state": 1
     },
 
 ]
 
 
 let coupons = [
-  {
-    "name": "early bird",
-    "description": "coupon available for morning purchases",
-    "percentage": 50,
-    "id_state": 1,
-    "limit": 5,
-    "original_limit":5,
-    "unlimited": false,
-    "id_user_creator": 1,
-    "active": true,
-    "since": "2021-10-05", 
-    "until": "2021-10-25"
-  }
+    {
+        "name": "early bird",
+        "description": "coupon available for morning purchases",
+        "percentage": 50,
+        "id_state": 1,
+        "limit": 5,
+        "original_limit": 5,
+        "unlimited": false,
+        "id_user_creator": 1,
+        "active": true,
+        "since": "2021-10-05",
+        "until": "2021-10-25"
+    }
 ]
 
 
 let tickets = [
-  {
-    "name": "Early Bird",
-    "description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
-    "id_state": 1,
-    "id_event": 1,
-    "base_price": 120,
-    "quantity_total": 100,
-    "quantity_current": 100,
-    "reserved": 0,
-    "limit_sale": true,
-    "max_ticket_sell": 5,
-    "start": "2020-05-05",
-    "end": "2020-05-15",
-    "use_multiple_price": false
-  }
+    {
+        "name": "Early Bird",
+        "description": "With Early Bird you have the opportunity to get the tickets with the lowest price",
+        "id_state": 1,
+        "id_event": 1,
+        "base_price": 120,
+        "quantity_total": 100,
+        "quantity_current": 100,
+        "reserved": 0,
+        "limit_sale": true,
+        "max_ticket_sell": 5,
+        "start": "2020-05-05",
+        "end": "2020-05-15",
+        "use_multiple_price": false
+    },
+    {
+        "name": "test ticket",
+        "description": "test description of pruebe",
+        "id_state": 1,
+        "id_event": 1,
+        "base_price": 100,
+        "quantity_total": 100,
+        "quantity_current": 100,
+        "reserved": 0,
+        "limit_sale": true,
+        "max_ticket_sell": 50,
+        "start": "2020-05-01",
+        "end": "2020-12-20",
+
+
+        "use_multiple_price1": true,
+        "since1": "2020-05-10",
+        "until1": "2020-05-15",
+        "percentage1": 30,
+        "is_discount1": true,
+
+        "use_multiple_price2": true,
+        "since2": "2020-08-2",
+        "until2": "2020-09-20",
+        "percentage2": 20,
+        "is_discount2": true,
+
+        "use_multiple_price3": true,
+        "since3": "2020-09-21",
+        "until3": "2020-11-20",
+        "percentage3": 10,
+        "is_discount3": true,
+
+        "use_multiple_price4": true,
+        "since4": "2020-11-21",
+        "until4": "2020-12-1",
+        "percentage4": 5,
+        "is_discount4": false
+    }
 ]
 
 let ticket_sales = [
     {
-	"id_ticket": 1,
-	"id_user": 1,
-	"count": 1,
-	"unit_amount": 150,
-	"total_amount": 150,
-	"total_amount_paid": 150,
-	"paying_name": "john smith",
-	"paying_address": "Cartagena street, number 25, 66534",
-	"dni_payer": "E25331234",
-	"name_ticket": "any name ticket",
-	"name_event": "any name event",
-	"id_coupon": null
+        "id_ticket": 1,
+        "id_user": 1,
+        "count": 1,
+        "unit_amount": 150,
+        "total_amount": 150,
+        "total_amount_paid": 150,
+        "paying_name": "john smith",
+        "paying_address": "Cartagena street, number 25, 66534",
+        "dni_payer": "E25331234",
+        "name_ticket": "any name ticket",
+        "price_type": "PB",
+        "id_coupon": null
     }
 ]
 
 let ticket_sale_details = [
     {
-	"id_ticket_sale": 1,
-	"deactivated": false,
+        "id_ticket_sale": 1,
+        "deactivated": false,
     }
 ]
 
 let attendees = [
     {
-	"id_user": 1,
-	"name": "carlos",
-	"dni": "x127665254",
-	"is_present": true,
-	"id_ticket_sale_detail": 1,
-	"rate": null,
-	"id_state": 1,
-	"id_event": 1
+        "id_user": 1,
+        "name": "carlos",
+        "dni": "x127665254",
+        "email": "carlos@gmail.com",
+        "is_present": true,
+        "id_ticket_sale_detail": 1,
+        "rate": null,
+        "id_state": 1,
+        "id_event": 1
     }
 ]
 
 let speakers = [
     {
-	"id_user": 1,
-	"id_event": 1,
-	"id_state": 1,
-	"id_session": 1,
+        "id_user": 1,
+        "id_event": 1,
+        "id_state": 1,
+        "id_session": 1,
     }
 ]
 
 //repository 
 let object_types = [
     {
-	"name": "file",
-	"active": true
+        "name": "file",
+        "active": true
     }
 ]
 
 let repositories = [
     {
-	"name": "repository test",
-	"location": "one",
-	"id_community": 1,
-	"active": true
+        "name": "repository test",
+        "location": "one",
+        "id_community": 1,
+        "active": true
     },
     {
-	"name": "repository two",
-	"location": "two",
-	"id_community": 2,
-	"active": true
+        "name": "repository two",
+        "location": "two",
+        "id_community": 2,
+        "active": true
     }
 ]
 
 
 let folders = [
     {
-	"id_repository": 2,
-	"name": "three"
+        "id_repository": 2,
+        "name": "three"
     }
 ]
 
@@ -442,142 +483,151 @@ let folders = [
 
 let repository_objects = [
     {
-	"name": "document",
-	"location": "www/kommu/ejemplo/",
-	"id_folder": 1,
-	"id_object_type": 1
+        "name": "document",
+        "location": "www/kommu/ejemplo/",
+        "id_folder": 1,
+        "id_object_type": 1
     }
 ]
 
 //  partnership model
 let partnerships = [
     {
-	"name": "google company",
-	"description": "test descrioption facebook",
-	"registry_number": "c26174178",
-	"logo": "",
-	"host": "35.122.343.2:871",
-	"web": "google.com",
-	"active": true
+        "name": "google company",
+        "description": "test descrioption facebook",
+        "registry_number": "c26174178",
+        "logo": "",
+        "host": "35.122.343.2:871",
+        "web": "google.com",
+        "active": true
     }
 ]
 
 let partnership_positions = [
     {
-	"job_title": "empleado",
-	"description": "something",
-	"name_contact": "carlos",
-	"email": "pnfi.carlos@gmail.com",
-	"phone": "04146825919",
-	"active": true,
-	"id_partnership": 1
+        "job_title": "empleado",
+        "description": "something",
+        "name_contact": "carlos",
+        "email": "pnfi.carlos@gmail.com",
+        "phone": "04146825919",
+        "active": true,
+        "id_partnership": 1
     }
 ]
 
 // sponsor module
 let type_sponsors = [
     {
-	"name": "general",
-	"description": "standard fee for sponsors",
-	"contribution_value": 0.00005685,
-	"active": true
+        "name": "general",
+        "description": "standard fee for sponsors",
+        "contribution_value": 0.00005685,
+        "active": true
     }
 ]
 
 let sponsors = [
     {
-	"id_partnership": 1,
-	"id_type_sponsor": 1,
-	"id_event": 1,
-	"active": true
+        "id_partnership": 1,
+        "id_type_sponsor": 1,
+        "id_event": 1,
+        "active": true
     }
 ]
 
 //exibitor
 let type_booths = [
     {
-	"name": "booth standard",
-	"description": "generic size",
-	"cost": 887.12,
-	"size_width": 5,
-	"size_height": 5,
-	"active": true,
+        "name": "booth standard",
+        "description": "generic size",
+        "cost": 887.12,
+        "size_width": 5,
+        "size_height": 5,
+        "active": true,
     }
 ]
 
 let exhibitors = [
     {
-	"id_partnership": 1,
-	"id_type_booth": 1,
-	"id_event": 1,
-	"active": true
+        "id_partnership": 1,
+        "id_type_booth": 1,
+        "id_event": 1,
+        "active": true
     }
 ]
 
 // session
+let rooms = [
+    {
+        "name": "auditory pedro laguna",
+        "description": "esta ubicada en coro",
+        "max_capacity": 550,
+        "active": true
+    }
+
+]
 let sessions = [
     {
-	"name": "dev game",
-	"description": "this conference is aimed at all video game developers",
-	"id_room": 1,
+        "name": "dev game",
+        "description": "this conference is aimed at all video game developers",
+        "id_room": 1,
 
-	"order":1,
-	"start": "2020-10-11",
-	"end": "2020-10-11",
-	"is_break": false
+        "order": 1,
+        "start": "2020-10-11",
+        "end": "2020-10-11",
+        "is_break": false
     }
 ]
 
 let track_sessions = [
     {
-	"id_session": 1,
-	"id_track":1
+        "id_session": 1,
+        "id_track": 1
     }
 ]
 
 let session_attendees = [
     {
-	"id_session":1, 
-	"id_attendee":1, 
-	"rate":76.2, 
-	"is_present": true
+        "id_session": 1,
+        "id_attendee": 1,
+        "rate": 76.2,
+        "is_present": true
     }
 ]
 
 //survey
 let surveys = [
     {
-	"name": "satisfaction",
-	"description": "Collect customer feedback and increase customer satisfaction",
-	"active": true,
-	"id_event": 1,
-	"id_community": null
+        "name": "satisfaction",
+        "description": "Collect customer feedback and increase customer satisfaction",
+        "active": true,
+        "id_event": 1,
+        "id_community": null
     }
 ]
 
 let questions = [
     {
-	"text": "what is your name",
-	"id_survey": 1,
-	"type_question": "t",
-	"rate": null
+        "text": "what is your name",
+        "id_survey": 1,
+        "type_question": "t",
+        "rate": null
     }
 ]
 
 let answers = [
     {
-	"id_question": 1,
-	"text": "john smith",
-	"description": "test is a test"
+        "id_question": 1,
+        "text": "john smith",
+        "description": "test is a test"
     }
 ]
 
-let datas= [
+let datas = [
     {
-	"id_user": 1,
-	"id_question": 1,
-	"id_answer":1,
-	"text": "data test"
+        "id_user": 1,
+        "id_question": 1,
+        "id_answer": 1,
+        "text": "data test"
     }
 ]
 
@@ -593,13 +643,13 @@ let loadtables = async () => {
     await comment.bulkCreate(comments, { returning: true });
     await like.bulkCreate(likes, { returning: true });
 
-    await module_name.bulkCreate(module_names, { returning: true});
+    await module_name.bulkCreate(module_names, { returning: true });
     await state.bulkCreate(states, { returning: true });
     await track.bulkCreate(tracks, { returning: true });
 
     await object_type.bulkCreate(object_types, { returning: true });
     await repository.bulkCreate(repositories, { returning: true });
-    await folder.bulkCreate(folders, {returning: true});
+    await folder.bulkCreate(folders, { returning: true });
     await repository_object.bulkCreate(repository_objects, { returning: true });
 
     await event.bulkCreate(events, { returning: true });
@@ -608,7 +658,8 @@ let loadtables = async () => {
     await ticket_sale.bulkCreate(ticket_sales, { returning: true });
     await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
     await attendee.bulkCreate(attendees, { returning: true });
-    await session.bulkCreate(sessions, {returning: true});
+    await room.bulkCreate(rooms, {returning:true});
+    await session.bulkCreate(sessions, { returning: true });
     await speaker.bulkCreate(speakers, { returning: true });
 
     await partnership.bulkCreate(partnerships, { returning: true });
@@ -620,13 +671,13 @@ let loadtables = async () => {
     await type_booth.bulkCreate(type_booths, { returning: true });
     await exhibitor.bulkCreate(exhibitors, { returning: true });
 
-    await track_session.bulkCreate(track_sessions, {returning:true});
-    await session_attendee.bulkCreate(session_attendees, {returning:true});
+    await track_session.bulkCreate(track_sessions, { returning: true });
+    await session_attendee.bulkCreate(session_attendees, { returning: true });
 
-    await survey.bulkCreate(surveys, {returning: true });
-    await question.bulkCreate(questions, {returning: true});
-    await answer.bulkCreate(answers, {returning: true});
-    await data.bulkCreate(datas, {returning: true})
+    await survey.bulkCreate(surveys, { returning: true });
+    await question.bulkCreate(questions, { returning: true });
+    await answer.bulkCreate(answers, { returning: true });
+    await data.bulkCreate(datas, { returning: true })
 }
 
 module.exports = loadtables;
