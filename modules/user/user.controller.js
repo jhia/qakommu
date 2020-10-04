@@ -12,11 +12,14 @@ controller.getFunc = async function (req, res) {
 
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
-    console.log(decoded)
-
     const id = decoded.user_id;
-    const { limit, offset, order, attributes } = req.body;
 
+    let find_role = await this.db.user_type.findOne({
+	where: { id_user: id },
+	attributes : ["id_role"]
+    });
+
+    const { limit, offset, order, attributes } = req.body;
     try {
 	const data = await this.getData({
 	    id,
@@ -29,6 +32,7 @@ controller.getFunc = async function (req, res) {
 	    res,
 	    payload: {
 		id: data.id,
+		id_role: find_role.id_role,
 		id_community: decoded.community_id,
 		name: data.name,
 		last_name: data.last_name,
@@ -106,29 +110,21 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 
-
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
-
     const id = decoded.user_id;
-
-
-
     const { name, last_name, username, country, city, address, country_code, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
     let find_image = await this.db.user.findOne({
 	where: { id }
     });
 
-
-
-
     const fnd_image = find_image.profile_photo ? find_image.profile_photo : null;
     const avatar = req.files ? req.files.avatar : undefined;
     let profile_photo = avatar && verify_and_upload_image_put(avatar, "profile_photo", fnd_image);
     if(req.body.avatar == 'not-image') profile_photo = null;
-
     const archive = profile_photo ? profile_photo.split("_") : null;
+
     try {
 
 	let result = await this.update(
@@ -156,15 +152,12 @@ controller.putFunc = async function (req, res) {
 	if (result) {
 	    if(fnd_image && profile_photo) delete_image(fnd_image);
 	    if(req.body.avatar == 'not-image' && fnd_image) delete_image(fnd_image);
-
 	    if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
 
 	    return this.response({
-
 		res,
 		statusCode: 200,
 		payload: return_data ? result : []
-
 	    });
 	} else {
 	    this.response({
@@ -186,18 +179,10 @@ controller.putFunc = async function (req, res) {
 
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
-        let find_image = await this.db.user.findOne({
-            where: { id }
-        });
-        if (find_image.profile_photo) delete_image(find_image.profile_photo);
-
-
-
-
-
-
-
-
+    let find_image = await this.db.user.findOne({
+	where: { id }
+    });
+    if (find_image.profile_photo) delete_image(find_image.profile_photo);
     try {
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
