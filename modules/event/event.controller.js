@@ -79,7 +79,7 @@ controller.postFunc = async function (req, res) {
             host
         });
         if (newdate) {
-            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
+            if (image) upload_images(avatar, archive[0], archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 201,
@@ -107,7 +107,7 @@ controller.putFunc = async function (req, res) {
         const fnd_image = find_image.image ? find_image.image : null;
         const avatar = req.files ? req.files.image : undefined;
         let image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
-        if(req.body.image == 'not-image') image = null;
+        if (req.body.image == 'not-image') image = null;
         const archive = image ? image.split("_") : null;
 
         let result = await this.update(
@@ -136,9 +136,9 @@ controller.putFunc = async function (req, res) {
                 return_data
             });
         if (result) {
-            if(fnd_image && image) delete_image(fnd_image);
-            if(req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
-            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
+            if (fnd_image && image) delete_image(fnd_image);
+            if (req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
+            if (image) upload_images(avatar, archive[0], archive[1].split(".")[0]);
             return this.response({
                 res,
                 statusCode: 200,
@@ -196,6 +196,43 @@ controller.deleteFunc = async function (req, res) {
 
 
 /* ---------- special functions ---------- */
+controller.getEventsByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.event.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'description', 'type', 'online', 'no_cfp', 'url_code', 'id_webside', 'is_private', 'start', 'end', 'active', 'prom_rate', 'id_repository', 'image', 'host'],
+            order,
+            where: { id_community },
+            include: [
+                {
+                    attributes: ['name', 'blocker'],
+                    model: this.db.state,
+                    as: 'state',
+                    where: {
+                        active: true
+                    }
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
 
 
 controller.getSpeakersByEvent = async function (req, res) {
