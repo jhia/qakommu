@@ -18,6 +18,11 @@ router.get('/:id',function(req, res){
   couponController.getFunc(req,res);
 });
 
+router.get('/:id_coupon/ticket_sale/all',function(req, res){
+  //HTTP get route
+  couponController.ticketSaleByCoupon(req,res);
+});
+
 router.get('/calculator/:p/:d',function(req, res){
   //HTTP get route
   couponController.couponCalculator(req,res);

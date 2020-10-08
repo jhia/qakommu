@@ -207,6 +207,39 @@ controller.deleteFunc = async function (req, res) {
 
 /* ---------- special functions ---------- */
 
+controller.ticketSaleByCoupon = async function (req, res) {
+    const { id_coupon } = req.params
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.ticket_sale.findAll({
+            limit,
+            offset,
+            //attributes: ['id', 'name', 'description', 'base_price', 'quantity_total', 'quantity_current'],
+            order,
+            where: {
+                id_coupon
+            }
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+
+
 /*this function is for test */
 controller.couponbetweenDate = async function (req, res) {
 

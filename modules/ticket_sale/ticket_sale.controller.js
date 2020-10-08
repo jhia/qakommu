@@ -45,7 +45,7 @@ controller.postFunc = async function (req, res) {
     const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, id_coupon } = req.body;
 
     try {
-        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 || name_event.length <= 0) {
+        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 ) {
             return this.response({
                 res,
                 success: false,
@@ -217,7 +217,7 @@ controller.postFunc = async function (req, res) {
         }
 
     } catch (error) {
-        
+        console.log(error);
         this.response({
             res,
             success: false,
