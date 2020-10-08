@@ -338,8 +338,21 @@ let coupons = [
         "unlimited": false,
         "id_user_creator": 1,
         "active": true,
-        "since": "2021-10-05",
-        "until": "2021-10-25"
+        "since": "2020-10-01",
+        "until": "2020-10-09"
+    },
+    {
+        "name": "early early bird",
+        "description": "coupon available for morning purchases",
+        "percentage": 70,
+        "id_state": 1,
+        "limit": 5,
+        "original_limit": 5,
+        "unlimited": false,
+        "id_user_creator": 1,
+        "active": true,
+        "since": "2020-10-01",
+        "until": "2020-10-25"
     }
 ]
 

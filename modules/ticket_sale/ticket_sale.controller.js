@@ -45,7 +45,7 @@ controller.postFunc = async function (req, res) {
     const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, id_coupon } = req.body;
 
     try {
-        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0 ) {
+        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0) {
             return this.response({
                 res,
                 success: false,
@@ -76,7 +76,7 @@ controller.postFunc = async function (req, res) {
                     });
                 }
                 //start calculate price to ticket
-                let price_current,price_type_current, today = new Date();
+                let price_current, price_type_current, today = new Date();
 
                 if (requestedticket.use_multiple_price1 == true && (requestedticket.since1 <= today && requestedticket.until1 >= today)) {
                     price_current = requestedticket.price1;
@@ -108,8 +108,22 @@ controller.postFunc = async function (req, res) {
                 let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false;
                 //in this part we are going to verify and calculate the coupon  
                 if (id_coupon > 0) {
+                    const { Op } = require("sequelize");
                     ticketsalecoupon = await this.db.coupon.findOne({
-                        where: { id: id_coupon }
+                        where: {
+                            id: id_coupon,
+                            [Op.and]: [
+                                {
+                                    since: {
+                                        [Op.lte]: today
+                                    }
+                                }, {
+                                    until: {
+                                        [Op.gte]: today
+                                    }
+                                }]
+
+                        }
                     });
                     if (!ticketsalecoupon) {
                         return this.response({
@@ -217,7 +231,7 @@ controller.postFunc = async function (req, res) {
         }
 
     } catch (error) {
-        console.log(error);
+        
         this.response({
             res,
             success: false,
@@ -230,9 +244,9 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const {  id_user, paying_name, paying_address, dni_payer,  return_data } = req.body;
+    const { id_user, paying_name, paying_address, dni_payer, return_data } = req.body;
     try {
-        if ( paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0  ) {
+        if (paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0) {
             return this.response({
                 res,
                 success: false,
