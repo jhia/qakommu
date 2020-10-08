@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
+const { calculateDiscountPercentage } = require('../../helpers/utilities');
 
 const controller = new Base('coupon');
 
@@ -115,6 +116,24 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, return_data } = req.body;
+
+    if (limit > 0 && unlimited === true) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
+        });
+    }
+
+    if (unlimited === false && limit === null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the data provided is not correct you can check the value of the limit'
+        });
+    }
 
     if ((since != null && until == null) || (since != null && until === null) || (until != null && since == null) || (until != null && since === null)) {
         return this.response({
@@ -311,9 +330,7 @@ controller.couponCalculator = async function (req, res) {
     const base = 100;
     try {
         if (p > 0 && d > 0 && d <= 100) {
-            let decimalPercentage = d / base;
-            let rest = p * decimalPercentage;
-            let result = p - rest;
+            let result = calculateDiscountPercentage(d , p);
             return this.response({
                 res,
                 statusCode: 201,
