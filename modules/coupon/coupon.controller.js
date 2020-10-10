@@ -258,6 +258,35 @@ controller.ticketSaleByCoupon = async function (req, res) {
 }
 
 
+controller.searchCouponsByUuid = async function (req, res) {
+    const { uuid } = req.params
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.coupon.findOne({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: {
+                uuid
+            }
+        });
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
+
+
 
 /*this function is for test */
 controller.couponbetweenDate = async function (req, res) {

@@ -23,6 +23,12 @@ router.get('/:id_coupon/ticket_sale/all',function(req, res){
   couponController.ticketSaleByCoupon(req,res);
 });
 
+
+router.get('/search/:uuid',function(req, res){
+  //HTTP get route
+  couponController.searchCouponsByUuid(req,res);
+});
+
 router.get('/calculator/:p/:d',function(req, res){
   //HTTP get route
   couponController.couponCalculator(req,res);
