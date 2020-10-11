@@ -38,6 +38,7 @@ controller.getFunc = async function (req, res) {
 		last_name: data.last_name,
 		username: data.username,
 		profile_photo: data.profile_photo ? req.headers.host+"/uploads/"+data.profile_photo : null,
+		type: data.type,
 		country: data.country,
 		city: data.city,
 		address: data.address,
@@ -113,7 +114,7 @@ controller.putFunc = async function (req, res) {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, 'secret');
     const id = decoded.user_id;
-    const { name, last_name, username, country, city, address, country_code, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
+    const { name, last_name, username, type, country, city, address, country_code, phone, email, password, gender, id_repository, id_rol, id_community, return_data, remove_image } = req.body;
 
     let find_image = await this.db.user.findOne({
 	where: { id }
@@ -135,6 +136,7 @@ controller.putFunc = async function (req, res) {
 		    last_name,
 		    username,
 		    profile_photo,
+		    type,
 		    country,
 		    city,
 		    address,
