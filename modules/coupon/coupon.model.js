@@ -51,6 +51,19 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
+        },
+        is_reserved:{
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        id_user:{
+            allowNull: true,
+            type: DataTypes.INTEGER,
+        },
+        id_event:{
+            allowNull: true,
+            type: DataTypes.INTEGER,
         }
     });
 
@@ -59,6 +72,16 @@ module.exports = (sequelize, DataTypes) => {
         coupon.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        coupon.belongsTo(models.event, {
+            foreignKey: 'id_event',
+            as: 'event'
+        });
+
+        coupon.belongsTo(models.user, {
+            foreignKey: 'id_user',
+            as: 'user'
         });
 
         coupon.hasMany(models.ticket_sale, {
