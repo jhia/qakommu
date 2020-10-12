@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, is_reserved, id_user, id_event } = req.body;
     let uuid;
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -94,7 +94,10 @@ controller.postFunc = async function (req, res) {
             active,
             since,
             until,
-            uuid
+            uuid,
+            is_reserved, 
+            id_user, 
+            id_event
         });
         if (newdate) {
             return this.response({
@@ -115,7 +118,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, return_data } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, is_reserved, id_user, id_event, return_data } = req.body;
 
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -168,7 +171,10 @@ controller.putFunc = async function (req, res) {
                     id_user_creator,
                     active,
                     since,
-                    until
+                    until,
+                    is_reserved, 
+                    id_user, 
+                    id_event
                 },
                 return_data
             });

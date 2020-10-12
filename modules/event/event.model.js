@@ -110,6 +110,12 @@ module.exports = (sequelize, DataTypes) => {
             as: 'event_ticket'
         });
 
+        //event to coupon
+        event.hasMany(models.coupon, {
+            foreignKey: 'id_event',
+            as: 'event_coupon'
+        });
+
         //event to speaker
         event.hasMany(models.speaker, {
             foreignKey: 'id_event',

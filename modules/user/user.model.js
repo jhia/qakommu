@@ -74,11 +74,26 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'posts'
 	});
 
+<<<<<<< HEAD
 	//user to speaker
 	user.hasMany(models.speaker, {
 	    foreignKey: 'id_user',
 	    as: 'user_speaker'
 	});
+=======
+    //user to coupon
+    user.hasMany(models.coupon, {
+      foreignKey: 'id_user',
+      as: 'user_coupon'
+    });
+
+
+    //user to attendee
+    user.hasMany(models.attendee, {
+      foreignKey: 'id_user',
+      as: 'user_attendee'
+    });
+>>>>>>> 78bfe59b48445e048f94d602194eb8cedbf5ade7
 
 	//user to attendee
 	user.hasMany(models.attendee, {
