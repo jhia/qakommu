@@ -85,7 +85,8 @@ const multi_verify_and_upload_image_post = (file, id_post, old_image = null) => 
 	    "post_audio":"post_file";
 	let identify = makeid(6);
 	upload_images(x, media_type, identify);
-	send.push( { "id_post": id_post, "route": send_image_name(x, media_type, identify).profile_photo } );
+	//send.push( { "id_post": id_post, "route": send_image_name(x, media_type, identify).profile_photo } );
+	send.push( { "id_post": id_post, "route": get_image_name(x, media_type, identify).profile_photo } );
     })
     return send
 }
