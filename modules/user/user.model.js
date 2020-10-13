@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
-        isEmail: true
+	isEmail: true
       },
       unique: {
-        args: true,
-        msg: 'Email address already in use!'
+	args: true,
+	msg: 'Email address already in use!'
       }
     },
     password: {
@@ -45,16 +45,17 @@ module.exports = (sequelize, DataTypes) => {
     gender: DataTypes.STRING,
     id_repository: DataTypes.INTEGER,
     last_login: DataTypes.DATE
-  }, {
-    hooks: {
-      beforeCreate: function (admin) {
-        admin.password = encrypt_password(admin.password);
-      },
-      beforeUpdate(admin) {
-        //admin.password = encrypt_password(admin.password);
+  },
+    {
+      hooks: {
+	beforeCreate: function (model) {
+	  model.password = encrypt_password(model.password);
+	},
+	beforeBulkUpdate: function (model) { 
+	  model.attributes.password = encrypt_password(model.attributes.password)
+	}
       }
-    }
-  });
+    });
 
   user.associate = function (models) {
     // associations can be defined here
@@ -100,5 +101,6 @@ module.exports = (sequelize, DataTypes) => {
     });
 
   };
+
   return user;
 };
