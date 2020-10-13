@@ -288,22 +288,24 @@ let tracks = [
 
 let events = [
     {
-        "name": "python for everyone",
-        "description": "This is one of the most important conferences for python language lovers",
+        "name": "CES 2020",
+        "description": "CES® is the most influential tech event in the world — the proving ground for breakthrough technologies and global innovators. This is where the world's biggest brands do business and meet new partners, and the sharpest innovators hit the stage. Owned and produced by the Consumer Technology Association (CTA)®, CES features every aspect of the tech sector.",
         "id_community": 1,
         "type": "w",
         "online": false,
         "no_cfp": true,
-        "url_code": "www.test.python.com/event/12",
+        "url_code": "https://www.ces.tech",
         "id_webside": 1,
         "is_private": false,
-        "start": "2020-02-10",
-        "end": "2020-02-11",
+        "start": "2020-01-11",
+        "end": "2020-01-14",
         "active": true,
         //"id_call_for_paper": 1, 
         "prom_rate": 89.8,
         "id_repository": 1,
-        "id_state": 4
+        "id_state": 4,
+        "image": "event_DY72EI.png",
+        "host": "localhost:8000"
     },
     {
         "name": "node for everyone",
