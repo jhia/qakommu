@@ -397,6 +397,20 @@ let coupons = [
         "active": true,
         "since": "2020-10-01",
         "until": "2020-10-25"
+    },
+    {
+        "name": "early early bird",
+        "description": "coupon available for morning purchases",
+        "percentage": 100,
+        "id_state": 1,
+        "limit": 2,
+        "original_limit": 2,
+        "unlimited": false,
+        "id_user_creator": 1,
+        "active": true,
+        "since": "2020-10-01",
+        "until": "2020-11-25",
+        "is_reserved": true,
     }
 ]
 
@@ -410,7 +424,8 @@ let tickets = [
         "base_price": 120,
         "quantity_total": 100,
         "quantity_current": 100,
-        "reserved": 0,
+        "reserved": 5,
+        "reserved_current": 5,
         "limit_sale": true,
         "max_ticket_sell": 5,
         "start": "2020-05-05",

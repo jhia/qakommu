@@ -45,7 +45,7 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
 	const { name, description, id_state, id_event, base_price, quantity_total,
-		quantity_current, reserved, limit_sale, max_ticket_sell, start, end,
+		quantity_current, reserved,  limit_sale, max_ticket_sell, start, end,
 		use_multiple_price1, since1, until1, percentage1, is_discount1,
 		use_multiple_price2, since2, until2, percentage2, is_discount2,
 		use_multiple_price3, since3, until3, percentage3, is_discount3,
@@ -221,6 +221,7 @@ controller.postFunc = async function (req, res) {
 			quantity_total,
 			quantity_current,
 			reserved,
+			reserved_current: reserved,
 			limit_sale,
 			max_ticket_sell,
 			start,
@@ -262,7 +263,7 @@ controller.postFunc = async function (req, res) {
 			});
 		}
 	} catch (error) {
-		console.log(error);
+		
 		this.response({
 			res,
 			success: false,
@@ -301,6 +302,9 @@ controller.putFunc = async function (req, res) {
 				message: 'something went wrong, the maximum amount cannot be 0',
 			});
 		}
+
+	
+
 		let result1, result2, result3, result4, date_start = new Date(start), date_end = new Date(end), flagformatnull1, flagformatnull2, flagformatnull3, flagformatnull4;
 		if (date_end < date_start) {
 			return this.response({
@@ -457,6 +461,7 @@ controller.putFunc = async function (req, res) {
 					quantity_total,
 					quantity_current,
 					reserved,
+					reserved_current: reserved,
 					limit_sale,
 					max_ticket_sell,
 					start,

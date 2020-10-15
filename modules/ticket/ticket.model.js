@@ -33,7 +33,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         reserved: {
-            type: DataTypes.INTEGER
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        reserved_current:{
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
         limit_sale:{
             allowNull: false,
