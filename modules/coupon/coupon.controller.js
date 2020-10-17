@@ -79,8 +79,26 @@ controller.postFunc = async function (req, res) {
             });
         }
     }
+    
+    if(id_event != null && id_ticket != null && free_use== false){
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
+    
+    if(free_use == true && (id_event != null || id_ticket != null)){
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
 
-
+    
     try {
         let newdate = await this.insert({
             name,
@@ -157,6 +175,25 @@ controller.putFunc = async function (req, res) {
                 message: 'something went wrong, dates entered are not valid'
             });
         }
+    }
+
+
+    if(id_event != null && id_ticket != null && free_use== false){
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
+    
+    if(free_use == true && (id_event != null || id_ticket != null)){
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
     }
 
     try {

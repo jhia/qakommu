@@ -383,7 +383,8 @@ let coupons = [
         "id_user_creator": 1,
         "active": true,
         "since": "2020-10-01",
-        "until": "2020-10-09"
+        "until": "2020-10-09",
+        "id_user":1
     },
     {
         "name": "early early bird",
@@ -396,7 +397,8 @@ let coupons = [
         "id_user_creator": 1,
         "active": true,
         "since": "2020-10-01",
-        "until": "2020-10-25"
+        "until": "2020-10-25",
+        "id_user":1
     },
     {
         "name": "early early bird",
@@ -411,6 +413,7 @@ let coupons = [
         "since": "2020-10-01",
         "until": "2020-11-25",
         "is_reserved": true,
+        "id_user":1
     }
 ]
 
