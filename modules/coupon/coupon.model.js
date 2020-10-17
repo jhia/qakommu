@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.INTEGER,
         },
-        id_event:{
+        id_ticket:{
             allowNull: true,
             type: DataTypes.INTEGER
         }
