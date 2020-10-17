@@ -33,7 +33,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         reserved: {
-            type: DataTypes.INTEGER
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        reserved_current:{
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
         limit_sale:{
             allowNull: false,
@@ -168,6 +175,12 @@ module.exports = (sequelize, DataTypes) => {
         ticket.belongsTo(models.event, {
             foreignKey: 'id_event',
             as: 'event'
+        });
+
+        //ticket to coupon
+        ticket.hasMany(models.coupon, {
+            foreignKey: 'id_ticket',
+            as: 'ticket_coupon'
         });
 
     }

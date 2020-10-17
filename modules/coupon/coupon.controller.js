@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, is_reserved, id_user, id_event } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket, id_event } = req.body;
     let uuid;
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -95,8 +95,10 @@ controller.postFunc = async function (req, res) {
             since,
             until,
             uuid,
-            is_reserved, 
-            id_user, 
+            free_use,
+            is_reserved,
+            id_user,
+            id_ticket,
             id_event
         });
         if (newdate) {
@@ -118,7 +120,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, is_reserved, id_user, id_event, return_data } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket,id_event, return_data } = req.body;
 
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -172,8 +174,10 @@ controller.putFunc = async function (req, res) {
                     active,
                     since,
                     until,
-                    is_reserved, 
-                    id_user, 
+                    free_use,
+                    is_reserved,
+                    id_user,
+                    id_ticket,
                     id_event
                 },
                 return_data
@@ -319,7 +323,7 @@ controller.couponbetweenDate = async function (req, res) {
                         }
                     }]
             }
-            
+
             /*where: {
                 [Op.and]: [
                     {
@@ -365,7 +369,7 @@ controller.couponCalculator = async function (req, res) {
     const base = 100;
     try {
         if (p > 0 && d > 0 && d <= 100) {
-            let result = calculateDiscountPercentage(d , p);
+            let result = calculateDiscountPercentage(d, p);
             return this.response({
                 res,
                 statusCode: 201,

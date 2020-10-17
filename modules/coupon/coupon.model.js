@@ -52,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
         },
+        free_use:{
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
         is_reserved:{
             allowNull: false,
             type: DataTypes.BOOLEAN,
@@ -61,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.INTEGER,
         },
-        id_event:{
+        id_ticket:{
             allowNull: true,
             type: DataTypes.INTEGER,
         }
@@ -72,6 +77,11 @@ module.exports = (sequelize, DataTypes) => {
         coupon.belongsTo(models.state, {
             foreignKey: 'id_state',
             as: 'state'
+        });
+
+        coupon.belongsTo(models.ticket, {
+            foreignKey: 'id_ticket',
+            as: 'ticket'
         });
 
         coupon.belongsTo(models.event, {

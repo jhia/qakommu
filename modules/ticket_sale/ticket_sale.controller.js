@@ -67,14 +67,18 @@ controller.postFunc = async function (req, res) {
                 });
             } else {
                 //in this part we are going to check availability according to the number of tickets
-                if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
-                    return this.response({
-                        res,
-                        success: false,
-                        statusCode: 500,
-                        message: 'the amount of ticket you want to buy exceeds stock',
-                    });
+                if (requestedticket.reserved_current == 0 || id_coupon == null || id_coupon === null) {
+                    if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
+                        return this.response({
+                            res,
+                            success: false,
+                            statusCode: 500,
+                            message: 'the amount of ticket you want to buy exceeds stock or are you exceeding the amount allowed to buy',
+                        });
+                    }
                 }
+
+
                 //start calculate price to ticket
                 let price_current, price_type_current, today = new Date();
 
@@ -105,7 +109,7 @@ controller.postFunc = async function (req, res) {
 
                 let ticket_total_amount = count * price_current
                 let ticket_total_amount_paid = ticket_total_amount;
-                let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false;
+                let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false, flag_reserved_discount = false, quantity_reserved_discount;
                 //in this part we are going to verify and calculate the coupon  
                 if (id_coupon > 0) {
                     const { Op } = require("sequelize");
@@ -143,6 +147,21 @@ controller.postFunc = async function (req, res) {
                                 message: 'something went wrong, this coupon cannot be used if the limit has been reached',
                             });
                         }
+                        if (ticketsalecoupon.is_reserved) {
+                            if (ticketsalecoupon.is_reserved == true && count <= ticketsalecoupon.limit && count <= requestedticket.reserved_current) {
+                                //flag
+                                flag_reserved_discount = true;
+                                quantity_reserved_discount = requestedticket.reserved_current - count;
+                            } else {
+                                return this.response({
+                                    res,
+                                    success: false,
+                                    statusCode: 500,
+                                    message: 'something went wrong, you are exceeding the number of tickets reserved',
+                                });
+                            }
+                        }
+
                         //coupon calculator
                         if (ticket_total_amount > 0 && ticketsalecoupon.percentage > 0 && ticketsalecoupon.percentage <= 100) {
 
@@ -159,6 +178,17 @@ controller.postFunc = async function (req, res) {
                                 message: 'something went wrong',
                             });
                         }
+                    }
+                }
+
+                if(flag_reserved_discount == false){
+                    if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
+                        return this.response({
+                            res,
+                            success: false,
+                            statusCode: 500,
+                            message: 'the amount of ticket you want to buy exceeds stock or are you exceeding the amount allowed to buy',
+                        });
                     }
                 }
 
@@ -187,22 +217,36 @@ controller.postFunc = async function (req, res) {
                             uuid, id_ticket_sale, deactivated
                         });
                     }
-                    //we subtract the amount purchased with the availability of tickets
-                    let resultofcurrent = requestedticket.quantity_current - count
-                    //in this part we update the current amount of ticket
-                    if (resultofcurrent == 0) { //in this part  status change to Sold Out (id=2)
-                        await this.db.ticket.update({ quantity_current: resultofcurrent, id_state: 2 }, {
+
+                    //discount the number of tickets destined for reservations
+                    if (flag_reserved_discount) {
+                        await this.db.ticket.update({
+                            reserved_current: quantity_reserved_discount
+                        }, {
                             where: {
                                 id: requestedticket.id
                             }
                         });
                     } else {
-                        await this.db.ticket.update({ quantity_current: resultofcurrent }, {
-                            where: {
-                                id: requestedticket.id
-                            }
-                        });
+
+                        //we subtract the amount purchased with the availability of tickets
+                        let resultofcurrent = requestedticket.quantity_current - count
+                        //in this part we update the current amount of ticket
+                        if (resultofcurrent == 0) { //in this part  status change to Sold Out (id=2)
+                            await this.db.ticket.update({ quantity_current: resultofcurrent, id_state: 2 }, {
+                                where: {
+                                    id: requestedticket.id
+                                }
+                            });
+                        } else {
+                            await this.db.ticket.update({ quantity_current: resultofcurrent }, {
+                                where: {
+                                    id: requestedticket.id
+                                }
+                            });
+                        }
                     }
+
 
 
                     if (flagcouponlimit) {
@@ -214,6 +258,7 @@ controller.postFunc = async function (req, res) {
                     }
 
                 } else {
+
                     return this.response({
                         res,
                         success: false,
@@ -231,7 +276,7 @@ controller.postFunc = async function (req, res) {
         }
 
     } catch (error) {
-        
+        console.log(error);
         this.response({
             res,
             success: false,
