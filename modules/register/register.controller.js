@@ -8,7 +8,7 @@ const { makeid , verify_and_upload_image_post, upload_images } = require('../../
 controller.postFunc = async function (req, res) {
 
     const {user_type,user,community,channel} = this.db
-    const { name, last_name, username, type, country, city, address, country_code, phone, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
+    const { name, last_name, username, type, organization, country, city, address, country_code, phone, email, password, gender, id_repository, id_role, id_community, nameCommunity} = req.body;
     let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
     const jwt = require('jsonwebtoken');
@@ -19,11 +19,6 @@ controller.postFunc = async function (req, res) {
 	const avatar = req.files ? req.files.avatar: null;
 	profile_photo = verify_and_upload_image_post(avatar,"profile_photo");
 	const archive = profile_photo ? profile_photo.split("_") : null;
-
-
-
-
-
 
 	let data = []
 	let decoded
@@ -67,8 +62,6 @@ controller.postFunc = async function (req, res) {
 		description: nameCommunity,
 		id_community: invitation_code ? decoded.data.community_id : data['id']
 	    });
-
-
 	}		
 
 	if (!data) {
@@ -82,6 +75,7 @@ controller.postFunc = async function (req, res) {
 		username,
 		profile_photo,
 		type,
+		organization,
 		country,
 		city,
 		address,
