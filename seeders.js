@@ -1,15 +1,5 @@
 'use strict';
 const db = require('./models')
-const bcrypt = require('bcrypt');
-
-function encrypt_password(password) {
-    const saltRounds = 10;
-    const newPassword = password || 'admin';
-    return bcrypt.hashSync(newPassword, saltRounds);
-}
-
-
-
 const {
     resource,
     role,
@@ -106,8 +96,6 @@ let communities = [
 ];
 
 
-
-// password 123
 let users = [
 
     {
@@ -327,7 +315,6 @@ let users = [
 	"password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
     }
 
-
 ]
 
 let user_types = [
@@ -340,10 +327,9 @@ let user_types = [
     { "id_user": 7, "id_role": 1, "id_community": 1 },
     { "id_user": 8, "id_role": 1, "id_community": 1 },
     { "id_user": 9, "id_role": 1, "id_community": 1 },
-    //    { "id_user": 10, "id_role": 1, "id_community": 1 },
-    //    { "id_user": 11, "id_role": 1, "id_community": 1 },
-    //    { "id_user": 12, "id_role": 1, "id_community": 1 },
-    //    { "id_user": 13, "id_role": 1, "id_community": 1 },
+    { "id_user": 10, "id_role": 1, "id_community": 1 },
+    { "id_user": 11, "id_role": 1, "id_community": 1 },
+    { "id_user": 12, "id_role": 1, "id_community": 1 },
 ]
 
 let posts = [
@@ -529,40 +515,84 @@ let tracks = [
 
 let events = [
     {
-	"name": "python for everyone",
-	"description": "This is one of the most important conferences for python language lovers",
+	"name": "CES 2020",
+	"description": "CES® is the most influential tech event in the world — the proving ground for breakthrough technologies and global innovators. This is where the world's biggest brands do business and meet new partners, and the sharpest innovators hit the stage. Owned and produced by the Consumer Technology Association (CTA)®, CES features every aspect of the tech sector.",
 	"id_community": 1,
 	"type": "w",
 	"online": false,
 	"no_cfp": true,
-	"url_code": "www.test.python.com/event/12",
+	"url_code": "https://www.ces.tech",
 	"id_webside": 1,
 	"is_private": false,
-	"start": "2020-02-10",
-	"end": "2020-02-11",
+	"start": "2020-01-11",
+	"end": "2020-01-14",
 	"active": true,
 	//"id_call_for_paper": 1, 
 	"prom_rate": 89.8,
 	"id_repository": 1,
-	"id_state": 4
+	"id_state": 4,
+	"image": "event_DY72EI.png",
+	"host": "localhost:8000"
     },
     {
-	"name": "node for everyone",
-	"description": "This is one of the most important conferences for node language lovers",
-	"id_community": 2,
+	"name": "Oracle Code 2020",
+	"description": "Oracle Code is a free event for developers to explore the latest and greatest technologies, practices, and trends. Please check back often for updates on upcoming Oracle Code events.",
+	"id_community": 1,
 	"type": "w",
 	"online": false,
 	"no_cfp": true,
-	"url_code": "www.test.node.com/event/12",
+	"url_code": "https://developer.oracle.com/code/",
 	"id_webside": 1,
 	"is_private": false,
-	"start": "2020-02-10",
-	"end": "2020-02-11",
+	"start": "2020-09-22",
+	"end": "2020-09-24",
 	"active": true,
 	//"id_call_for_paper": 1, 
 	"prom_rate": 89.8,
 	"id_repository": 1,
-	"id_state": 1
+	"id_state": 1,
+	"image": "event_3H0945.png",
+	"host": "localhost:8000"
+    },
+    {
+	"name": "microsoft ignite",
+	"description": "Microsoft Ignite | Microsoft's annual gathering of technology leaders and practitioners delivered as a digital event experience this September.",
+	"id_community": 1,
+	"type": "w",
+	"online": false,
+	"no_cfp": true,
+	"url_code": "https://myignite.microsoft.com",
+	"id_webside": 1,
+	"is_private": false,
+	"start": "2020-09-21",
+	"end": "2020-09-24",
+	"active": true,
+	//"id_call_for_paper": 1, 
+	"prom_rate": 89.8,
+	"id_repository": 1,
+	"id_state": 1,
+	"image": "event_IOZC8S.png",
+	"host": "localhost:8000"
+    },
+    {
+	"name": "Deep Learning Summit",
+	"description": "Access the current trends and developments in deep learning and machine intelligence to strengthen your skills and advance your business.",
+	"id_community": 1,
+	"type": "w",
+	"online": false,
+	"no_cfp": true,
+	"url_code": "https://www.re-work.co/events/deep-learning-summit-san-francisco-2020",
+	"id_webside": 1,
+	"is_private": false,
+	"start": "2020-09-24",
+	"end": "2020-09-25",
+	"active": true,
+	//"id_call_for_paper": 1, 
+	"prom_rate": 89.8,
+	"id_repository": 1,
+	"id_state": 1,
+	"image": "event_H1RN6X.png",
+	"host": "localhost:8000"
     },
 
 ]
@@ -580,7 +610,8 @@ let coupons = [
 	"id_user_creator": 1,
 	"active": true,
 	"since": "2020-10-01",
-	"until": "2020-10-09"
+	"until": "2020-10-09",
+	"id_user":1
     },
     {
 	"name": "early early bird",
@@ -593,7 +624,23 @@ let coupons = [
 	"id_user_creator": 1,
 	"active": true,
 	"since": "2020-10-01",
-	"until": "2020-10-25"
+	"until": "2020-10-25",
+	"id_user":1
+    },
+    {
+	"name": "early early bird",
+	"description": "coupon available for morning purchases",
+	"percentage": 100,
+	"id_state": 1,
+	"limit": 2,
+	"original_limit": 2,
+	"unlimited": false,
+	"id_user_creator": 1,
+	"active": true,
+	"since": "2020-10-01",
+	"until": "2020-11-25",
+	"is_reserved": true,
+	"id_user":1
     }
 ]
 
@@ -607,7 +654,8 @@ let tickets = [
 	"base_price": 120,
 	"quantity_total": 100,
 	"quantity_current": 100,
-	"reserved": 0,
+	"reserved": 5,
+	"reserved_current": 5,
 	"limit_sale": true,
 	"max_ticket_sell": 5,
 	"start": "2020-05-05",

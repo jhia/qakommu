@@ -63,12 +63,16 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         id_user:{
-            allowNull: true,
+            allowNull: false,
             type: DataTypes.INTEGER,
         },
         id_ticket:{
             allowNull: true,
             type: DataTypes.INTEGER,
+        },
+        id_ticket:{
+            allowNull: true,
+            type: DataTypes.INTEGER
         }
     });
 
