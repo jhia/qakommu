@@ -247,7 +247,7 @@ controller.getSpeakersByEvent = async function (req, res) {
             order,
             where: { id_event },
             include: [{
-                attributes: ['name', 'last_name', 'profile_photo','username', 'email', 'phone', 'country_code', 'city', 'address'],
+                attributes: ['name', 'last_name', 'profile_photo','username', 'organization', 'email', 'phone', 'country', 'city', 'address'],
                 model: this.db.user,
                 as: 'user'
             },
