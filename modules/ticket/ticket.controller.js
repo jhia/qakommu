@@ -302,7 +302,16 @@ controller.putFunc = async function (req, res) {
 				message: 'something went wrong, the maximum amount cannot be 0',
 			});
 		}
-
+		//falta validar esto
+		/*if (max_ticket_sell > 0 && limit_sale == false) {
+			return this.response({
+				res,
+				success: false,
+				statusCode: 500,
+				message: 'something went wrong, the maximum amount cannot be 0 perrita',
+			});
+		}
+		*/
 	
 
 		let result1, result2, result3, result4, date_start = new Date(start), date_end = new Date(end), flagformatnull1, flagformatnull2, flagformatnull3, flagformatnull4;
