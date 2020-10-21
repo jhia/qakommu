@@ -6,7 +6,7 @@ const {schedule} = db;
 
 module.exports = (sequelize, DataTypes) => {
     const activity = sequelize.define('activity', {
-	titulo: DataTypes.TEXT,
+	title: DataTypes.TEXT,
 	description: DataTypes.TEXT,
 	start: DataTypes.DATE,
 	end: DataTypes.DATE,
@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
 	    through: "activity_schedule",
 	    foreignKey: "id_activity",
 	});
-
     }
     return activity
 
