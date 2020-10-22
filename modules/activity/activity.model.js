@@ -8,8 +8,20 @@ module.exports = (sequelize, DataTypes) => {
     const activity = sequelize.define('activity', {
 	title: DataTypes.TEXT,
 	description: DataTypes.TEXT,
-	start: DataTypes.DATE,
-	end: DataTypes.DATE,
+	start: {
+	    type: DataTypes.DATE,
+	    allowNull: false,
+	    unique: {
+		msg: 'date exist'
+	    },    
+	},
+	end: {
+	    type: DataTypes.DATE,
+	    allowNull: false,
+	    unique: {
+		msg: 'date exist'
+	    },    
+	},
 	color: DataTypes.TEXT,
 	email_notification: DataTypes.BOOLEAN,
 	pre_notification: DataTypes.DATE,
