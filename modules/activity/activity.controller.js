@@ -93,6 +93,7 @@ controller.postFunc = async function (req, res) {
 
 
 
+const Op = require('Sequelize').Op;
 
 try {
 
@@ -100,6 +101,32 @@ try {
     if(!st.isValid() ||  !en.isValid()) throw new Error ('Error, the format is DD/MM/YYYY HH:mm:ss');
     //console.log('----------valid_range-------------',valid_range)
     if ( valid_range < 0 ) throw new Error ('Error in range');
+
+/*
+    let xxx = await this.db.activity.findOne({
+	where: {
+
+
+
+
+	    start: {
+		[Op.gte]: [ne"]
+	    },
+
+
+
+
+
+	    Age: {
+		[Op.between]: [18, 24]
+	    }
+	}
+    })
+*/
+
+
+
+
 
     let newdata = await this.insert({
 	title, 
