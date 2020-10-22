@@ -926,7 +926,8 @@ let session_attendees = [
 		"id_session": 1,
 		"id_attendee": 1,
 		"rate": 76.2,
-		"is_present": true
+		"is_present": true,
+		"comment": "this is a comment"
 	}
 ]
 
