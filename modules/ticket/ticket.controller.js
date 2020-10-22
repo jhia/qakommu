@@ -46,10 +46,10 @@ controller.postFunc = async function (req, res) {
 
 	const { name, description, id_state, id_event, base_price, quantity_total,
 		quantity_current, reserved,  limit_sale, max_ticket_sell, start, end,
-		use_multiple_price1, since1, until1, percentage1, is_discount1,
-		use_multiple_price2, since2, until2, percentage2, is_discount2,
-		use_multiple_price3, since3, until3, percentage3, is_discount3,
-		use_multiple_price4, since4, until4, percentage4, is_discount4
+		use_multiple_price1, title1, since1, until1, percentage1, is_discount1,
+		use_multiple_price2, title2, since2, until2, percentage2, is_discount2,
+		use_multiple_price3, title3, since3, until3, percentage3, is_discount3,
+		use_multiple_price4, title4, since4, until4, percentage4, is_discount4
 	} = req.body;
 	try {
 		if (base_price < 1 || base_price === null || base_price == null || quantity_total < 1 || start == null || end == null) {
@@ -88,7 +88,7 @@ controller.postFunc = async function (req, res) {
 			});
 		}
 		//multiple price condition 1
-		if (use_multiple_price1 && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
+		if (use_multiple_price1 && title1 != null && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
 			let date_since1 = new Date(since1), date_until1 = new Date(until1);
 			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
 				if (is_discount1) {
@@ -98,7 +98,7 @@ controller.postFunc = async function (req, res) {
 				}
 
 				//multiple price condition 2
-				if (use_multiple_price2 && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
+				if (use_multiple_price2 && title2 != null && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
 					let date_since2 = new Date(since2), date_until2 = new Date(until2);
 					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
 						if (is_discount2) {
@@ -108,7 +108,7 @@ controller.postFunc = async function (req, res) {
 						}
 
 						//multiple price condition 3
-						if (use_multiple_price3 && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
+						if (use_multiple_price3 && title3 != null && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
 							let date_since3 = new Date(since3), date_until3 = new Date(until3);
 							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
 								if (is_discount3) {
@@ -119,7 +119,7 @@ controller.postFunc = async function (req, res) {
 
 
 								//multiple price condition 4
-								if (use_multiple_price4 && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
+								if (use_multiple_price4 && title4 != null && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
 
 									let date_since4 = new Date(since4), date_until4 = new Date(until4);
 									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
@@ -135,10 +135,10 @@ controller.postFunc = async function (req, res) {
 											statusCode: 500,
 											message: 'something went wrong, the dates provided are invalid (4)',
 										});
-									}
+									} 
 
 								} else {
-									if (use_multiple_price4 && (since4 == null || until4 == null || percentage4 == null || is_discount4 == null)) {
+									if (use_multiple_price4 && (title4 == null || since4 == null ||  until4 == null || percentage4 == null || is_discount4 == null)) {
 										return this.response({
 											res,
 											success: false,
@@ -158,7 +158,7 @@ controller.postFunc = async function (req, res) {
 							}
 
 						} else {
-							if (use_multiple_price3 && (since3 == null || until3 == null || percentage3 == null || is_discount3 == null)) {
+							if (use_multiple_price3 && ( title3 == null || since3 == null || until3 == null || percentage3 == null || is_discount3 == null)) {
 								return this.response({
 									res,
 									success: false,
@@ -178,7 +178,7 @@ controller.postFunc = async function (req, res) {
 					}
 
 				} else {
-					if (use_multiple_price2 && (since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
+					if (use_multiple_price2 && (title2 == null || since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
 						return this.response({
 							res,
 							success: false,
@@ -199,7 +199,7 @@ controller.postFunc = async function (req, res) {
 			}
 
 		} else {
-			if (use_multiple_price1 && (since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
+			if (use_multiple_price1 && (title1 == null || since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
 				return this.response({
 					res,
 					success: false,
@@ -238,6 +238,7 @@ controller.postFunc = async function (req, res) {
 			end,
 			//1
 			use_multiple_price1: flagformatnull1 ? false : use_multiple_price1,
+			title1: flagformatnull1 ? null : title1,
 			price1: result1 ? result1 : null,
 			since1: flagformatnull1 ? null : since1,
 			until1: flagformatnull1 ? null : until1,
@@ -245,6 +246,7 @@ controller.postFunc = async function (req, res) {
 			is_discount1: flagformatnull1 ? null : is_discount1,
 			//2
 			use_multiple_price2: flagformatnull2 ? false : use_multiple_price2,
+			title2: flagformatnull2 ? null : title2,
 			price2: result2 ? result2 : null,
 			since2: flagformatnull2 ? null : since2,
 			until2: flagformatnull2 ? null : until2,
@@ -252,6 +254,7 @@ controller.postFunc = async function (req, res) {
 			is_discount2: flagformatnull2 ? null : is_discount2,
 			//3
 			use_multiple_price3: flagformatnull3 ? false : use_multiple_price3,
+			title3: flagformatnull3 ? null : title3,
 			price3: result3 ? result3 : null,
 			since3: flagformatnull3 ? null : since3,
 			until3: flagformatnull3 ? null : until3,
@@ -259,6 +262,7 @@ controller.postFunc = async function (req, res) {
 			is_discount3: flagformatnull3 ? null : is_discount3,
 			//4
 			use_multiple_price4: flagformatnull4 ? false : use_multiple_price4,
+			title4: flagformatnull4 ? null : title4,
 			price4: result4 ? result4 : null,
 			since4: flagformatnull4 ? null : since4,
 			until4: flagformatnull4 ? null : until4,
@@ -288,10 +292,10 @@ controller.putFunc = async function (req, res) {
 	const { id } = req.params;
 	const { name, description, id_state, id_event, base_price, quantity_total,
 		quantity_current, reserved, limit_sale, max_ticket_sell, start, end, return_data,
-		use_multiple_price1, since1, until1, percentage1, is_discount1,
-		use_multiple_price2, since2, until2, percentage2, is_discount2,
-		use_multiple_price3, since3, until3, percentage3, is_discount3,
-		use_multiple_price4, since4, until4, percentage4, is_discount4
+		use_multiple_price1, title1, since1, until1, percentage1, is_discount1,
+		use_multiple_price2, title2, since2, until2, percentage2, is_discount2,
+		use_multiple_price3, title3,since3, until3, percentage3, is_discount3,
+		use_multiple_price4, title4, since4, until4, percentage4, is_discount4
 	} = req.body;
 
 	try {
@@ -332,7 +336,7 @@ controller.putFunc = async function (req, res) {
 			});
 		}
 		//multiple price condition 1
-		if (use_multiple_price1 && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
+		if (use_multiple_price1 && title1 != null && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
 			let date_since1 = new Date(since1), date_until1 = new Date(until1);
 			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
 				if (is_discount1) {
@@ -342,7 +346,7 @@ controller.putFunc = async function (req, res) {
 				}
 
 				//multiple price condition 2
-				if (use_multiple_price2 && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
+				if (use_multiple_price2 && title2 != null && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
 					let date_since2 = new Date(since2), date_until2 = new Date(until2);
 					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
 						if (is_discount2) {
@@ -352,7 +356,7 @@ controller.putFunc = async function (req, res) {
 						}
 
 						//multiple price condition 3
-						if (use_multiple_price3 && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
+						if (use_multiple_price3 && title3 != null && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
 							let date_since3 = new Date(since3), date_until3 = new Date(until3);
 							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
 								if (is_discount3) {
@@ -363,8 +367,7 @@ controller.putFunc = async function (req, res) {
 
 
 								//multiple price condition 4
-								if (use_multiple_price4 && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
-
+								if (use_multiple_price4 && title4 != null && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
 									let date_since4 = new Date(since4), date_until4 = new Date(until4);
 									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
 										if (is_discount4) {
@@ -382,7 +385,7 @@ controller.putFunc = async function (req, res) {
 									}
 
 								} else {
-									if (use_multiple_price4 && (since4 == null || until4 == null || percentage4 == null || is_discount4 == null)) {
+									if (use_multiple_price4 && (title4 == null || since4 == null ||  until4 == null || percentage4 == null || is_discount4 == null)) {
 										return this.response({
 											res,
 											success: false,
@@ -402,7 +405,7 @@ controller.putFunc = async function (req, res) {
 							}
 
 						} else {
-							if (use_multiple_price3 && (since3 == null || until3 == null || percentage3 == null || is_discount3 == null)) {
+							if (use_multiple_price3 && (title3 == null || since3 == null ||  until3 == null || percentage3 == null || is_discount3 == null)) {
 								return this.response({
 									res,
 									success: false,
@@ -422,7 +425,7 @@ controller.putFunc = async function (req, res) {
 					}
 
 				} else {
-					if (use_multiple_price2 && (since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
+					if (use_multiple_price2 && ( title2 == null || since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
 						return this.response({
 							res,
 							success: false,
@@ -443,7 +446,7 @@ controller.putFunc = async function (req, res) {
 			}
 
 		} else {
-			if (use_multiple_price1 && (since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
+			if (use_multiple_price1 && ( title1 == null || since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
 				return this.response({
 					res,
 					success: false,
@@ -485,6 +488,7 @@ controller.putFunc = async function (req, res) {
 					end,
 					//1
 					use_multiple_price1: flagformatnull1 ? false : use_multiple_price1,
+					title1: flagformatnull1 ? null : title1,
 					price1: result1 ? result1 : null,
 					since1: flagformatnull1 ? null : since1,
 					until1: flagformatnull1 ? null : until1,
@@ -492,6 +496,7 @@ controller.putFunc = async function (req, res) {
 					is_discount1: flagformatnull1 ? null : is_discount1,
 					//2
 					use_multiple_price2: flagformatnull2 ? false : use_multiple_price2,
+					title2: flagformatnull2 ? null : title2,
 					price2: result2 ? result2 : null,
 					since2: flagformatnull2 ? null : since2,
 					until2: flagformatnull2 ? null : until2,
@@ -499,6 +504,7 @@ controller.putFunc = async function (req, res) {
 					is_discount2: flagformatnull2 ? null : is_discount2,
 					//3
 					use_multiple_price3: flagformatnull3 ? false : use_multiple_price3,
+					title3: flagformatnull3 ? null : title3,
 					price3: result3 ? result3 : null,
 					since3: flagformatnull3 ? null : since3,
 					until3: flagformatnull3 ? null : until3,
@@ -506,6 +512,7 @@ controller.putFunc = async function (req, res) {
 					is_discount3: flagformatnull3 ? null : is_discount3,
 					//4
 					use_multiple_price4: flagformatnull4 ? false : use_multiple_price4,
+					title4: flagformatnull4 ? null : title4,
 					price4: result4 ? result4 : null,
 					since4: flagformatnull4 ? null : since4,
 					until4: flagformatnull4 ? null : until4,

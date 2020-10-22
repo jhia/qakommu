@@ -62,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
+        title1:{
+            allowNull: true,
+            type: DataTypes.TEXT
+        },
         price1:{
             allowNull: true,
             type: DataTypes.FLOAT
@@ -87,6 +91,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        title2:{
+            allowNull: true,
+            type: DataTypes.TEXT
         },
         price2:{
             allowNull: true,
@@ -114,6 +122,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
+        title3:{
+            allowNull: true,
+            type: DataTypes.TEXT
+        },
         price3:{
             allowNull: true,
             type: DataTypes.FLOAT
@@ -139,6 +151,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        title4:{
+            allowNull: true,
+            type: DataTypes.TEXT
         },
         price4:{
             allowNull: true,

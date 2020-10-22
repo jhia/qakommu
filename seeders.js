@@ -678,24 +678,28 @@ let tickets = [
 
 
 		"use_multiple_price1": true,
+		'title1': "super early early bird",
 		"since1": "2020-05-10",
 		"until1": "2020-05-15",
 		"percentage1": 30,
 		"is_discount1": true,
 
 		"use_multiple_price2": true,
+		'title2': "early early bird",
 		"since2": "2020-08-2",
 		"until2": "2020-09-20",
 		"percentage2": 20,
 		"is_discount2": true,
 
 		"use_multiple_price3": true,
+		'title3': "early bird",
 		"since3": "2020-09-21",
 		"until3": "2020-11-20",
 		"percentage3": 10,
 		"is_discount3": true,
 
 		"use_multiple_price4": true,
+		'title4': "today is more",
 		"since4": "2020-11-21",
 		"until4": "2020-12-1",
 		"percentage4": 5,
