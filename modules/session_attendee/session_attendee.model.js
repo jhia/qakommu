@@ -20,7 +20,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT
         },
         is_present:{
+            allowNull: false,
+            defaultValue: false,
             type: DataTypes.BOOLEAN
+        },
+        comment:{
+            allowNull: true,
+            type: DataTypes.TEXT
         }
     });
 
