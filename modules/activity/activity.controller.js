@@ -38,7 +38,7 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
     const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, id_schedule } = req.body;
-    const {activity,schedule,activity_schedule, sequelize} = this.db;
+    const {activity,schedule,activity_schedule, Sequelize} = this.db;
 
 
     const st = moment(start, 'DD/MM/YYYY HH:mm:ss');
@@ -47,6 +47,7 @@ controller.postFunc = async function (req, res) {
     const valid_range = en.diff(st,'minutes');
 
 
+    const Op = Sequelize.Op;
 
 
 
@@ -93,36 +94,47 @@ controller.postFunc = async function (req, res) {
 
 
 
-const Op = require('Sequelize').Op;
 
 try {
 
+    //console.log(start,'---------', end)
     //console.log(!st.isValid(),'---------', !en.isValid())
     if(!st.isValid() ||  !en.isValid()) throw new Error ('Error, the format is DD/MM/YYYY HH:mm:ss');
     //console.log('----------valid_range-------------',valid_range)
     if ( valid_range < 0 ) throw new Error ('Error in range');
 
-/*
-    let xxx = await this.db.activity.findOne({
+
+    const ACCEPT_FORMAT = 'YYYY-MM-DD hh:mm:ss'
+    const start_date = moment.utc(start, ACCEPT_FORMAT)
+    const end_date = moment.utc(end, ACCEPT_FORMAT)
+
+
+    let xxx = await this.db.activity.count({
 	where: {
-
-
-
-
-	    start: {
-		[Op.gte]: [ne"]
-	    },
-
-
-
-
-
-	    Age: {
-		[Op.between]: [18, 24]
-	    }
+	    [Op.and]: [
+		{ 
+		    start: { [Op.gte]: start_date }
+		},
+		{ 
+		    end: { [Op.lte]: end_date }
+		}
+	    ]
 	}
-    })
-*/
+    });
+
+    console.log(xxx);
+
+
+    const data = await this.db.activity.findOne({
+	include: [{
+	    model: schedule,
+	    as: 'schedules',
+	}]
+
+    });
+
+    if ( data  ) console.log(data.schedules[0].activity_schedule.id_schedule)
+
 
 
 
@@ -131,8 +143,8 @@ try {
     let newdata = await this.insert({
 	title, 
 	description, 
-	start, 
-	end, 
+	start: start_date, 
+	end: end_date, 
 	color, 
 	email_notification, 
 	pre_notification, 
@@ -140,8 +152,8 @@ try {
 	time_zone, 
 	repetition,
     });
-    await newdata.addSchedule(id_schedule);
 
+    await newdata.addSchedule(id_schedule);
 
 
     if (newdata) {
