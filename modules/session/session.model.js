@@ -47,6 +47,11 @@ module.exports = (sequelize, DataTypes) => {
             as: 'session_speaker'
         });
 
+         //track to session
+         session.hasMany(models.track_session, {
+            foreignKey: 'id_session',
+            as: 'track_track_session'
+        });
         
         session.hasMany(models.session_attendee, {
             foreignKey: 'id_session',

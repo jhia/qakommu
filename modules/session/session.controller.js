@@ -140,5 +140,47 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+//-------------special fuction--------------------
+controller.getTrackBySession = async function (req, res) {
+    const { id_session } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.track_session.findAll({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: {
+                id_session
+            },
+            include: [
+                {
+                    attributes: ['name', 'description', 'color'],
+                    model: this.db.track,
+                    as: 'track',
+                    where:{
+                        active: true
+                    }
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
+
 
 module.exports = controller;

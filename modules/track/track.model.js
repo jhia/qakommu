@@ -34,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
             as: 'track_posts'
         });
 
+        //track to session
+        track.hasMany(models.track_session, {
+            foreignKey: 'id_track',
+            as: 'track_track_session'
+        });
 
         // track to module
         track.belongsTo(models.module_name, {

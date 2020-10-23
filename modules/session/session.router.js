@@ -18,6 +18,12 @@ router.get('/:id',function(req, res){
   sessionController.getFunc(req,res);
 });
 
+router.get('/:id_session/track/all',function(req, res){
+  //HTTP get route
+  sessionController.getTrackBySession(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   sessionController.postFunc(req,res);
