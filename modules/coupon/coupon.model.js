@@ -70,7 +70,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.INTEGER,
         },
-        id_ticket:{
+        id_sponsor:{
+            allowNull: true,
+            type: DataTypes.INTEGER
+        },
+        id_exhibitor:{
             allowNull: true,
             type: DataTypes.INTEGER
         }
@@ -91,6 +95,16 @@ module.exports = (sequelize, DataTypes) => {
         coupon.belongsTo(models.event, {
             foreignKey: 'id_event',
             as: 'event'
+        });
+
+        coupon.belongsTo(models.sponsor, {
+            foreignKey: 'id_sponsor',
+            as: 'sponsor'
+        });
+
+        coupon.belongsTo(models.exhibitor, {
+            foreignKey: 'id_exhibitor',
+            as: 'exhibitor'
         });
 
         coupon.belongsTo(models.user, {

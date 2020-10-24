@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket, id_event } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket, id_event, id_sponsor, id_exhibitor } = req.body;
     let uuid;
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -79,26 +79,35 @@ controller.postFunc = async function (req, res) {
             });
         }
     }
-    
-    if(id_event != null && id_ticket != null && free_use== false){
+
+    if (id_sponsor != null && id_exhibitor != null ) {
         return this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong'
-        });
-    }
-    
-    if(free_use == true && (id_event != null || id_ticket != null)){
-        return this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
+            message: 'something went wrong, you cannot assign two roles at the same time'
         });
     }
 
-    
+    if ((id_event != null && id_ticket != null && free_use == false) || (id_event == null && id_ticket == null && free_use == false)) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the binding data entered is not valid'
+        });
+    }
+
+    if (free_use == true && (id_event != null || id_ticket != null)) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the binding data entered is not valid'
+        });
+    }
+
+
     try {
         let newdate = await this.insert({
             name,
@@ -117,7 +126,9 @@ controller.postFunc = async function (req, res) {
             is_reserved,
             id_user,
             id_ticket,
-            id_event
+            id_event,
+            id_sponsor,
+            id_exhibitor
         });
         if (newdate) {
             return this.response({
@@ -138,7 +149,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket,id_event, return_data } = req.body;
+    const { name, description, percentage, id_state, limit, unlimited, id_user_creator, active, since, until, free_use, is_reserved, id_user, id_ticket, id_event, id_sponsor, id_exhibitor, return_data } = req.body;
 
     if (limit > 0 && unlimited === true) {
         return this.response({
@@ -177,22 +188,30 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-
-    if(id_event != null && id_ticket != null && free_use== false){
+    if (id_sponsor != null && id_exhibitor != null ) {
         return this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong'
+            message: 'something went wrong, you cannot assign two roles at the same time'
         });
     }
-    
-    if(free_use == true && (id_event != null || id_ticket != null)){
+
+    if ((id_event != null && id_ticket != null && free_use == false) || (id_event == null && id_ticket == null && free_use == false)) {
         return this.response({
             res,
             success: false,
             statusCode: 500,
-            message: 'something went wrong'
+            message: 'something went wrong, the binding data entered is not valid'
+        });
+    }
+
+    if (free_use == true && (id_event != null || id_ticket != null)) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the binding data entered is not valid'
         });
     }
 
@@ -215,7 +234,9 @@ controller.putFunc = async function (req, res) {
                     is_reserved,
                     id_user,
                     id_ticket,
-                    id_event
+                    id_event,
+                    id_sponsor,
+                    id_exhibitor
                 },
                 return_data
             });
