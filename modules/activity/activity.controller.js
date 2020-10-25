@@ -97,46 +97,34 @@ controller.postFunc = async function (req, res) {
 
 try {
 
-    //console.log(start,'---------', end)
-    //console.log(!st.isValid(),'---------', !en.isValid())
     if(!st.isValid() ||  !en.isValid()) throw new Error ('Error, the format is DD/MM/YYYY HH:mm:ss');
-    //console.log('----------valid_range-------------',valid_range)
     if ( valid_range < 0 ) throw new Error ('Error in range');
+
+    const schedule_exist = await this.db.schedule.count({
+	where: { id: id_schedule }
+    });
+
+    if ( schedule_exist == 0 )  throw new Error ('Not exist schedule');
 
 
     const ACCEPT_FORMAT = 'YYYY-MM-DD hh:mm:ss'
     const start_date = moment.utc(start, ACCEPT_FORMAT)
     const end_date = moment.utc(end, ACCEPT_FORMAT)
 
-
-    let xxx = await this.db.activity.count({
+    let schedule_clash = await this.db.activity.count({
 	where: {
-	    [Op.and]: [
+	    [Op.or]: [
 		{ 
-		    start: { [Op.gte]: start_date }
+		    start: { [Op.between]: [start_date, end_date] }
 		},
 		{ 
-		    end: { [Op.lte]: end_date }
-		}
+		    end: { [Op.between]: [start_date, end_date] }
+		},	
 	    ]
 	}
     });
 
-    console.log(xxx);
-
-
-    const data = await this.db.activity.findOne({
-	include: [{
-	    model: schedule,
-	    as: 'schedules',
-	}]
-
-    });
-
-    if ( data  ) console.log(data.schedules[0].activity_schedule.id_schedule)
-
-
-
+    if (schedule_clash > 0 ) throw new Error ('Shedule clash');
 
 
 
@@ -180,7 +168,6 @@ controller.putFunc = async function (req, res) {
     const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, id_schedule } = req.body;
 
     try {
-
 
 	let result = await this.update(
 	    {
