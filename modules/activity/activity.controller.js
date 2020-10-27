@@ -4,20 +4,37 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('activity');
 const moment = require('moment');
+//const {schedule,activity_schedule, Sequelize} = this.db;
 
-controller.getFunc = async function (req, res) {
+controller.getScheduleActivity = async function (req, res) {
 
-    const { id } = req.params;
+    const { id_schedule,id } = req.params;
     const { limit, offset, order, attributes } = req.body;
+    const { activity } = this.db;
 
     try {
-	const data = await this.getData({
-	    id,
-	    limit,
-	    offset,
-	    attributes,
-	    order
-	});
+
+	const data = id ?  
+	    await this.db.activity.findOne({
+		where: { id },
+		include: [{
+		    model: this.db.schedule,
+		    as: 'schedules',
+		    where: {
+			id: id_schedule
+		    },
+		}]
+	    })
+	    : 
+	    await this.db.activity.findAll({
+		include: [{
+		    model: this.db.schedule,
+		    as: 'schedules',
+		    where: {
+			id: id_schedule
+		    },
+		}]
+	    })
 
 	this.response({
 	    res,
@@ -38,11 +55,11 @@ controller.getFunc = async function (req, res) {
 controller.postFunc = async function (req, res) {
 
     const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, id_schedule } = req.body;
-    const {activity,schedule,activity_schedule, Sequelize} = this.db;
 
     const st = moment(start, 'DD/MM/YYYY HH:mm:ss');
     const en = moment(end, 'DD/MM/YYYY HH:mm:ss');
     const valid_range = en.diff(st,'minutes');
+    const { Sequelize } = this.db;
     const Op = Sequelize.Op;
 
     try {
@@ -111,9 +128,37 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, id_schedule } = req.body;
+    const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, return_data } = req.body;
+
+    const st = moment(start, 'DD/MM/YYYY HH:mm:ss');
+    const en = moment(end, 'DD/MM/YYYY HH:mm:ss');
+    const valid_range = en.diff(st,'minutes');
+    const { Sequelize } = this.db;
+    const Op = Sequelize.Op;
 
     try {
+
+	if(!st.isValid() ||  !en.isValid()) throw new Error ('Error, the format is DD/MM/YYYY HH:mm:ss');
+	if ( valid_range < 0 ) throw new Error ('Error in range');
+
+	const ACCEPT_FORMAT = 'YYYY-MM-DD hh:mm:ss'
+	const start_date = moment.utc(start, ACCEPT_FORMAT)
+	const end_date = moment.utc(end, ACCEPT_FORMAT)
+
+	let schedule_clash = await this.db.activity.count({
+	    where: {
+		[Op.or]: [
+		    { 
+			start: { [Op.between]: [start_date, end_date] }
+		    },
+		    { 
+			end: { [Op.between]: [start_date, end_date] }
+		    },	
+		]
+	    }
+	});
+
+	if (schedule_clash > 0 ) throw new Error ('Shedule clash');
 
 	let result = await this.update(
 	    {
@@ -121,15 +166,14 @@ controller.putFunc = async function (req, res) {
 		data: {
 		    title, 
 		    description, 
-		    start, 
-		    end, 
+		    start: start_date, 
+		    end: end_date, 
 		    color, 
 		    email_notification, 
 		    pre_notification, 
 		    location, 
 		    time_zone, 
-		    repetition
-
+		    repetition,
 		},
 		return_data
 	    });
@@ -152,21 +196,17 @@ controller.putFunc = async function (req, res) {
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: 'something went wrong'
+	    //message: 'something went wrong'
+	    message: error.message
 	});
     }
 
 }
 
-
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
-	const find_repository = await this.db.repository.findOne({
-	    where: {id},
-	    attributes: ['location'],
-	});
-	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
+
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
@@ -183,7 +223,6 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-	if (error.original.code == 23503) error.message = "this folder is not empty"
 	this.response({
 	    res,
 	    success: false,
