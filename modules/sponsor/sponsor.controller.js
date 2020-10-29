@@ -129,4 +129,56 @@ controller.deleteFunc = async function (req, res) {
 	}
 }
 
+//-------------special fuction--------------------
+controller.getSponsorByEvent = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.sponsor.findAll({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: {
+				id_event,
+				active: true
+            },
+            include: [
+                {
+                    attributes: ['name', 'description','contribution_value','currency_symbol'],
+                    model: this.db.type_sponsor,
+                    as: 'type_sponsor',
+                    where:{
+                        active: true
+                    }
+				},
+				{
+					attributes: ['name', 'description', 'registry_number', 'logo','host','web'],
+                    model: this.db.partnership,
+                    as: 'partnership',
+                    where:{
+                        active: true
+                    }
+				}
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+		console.log(error);
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
+
 module.exports = controller;

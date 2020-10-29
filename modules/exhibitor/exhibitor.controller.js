@@ -134,5 +134,58 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+//-------------special fuction--------------------
+controller.getExhibitorByEvent = async function (req, res) {
+    const { id_event } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.exhibitor.findAll({
+            limit,
+            offset,
+            attributes: ['id'],
+            order,
+            where: {
+				id_event,
+				active: true
+            },
+            include: [
+                {
+                    attributes: ['name', 'description','cost','size_width','size_height'],
+                    model: this.db.type_booth,
+                    as: 'type_booth',
+                    where:{
+                        active: true
+                    }
+				},
+				{
+					attributes: ['name', 'description', 'registry_number', 'logo','host','web'],
+                    model: this.db.partnership,
+                    as: 'partnership',
+                    where:{
+                        active: true
+                    }
+				}
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+		console.log(error);
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
+
+
 
 module.exports = controller;

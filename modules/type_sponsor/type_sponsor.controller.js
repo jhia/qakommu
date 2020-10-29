@@ -39,12 +39,13 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, contribution_value, active } = req.body;
+    const { name, description, contribution_value, currency_symbol, active } = req.body;
     try {
         let newdate = await this.insert({
             name,
             description,
             contribution_value,
+            currency_symbol,
             active
         });
         if (newdate) {
@@ -66,7 +67,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, contribution_value, active, return_data } = req.body;
+    const { name, description, contribution_value, currency_symbol, active, return_data } = req.body;
     try {
         let result = await this.update(
             {
@@ -75,6 +76,7 @@ controller.putFunc = async function (req, res) {
                     name,
                     description,
                     contribution_value,
+                    currency_symbol,
                     active
                 },
                 return_data

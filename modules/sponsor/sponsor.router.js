@@ -18,6 +18,12 @@ router.get('/:id',function(req, res){
   sponsorController.getFunc(req,res);
 });
 
+
+router.get('/event/:id_event',function(req, res){
+  //HTTP get route
+  sponsorController.getSponsorByEvent(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   sponsorController.postFunc(req,res);

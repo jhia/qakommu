@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.FLOAT
         },
+        currency_symbol:{
+            allowNull: false,
+            type: DataTypes.STRING(1),
+            defaultValue: '$'
+        },
         active: {
             allowNull: false,
             type: DataTypes.BOOLEAN

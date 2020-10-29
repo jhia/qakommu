@@ -18,6 +18,11 @@ router.get('/:id',function(req, res){
   exhibitorController.getFunc(req,res);
 });
 
+router.get('/event/:id_event',function(req, res){
+  //HTTP get route
+  exhibitorController.getExhibitorByEvent(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   exhibitorController.postFunc(req,res);
