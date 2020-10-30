@@ -134,7 +134,8 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
-//-------------special fuction--------------------
+//-------------special fuctions--------------------
+
 controller.getExhibitorByEvent = async function (req, res) {
     const { id_event } = req.params;
     const { limit, offset, order } = req.body;
@@ -150,7 +151,7 @@ controller.getExhibitorByEvent = async function (req, res) {
             },
             include: [
                 {
-                    attributes: ['name', 'description','cost','size_width','size_height'],
+                    attributes: ['name', 'description','cost','size_width','size_height', 'currency_symbol'],
                     model: this.db.type_booth,
                     as: 'type_booth',
                     where:{

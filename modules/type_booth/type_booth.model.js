@@ -26,6 +26,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         active:{
             type: DataTypes.BOOLEAN
+        },
+        currency_symbol:{
+            allowNull: false,
+            type: DataTypes.ENUM('$', '€', '£'),
+            defaultValue: '$'
+        },
+        id_community: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -36,6 +45,12 @@ module.exports = (sequelize, DataTypes) => {
         type_booth.hasMany(models.exhibitor, {
             foreignKey: 'id_type_booth',
             as: 'type_booth_exhibitor'
+        });
+
+        //type_booth to community
+        type_booth.belongsTo(models.community, {
+            foreignKey: 'id_community',
+            as: 'community'
         });
     }
 

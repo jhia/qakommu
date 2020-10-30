@@ -44,6 +44,15 @@ module.exports = (sequelize, DataTypes) => {
       as: 'community_event'
     });
 
+    community.hasMany(models.type_sponsor, {
+      foreignKey: 'id_community',
+      as: 'community_type_sponsor'
+    });
+
+    community.hasMany(models.type_booth, {
+      foreignKey: 'id_community',
+      as: 'community_type_booth'
+    });
 
     community.hasMany(models.channel, {
       foreignKey: 'id_community',
@@ -54,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     community.hasMany(models.survey, {
       foreignKey: 'id_community',
       as: 'community_survey'
-  });
+    });
 
   };
 

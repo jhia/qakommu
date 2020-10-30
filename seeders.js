@@ -857,7 +857,9 @@ let type_sponsors = [
 		"name": "general",
 		"description": "standard fee for sponsors",
 		"contribution_value": 0.00005685,
-		"active": true
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1
 	}
 ]
 
@@ -866,7 +868,7 @@ let sponsors = [
 		"id_partnership": 1,
 		"id_type_sponsor": 1,
 		"id_event": 1,
-		"active": true
+		"active": true,
 	}
 ]
 
@@ -879,6 +881,8 @@ let type_booths = [
 		"size_width": 5,
 		"size_height": 5,
 		"active": true,
+		"currency_symbol":"$",
+		"id_community":1
 	}
 ]
 

@@ -169,7 +169,7 @@ controller.getSponsorByEvent = async function (req, res) {
         });
 
     } catch (error) {
-		console.log(error);
+		
         this.response({
             res,
             success: false,

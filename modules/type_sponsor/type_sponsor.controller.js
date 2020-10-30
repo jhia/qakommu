@@ -39,14 +39,34 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, contribution_value, currency_symbol, active } = req.body;
+    const { name, description, contribution_value, currency_symbol, id_community, active } = req.body;
+
+    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, check the data sent'
+        });
+    }
+
+    if (contribution_value < 0) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the contribution cannot be a negative value'
+        });
+    }
+
     try {
         let newdate = await this.insert({
             name,
             description,
             contribution_value,
             currency_symbol,
-            active
+            active,
+            id_community
         });
         if (newdate) {
             return this.response({
@@ -67,7 +87,25 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, contribution_value, currency_symbol, active, return_data } = req.body;
+    const { name, description, contribution_value, currency_symbol, active, id_community, return_data } = req.body;
+
+    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, check the data sent'
+        });
+    }
+
+    if (contribution_value < 0) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the contribution cannot be a negative value'
+        });
+    }
     try {
         let result = await this.update(
             {
@@ -77,7 +115,8 @@ controller.putFunc = async function (req, res) {
                     description,
                     contribution_value,
                     currency_symbol,
-                    active
+                    active,
+                    id_community
                 },
                 return_data
             });

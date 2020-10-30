@@ -42,7 +42,27 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, cost, size_width, size_height, active } = req.body;
+    const { name, description, cost, size_width, size_height, active, currency_symbol, id_community } = req.body;
+
+    if (name == null || cost == null || size_width == null || size_height == null || currency_symbol == null || active == null || id_community == null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, check the data sent'
+        });
+    }
+
+    if (size_width <= 0 || size_height <= 0) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the assigned sizes are not valid'
+        });
+    }
+
+
     try {
         let newdate = await this.insert({
             name,
@@ -50,7 +70,9 @@ controller.postFunc = async function (req, res) {
             cost,
             size_width,
             size_height,
-            active
+            active,
+            currency_symbol,
+            id_community
         });
         if (newdate) {
             return this.response({
@@ -71,7 +93,26 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, cost, size_width, size_height, active, return_data } = req.body;
+    const { name, description, cost, size_width, size_height, active, currency_symbol, id_community, return_data } = req.body;
+
+    if (name == null || cost == null || size_width == null || size_height == null || currency_symbol == null || active == null || id_community == null) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, check the data sent'
+        });
+    }
+
+    if (size_width <= 0 || size_height <= 0) {
+        return this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong, the assigned sizes are not valid'
+        });
+    }
+
 
     try {
         let result = await this.update(
@@ -83,7 +124,9 @@ controller.putFunc = async function (req, res) {
                     cost,
                     size_width,
                     size_height,
-                    active
+                    active,
+                    currency_symbol,
+                    id_community
                 },
                 return_data
             });
