@@ -172,4 +172,37 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+//--------------------sepcial functions--------------------
+controller.getTypeSponsorByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.type_sponsor.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'description', 'contribution_value', 'currency_symbol', 'active', 'id_community'],
+            order,
+            where: {
+                id_community,
+                active: true
+            }
+        });
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
+
 module.exports = controller;

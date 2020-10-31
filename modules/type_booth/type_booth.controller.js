@@ -182,4 +182,37 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+//--------------------sepcial functions--------------------
+
+controller.getTypeBoothByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.type_booth.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'description', 'cost', 'size_width', 'size_height', 'active', 'currency_symbol', 'id_community'],
+            order,
+            where: {
+                id_community,
+                active: true
+            }
+        });
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+
+}
+
 module.exports = controller;

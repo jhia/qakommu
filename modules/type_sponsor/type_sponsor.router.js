@@ -18,6 +18,11 @@ router.get('/:id',function(req, res){
   type_sponsorController.getFunc(req,res);
 });
 
+router.get('/community/:id_community',function(req, res){
+  //HTTP get route
+  type_sponsorController.getTypeSponsorByCommunity(req,res);
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route
   type_sponsorController.postFunc(req,res);

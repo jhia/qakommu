@@ -18,6 +18,12 @@ router.get('/:id',function(req, res){
   type_boothController.getFunc(req,res);
 });
 
+router.get('/community/:id_community',function(req, res){
+  //HTTP get route
+  type_boothController.getTypeBoothByCommunity(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   type_boothController.postFunc(req,res);
