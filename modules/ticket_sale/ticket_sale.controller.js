@@ -327,7 +327,7 @@ controller.putFunc = async function (req, res) {
             });
         }
     } catch (error) {
-        console.log(error);
+        
         this.response({
             res,
             success: false,
@@ -364,5 +364,75 @@ controller.deleteFunc = async function (req, res) {
         });
     }
 }
+
+
+
+controller.getTicketSaleByTicket = async function (req, res) {
+    const { id_ticket } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.ticket_sale.findAll({
+            limit,
+            offset,
+            attributes: ['id','count','unit_amount','total_amount','total_amount_paid','paying_name','paying_address','dni_payer','price_type'],
+            order,
+            where: {
+                id_ticket
+            },
+            include: [
+                {
+                    attributes: ['id','name','description'],
+                    model: this.db.ticket,
+                    as: 'ticket',
+                },
+                {
+                    attributes: ['name', 'last_name', 'username', 'profile_photo', 'address', 'email', 'phone'],
+                    model: this.db.user,
+                    as: 'user'
+                },
+                {
+                    attributes: ['uuid', 'deactivated'],
+                    model: this.db.ticket_sale_detail,
+                    as: 'ticket_sale_detail',
+                    include: [
+                        {
+                            attributes: ['id','name','dni','email','is_present'],
+                            model: this.db.attendee,
+                            as: 'ticket_sale_detail_attendee',
+                        }
+                    ]
+                },
+                {
+                    attributes: ['id', 'name','description','percentage','is_reserved'],
+                    model: this.db.coupon,
+                    as: 'coupon',/*
+                    include: [
+                        {
+                            attributes: ['name_ticket'],
+                            model: this.db.ticket_sale,
+                            as: 'ticket_sale',
+                        }
+                    ]*/
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        console.log(error)
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
 
 module.exports = controller;

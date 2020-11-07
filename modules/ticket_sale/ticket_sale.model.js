@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         id_user: {
-            //this field can go null
+            allowNull: true,
             type: DataTypes.INTEGER
         },
         count: {
@@ -68,6 +68,16 @@ module.exports = (sequelize, DataTypes) => {
         ticket_sale.belongsTo(models.coupon, {
             foreignKey: 'id_coupon',
             as: 'coupon'
+        });
+
+        ticket_sale.belongsTo(models.ticket, {
+            foreignKey: 'id_ticket',
+            as: 'ticket'
+        });
+
+        ticket_sale.belongsTo(models.user, {
+            foreignKey: 'id_user',
+            as: 'user'
         });
 
     }

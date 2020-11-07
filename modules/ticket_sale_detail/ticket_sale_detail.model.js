@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'ticket_sale'
         });
 
-        ticket_sale_detail.hasMany(models.attendee, {
+        ticket_sale_detail.hasOne(models.attendee, {
             foreignKey: 'id_ticket_sale_detail',
             as: 'ticket_sale_detail_attendee'
         });

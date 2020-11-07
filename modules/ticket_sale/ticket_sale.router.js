@@ -18,6 +18,14 @@ router.get('/:id',function(req, res){
   ticket_saleController.getFunc(req,res);
 });
 
+
+router.get('/ticket/:id_ticket',function(req, res){
+  //HTTP get route
+  ticket_saleController.getTicketSaleByTicket(req,res);
+});
+
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
  // if(req.count < 1 || req.count == null ){
