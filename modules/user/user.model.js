@@ -106,6 +106,16 @@ module.exports = (sequelize, DataTypes) => {
 			as: 'user_data'
 		});
 
+
+		user.belongsToMany(models.forum, {
+		        as: "forums",
+		        through: "my_forum",
+	 	        foreignKey: "id_user",
+ 		});
+
+
+
+
 	};
 
 	return user;
