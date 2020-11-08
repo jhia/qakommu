@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         id_answer: {
-            allowNull: false,
+            allowNull: true,
             type: DataTypes.INTEGER
         },
         text: {

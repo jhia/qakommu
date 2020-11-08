@@ -41,7 +41,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_question, text, description  } = req.body;
+    const { id_question, text, free  } = req.body;
     try {
         if (id_question <= 0 || text.length <= 0) {
             return this.response({
@@ -52,7 +52,7 @@ controller.postFunc = async function (req, res) {
             });
         }
         let newdate = await this.insert({
-            id_question, text, description
+            id_question, text, free
         });
         if (newdate) {
             return this.response({
@@ -73,7 +73,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_question, text, description, return_data } = req.body;
+    const { id_question, text, free, return_data } = req.body;
     try {
         if (id_question <= 0 || text.length <= 0) {
             return this.response({
@@ -87,7 +87,7 @@ controller.putFunc = async function (req, res) {
             {
                 id,
                 data: {
-                    id_question, text, description
+                    id_question, text, free
                 },
                 return_data
             });

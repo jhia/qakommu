@@ -13,11 +13,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         text: {
-            allowNull: false,
+            allowNull: true,
             type: DataTypes.TEXT
         },
-        description: {
-            type:DataTypes.TEXT
+        free: {
+            allowNull: false,
+            type:DataTypes.BOOLEAN,
+            defaultValue: false
         } 
 
     });

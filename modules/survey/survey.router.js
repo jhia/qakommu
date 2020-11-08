@@ -18,6 +18,19 @@ router.get('/:id',function(req, res){
   surveyController.getFunc(req,res);
 });
 
+router.get('/:id_survey/data/all',function(req, res){
+  //HTTP get route
+  surveyController.getDataBySurvey(req,res);
+});
+
+
+router.get('/:id_survey/data/:id_user',function(req, res){
+  //HTTP get route
+  surveyController.getDataSurveyByUser(req,res);
+});
+
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   surveyController.postFunc(req,res);

@@ -938,11 +938,11 @@ let session_attendees = [
 //survey
 let surveys = [
 	{
-		"name": "satisfaction",
-		"description": "Collect customer feedback and increase customer satisfaction",
+		"name": "who you are",
+		"description": "with this survey we want to know you better",
 		"active": true,
 		"id_event": 1,
-		"id_community": null
+		"id_community": 1
 	}
 ]
 
@@ -952,15 +952,41 @@ let questions = [
 		"id_survey": 1,
 		"type_question": "t",
 		"rate": null
+	},
+	{
+		"text": "what is your gender",
+		"id_survey": 1,
+		"type_question": "m",
+		"rate": null
 	}
 ]
 
 let answers = [
 	{
 		"id_question": 1,
-		"text": "john smith",
-		"description": "test is a test"
-	}
+		"text": null,
+		"free": true
+	},
+	{
+		"id_question": 2,
+		"text": "MALE",
+		"free": false
+	},
+	{
+		"id_question": 2,
+		"text": "FEMALE",
+		"free": false
+	},
+	{
+		"id_question": 2,
+		"text": "LGBT",
+		"free": false
+	},
+	{
+		"id_question": 2,
+		"text": "I do not identify with any",
+		"free": false
+	},
 ]
 
 let datas = [
@@ -968,7 +994,37 @@ let datas = [
 		"id_user": 1,
 		"id_question": 1,
 		"id_answer": 1,
-		"text": "data test"
+		"text": "john"
+	},
+	{
+		"id_user": 1,
+		"id_question": 2,
+		"id_answer": 2,
+		"text": null
+	},
+	{
+		"id_user": 2,
+		"id_question": 1,
+		"id_answer": 1,
+		"text": "Shelly"
+	},
+	{
+		"id_user": 2,
+		"id_question": 2,
+		"id_answer": 3,
+		"text": null
+	},
+	{
+		"id_user": 3,
+		"id_question": 1,
+		"id_answer": 1,
+		"text": "Patricia"
+	},
+	{
+		"id_user": 3,
+		"id_question": 2,
+		"id_answer": 3,
+		"text": null
 	}
 ]
 

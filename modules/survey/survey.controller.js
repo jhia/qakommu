@@ -123,6 +123,7 @@ controller.putFunc = async function (req, res) {
     }
 }
 
+
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
@@ -151,4 +152,195 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+
+controller.getDataBySurvey = async function (req, res) {
+    const { id_survey } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.survey.findAll({
+            limit,
+            offset,
+            attributes: ['name'],
+            order,
+            where: {
+                id: id_survey
+            },
+            include: [
+                {
+                    
+                    attributes: ['id', 'text', 'type_question', 'rate'],
+                    model: this.db.question,
+                    as: 'survey_question',
+                    include: [
+                        {
+                            attributes: ['id', 'text', 'free'],
+                            model: this.db.answer,
+                            as: 'question_answer',
+                            include: [
+                                {
+                                    attributes: ['text'],
+                                    model: this.db.data,
+                                    as: 'answer_data',
+                                    include: [
+                                        {
+                                            attributes: ['name', 'last_name', 'username', 'profile_photo', 'email'],
+                                            model: this.db.user,
+                                            as: 'user'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+
+                    ]
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        console.log(error)
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
+
+
+controller.getDataSurveyByUser = async function (req, res) {
+    const { id_survey, id_user } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.survey.findAll({
+            limit,
+            offset,
+            attributes: ['name'],
+            order,
+            where: {
+                id: id_survey
+            },
+            include: [
+                {
+                    
+                    attributes: ['id', 'text', 'type_question', 'rate'],
+                    model: this.db.question,
+                    as: 'survey_question',
+                    include: [
+                        {
+                            attributes: ['id', 'text', 'free'],
+                            model: this.db.answer,
+                            as: 'question_answer',
+                            include: [
+                                {
+                                    attributes: ['text'],
+                                    model: this.db.data,
+                                    as: 'answer_data',
+                                    where:{
+                                        id_user
+                                    },
+                                    /*include: [
+                                        {
+                                            attributes: [],
+                                            model: this.db.user,
+                                            as: 'user',
+                                            where:{
+                                                id: id_user
+                                            }
+                                        }
+                                    ]*/
+                                }
+                            ]
+                        }
+
+                    ]
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        console.log(error)
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
+
+/*
+controller.getDataSurveyByUser = async function (req, res) {
+    const { id_user, id_survey } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.data.findAll({
+            limit,
+            offset,
+            attributes: ['text'],
+            order,
+            where: {
+                id_user
+            },
+            include: [
+                {
+                    attributes: ['id','text','type_question','rate'],
+                    model: this.db.question,
+                    as: 'question',
+                    include: [
+                        {
+                            attributes: [],
+                            model: this.db.survey,
+                            as: 'survey',
+                            where:{
+                                id: id_survey
+                            }
+                        }
+                    ]
+                },
+                {
+                    attributes: ['id_question', 'text', 'free'],
+                    model: this.db.answer,
+                    as: 'answer'
+                },
+                {
+                    attributes: ['name', 'last_name', 'username', 'profile_photo', 'email'],
+                    model: this.db.user,
+                    as: 'user'
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+        console.log(error)
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+*/
 module.exports = controller;
