@@ -13,7 +13,7 @@ router.get('/:id?',function(req, res){
   activityController.getFunc(req,res);
 });
 
-router.get('/:id_schedule/schedule/:id?',function(req, res){
+router.get('/:id?/schedule/:id_schedule',function(req, res){
   //HTTP get route
   activityController.getScheduleActivity(req,res);
 });
