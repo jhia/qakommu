@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
 	id_user: DataTypes.INTEGER,
 	name: DataTypes.TEXT,
 	description: DataTypes.TEXT,
-	public_topic: DataTypes.BOOLEAN
+	public_forum: DataTypes.BOOLEAN
 
     });
 
