@@ -5,9 +5,6 @@ const Base = require('../../helpers/base.controller');
 
 const controller = new Base('forum');
 
-
-
-
 controller.getFunc = async function (req, res) {
 
     const { id, time } = req.params;
@@ -22,10 +19,7 @@ controller.getFunc = async function (req, res) {
 	});
 	return this.response({
 	    res,
-	    payload: {
-
-		data
-	    }
+	    payload: { data }
 	});
     } catch (error) {
 	return this.response({
@@ -35,12 +29,8 @@ controller.getFunc = async function (req, res) {
 	    message: error.message,
 	});
     }
+
 }
-
-
-
-
-
 
 
 controller.postFunc = async function (req, res) {
@@ -48,13 +38,11 @@ controller.postFunc = async function (req, res) {
     const { id_community, id_user, name, description, public_topic } = req.body;
     try {
 	let newdata = await this.insert({
-
 	    id_community, 
 	    id_user, 
 	    name, 
 	    description, 
 	    public_topic
-
 	});
 	if (newdata) {
 	    return this.response({
@@ -64,7 +52,6 @@ controller.postFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-
 	this.response({
 	    res,
 	    success: false,
@@ -72,28 +59,25 @@ controller.postFunc = async function (req, res) {
 	    message: error.message,
 	});
     }
+
 }
 
 
 
 
 controller.putFunc = async function (req, res) {
+
     const { id } = req.params;
     const { id_community, id_user, name, description, public_topic, return_data } = req.body;
-
     await this.update(
 	{
 	    id,
 	    data: {
-
-
 		id_community, 
 		id_user, 
 		name, 
 		description, 
 		public_topic
-
-
 	    },
 	    return_data
 	}            
@@ -112,64 +96,14 @@ controller.putFunc = async function (req, res) {
 		message: err.message
 	    })
 	});
+
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 controller.deleteFunc = async function (req, res) {
+
     const { id } = req.params;
     try {
-
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
@@ -195,36 +129,5 @@ controller.deleteFunc = async function (req, res) {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = controller;
