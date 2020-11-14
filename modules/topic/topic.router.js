@@ -1,42 +1,46 @@
 'use strict'
 
 const router = require('express').Router();
-const activityController = require('./activity.controller');
+const topicController = require('./topic.controller');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
   next();
 });
 
+
+
+router.get('/:id?/forum/:id_forum',function(req, res){
+  //HTTP get route
+  topicController.getForumTopic(req,res);
+});
+
+
+
+
+
+
+
+
+
 router.get('/:id?',function(req, res){
   //HTTP get route
-  activityController.getFunc(req,res);
+  topicController.getFunc(req,res);
 });
-
-router.get('/:id?/schedule/:id_schedule',function(req, res){
-  //HTTP get route
-  activityController.getScheduleActivity(req,res);
-});
-
-
-
-
-
-
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  activityController.postFunc(req,res);
+  topicController.postFunc(req,res);
 });
 
 router.put('/:id',(req, res) => {
   //HTTP put route
-  activityController.putFunc(req,res);
+  topicController.putFunc(req,res);
 });
 
 router.delete('/:id',(req, res) => {
   //HTTP delete route
-  activityController.deleteFunc(req,res);
+  topicController.deleteFunc(req,res);
 });
 
 module.exports = router;

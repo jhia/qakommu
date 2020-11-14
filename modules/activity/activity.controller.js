@@ -8,7 +8,7 @@ const moment = require('moment');
 
 controller.getScheduleActivity = async function (req, res) {
 
-    const { id_schedule,id } = req.params;
+    const { id,id_schedule } = req.params;
     const { limit, offset, order, attributes } = req.body;
     const { activity } = this.db;
 
