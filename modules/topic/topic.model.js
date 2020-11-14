@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
 	id_user: DataTypes.INTEGER,
 	name: DataTypes.TEXT,
 	description: DataTypes.TEXT,
-	public: DataTypes.BOOLEAN
 
     });
 

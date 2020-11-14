@@ -8,7 +8,22 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+
+
+router.get('/:id?/forum/:id_forum',function(req, res){
+  //HTTP get route
+  topicController.getForumTopic(req,res);
+});
+
+
+
+
+
+
+
+
+
+router.get('/:id?',function(req, res){
   //HTTP get route
   topicController.getFunc(req,res);
 });
@@ -18,12 +33,12 @@ router.post('/',(req, res) => {
   topicController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   topicController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   topicController.deleteFunc(req,res);
 });
