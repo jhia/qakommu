@@ -1,15 +1,14 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-    const comment_topic = sequelize.define('comment_topic', {
 
+    const comment_topic = sequelize.define('comment_topic', {
 	id_topic: DataTypes.INTEGER,
 	id_user: DataTypes.INTEGER,
 	name: DataTypes.TEXT,
 	description: DataTypes.TEXT,
 	multimedia: DataTypes.TEXT,
 	reference: DataTypes.INTEGER,
-
     });
 
     comment_topic.associate = function(models){

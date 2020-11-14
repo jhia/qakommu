@@ -13,16 +13,10 @@ router.get('/:id?/topic/:id_topic',function(req, res){
   comment_topicController.getCommentTopic(req,res);
 });
 
-
 router.get('/:id?',function(req, res){
   //HTTP get route
   comment_topicController.getFunc(req,res);
 });
-
-
-
-
-
 
 router.post('/',(req, res) => {
   ///HTTP post route

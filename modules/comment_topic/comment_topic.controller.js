@@ -111,15 +111,10 @@ controller.postFunc = async function (req, res) {
 }
 
 
-
-
 controller.putFunc = async function (req, res) {
 
     const { id } = req.params;
-
-
     const {  id_topic, id_user, name, description, multimedia, reference, return_data } = req.body;
-
 
     await this.update(
 	{
