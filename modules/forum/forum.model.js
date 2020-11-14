@@ -7,12 +7,10 @@ module.exports = (sequelize, DataTypes) => {
 	id_user: DataTypes.INTEGER,
 	name: DataTypes.TEXT,
 	description: DataTypes.TEXT,
-	public_forum: DataTypes.BOOLEAN
 
     });
 
     forum.associate = function(models){
-	//To create model associations
 
 	forum.belongsTo(models.user,{
 	    foreignKey: 'id_user',

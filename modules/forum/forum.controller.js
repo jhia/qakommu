@@ -35,14 +35,13 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_community, id_user, name, description, public_forum } = req.body;
+    const { id_community, id_user, name, description } = req.body;
     try {
 	let newdata = await this.insert({
 	    id_community, 
 	    id_user, 
 	    name, 
 	    description, 
-	    public_forum
 	});
 	if (newdata) {
 	    return this.response({
@@ -63,12 +62,10 @@ controller.postFunc = async function (req, res) {
 }
 
 
-
-
 controller.putFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { id_community, id_user, name, description, public_forum, return_data } = req.body;
+    const { id_community, id_user, name, description, return_data } = req.body;
     await this.update(
 	{
 	    id,
@@ -77,7 +74,6 @@ controller.putFunc = async function (req, res) {
 		id_user, 
 		name, 
 		description, 
-		public_forum
 	    },
 	    return_data
 	}            
