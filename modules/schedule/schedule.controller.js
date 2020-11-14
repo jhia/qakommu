@@ -72,10 +72,12 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { time_zone } = req.body;
+    const { id_user, id_community, time_zone } = req.body;
     try {
 	let newdata = await this.insert({
-	    time_zone 
+	    id_user, 
+	    id_community,
+	    time_zone
 	});
 	if (newdata) {
 	    return this.response({
@@ -98,25 +100,17 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { time_zome } = req.body;
-
-    const find_repository = await this.db.repository.findOne({
-	where: {id},
-	attributes: ["location"]
-    });
+    const { id_user, id_community, time_zone } = req.body;
 
     try {
-	if ( location ) fs.renameSync(dir+find_repository.location, dir+location);
-
 
 	let result = await this.update(
 	    {
 		id,
 		data: {
-		    name,
-		    location,
+		    id_user, 
 		    id_community,
-		    active
+		    time_zone
 		},
 		return_data
 	    });
@@ -149,11 +143,7 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
     try {
-	const find_repository = await this.db.repository.findOne({
-	    where: {id},
-	    attributes: ['location'],
-	});
-	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
+	
 	let deleterows = await this.delete({ id });
 	if (deleterows > 0) {
 	    return this.response({
@@ -170,8 +160,6 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-	console.log('--------------',error.original.code)
-	if (error.original.code == 23503) error.message = "this folder is not empty"
 	this.response({
 	    res,
 	    success: false,
