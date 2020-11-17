@@ -866,6 +866,7 @@ let type_sponsors = [
 let sponsors = [
 	{
 		"id_partnership": 1,
+		"description":"text test",
 		"id_type_sponsor": 1,
 		"id_event": 1,
 		"active": true,
@@ -889,6 +890,7 @@ let type_booths = [
 let exhibitors = [
 	{
 		"id_partnership": 1,
+		"description":"text test",
 		"id_type_booth": 1,
 		"id_event": 1,
 		"active": true

@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			type: DataTypes.INTEGER
         },
+        description:{
+            allowNull: true,
+            type: DataTypes.TEXT
+        },
         id_partnership:{
             allowNull: false,
             type: DataTypes.INTEGER

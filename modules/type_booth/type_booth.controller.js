@@ -194,8 +194,7 @@ controller.getTypeBoothByCommunity = async function (req, res) {
             attributes: ['id', 'name', 'description', 'cost', 'size_width', 'size_height', 'active', 'currency_symbol', 'id_community'],
             order,
             where: {
-                id_community,
-                active: true
+                id_community
             }
         });
         this.response({
