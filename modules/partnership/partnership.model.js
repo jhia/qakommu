@@ -22,15 +22,19 @@ module.exports = (sequelize, DataTypes) => {
         logo: {
             type: DataTypes.STRING
         },
-        host:{
+        host: {
             type: DataTypes.TEXT,
         },
-        web:{
+        web: {
             type: DataTypes.TEXT
         },
         active: {
             allowNull: false,
             type: DataTypes.BOOLEAN
+        },
+        id_community: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
 
     });
@@ -38,10 +42,16 @@ module.exports = (sequelize, DataTypes) => {
     partnership.associate = function (models) {
         //To create model associations
 
+        //partnership to community
+        partnership.belongsTo(models.community, {
+            foreignKey: 'id_community',
+            as: 'community'
+        });
+
         //partnership to partnership_position
         partnership.hasMany(models.partnership_position, {
             foreignKey: 'id_partnership',
-            as: 'Partnership_position'
+            as: 'partnership_position'
         });
 
         //partnership to sponsor

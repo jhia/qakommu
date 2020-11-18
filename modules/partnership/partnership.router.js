@@ -19,6 +19,13 @@ router.get('/:id',function(req, res){
 });
 
 
+router.get('/community/:id_community',function(req, res){
+  //HTTP get route
+  partnershipController.getPartnershiptByCommunity(req,res);
+});
+
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   partnershipController.postFunc(req,res);

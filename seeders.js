@@ -835,7 +835,8 @@ let partnerships = [
 		"logo": "",
 		"host": "35.122.343.2:871",
 		"web": "google.com",
-		"active": true
+		"active": true,
+		"id_community": 1
 	}
 ]
 
