@@ -43,14 +43,6 @@ controller.postFunc = async function (req, res) {
 
     const { name, description, active, id_event, id_community } = req.body;
     try {
-        if (id_event > 0 && id_community > 0) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, misuse of identifiers',
-            });
-        }
         let newdate = await this.insert({
             name,
             description,

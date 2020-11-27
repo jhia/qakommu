@@ -12,6 +12,7 @@ const {
 	like,
 	channel,
 	//generics  
+	webside,
 	module_name,
 	state,
 	track,
@@ -407,6 +408,18 @@ let channels = [
 
 
 //seeders carlos
+let websides = [
+	{
+		"title": 'oracle university', 
+		"head": 'asd', 
+		"body":'asd', 
+		"script":'asd', 
+		"footer":'asd', 
+		"main_page":true, 
+		"url":'asd'
+	}
+]
+
 
 let module_names = [
 	//1
@@ -835,7 +848,8 @@ let partnerships = [
 		"logo": "",
 		"host": "35.122.343.2:871",
 		"web": "google.com",
-		"active": true
+		"active": true,
+		"id_community": 1
 	}
 ]
 
@@ -866,6 +880,7 @@ let type_sponsors = [
 let sponsors = [
 	{
 		"id_partnership": 1,
+		"description":"text test",
 		"id_type_sponsor": 1,
 		"id_event": 1,
 		"active": true,
@@ -889,6 +904,7 @@ let type_booths = [
 let exhibitors = [
 	{
 		"id_partnership": 1,
+		"description":"text test",
 		"id_type_booth": 1,
 		"id_event": 1,
 		"active": true
@@ -1039,6 +1055,8 @@ let loadtables = async () => {
 	await post.bulkCreate(posts, { returning: true });
 	await comment.bulkCreate(comments, { returning: true });
 	await like.bulkCreate(likes, { returning: true });
+
+	await webside.bulkCreate(websides, {returning: true});
 
 	await module_name.bulkCreate(module_names, { returning: true });
 	await state.bulkCreate(states, { returning: true });

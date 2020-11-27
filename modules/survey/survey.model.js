@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
         id_community: {
-            allowNull: true,
+            allowNull: false,
             type: DataTypes.INTEGER
         }
 

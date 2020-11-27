@@ -183,8 +183,7 @@ controller.getTypeSponsorByCommunity = async function (req, res) {
             attributes: ['id', 'name', 'description', 'contribution_value', 'currency_symbol', 'active', 'id_community'],
             order,
             where: {
-                id_community,
-                active: true
+                id_community
             }
         });
         this.response({

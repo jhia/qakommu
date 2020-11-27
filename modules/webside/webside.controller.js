@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
-const controller = new Base('sponsor');
+const controller = new Base('webside');
 
 /*
 *Extend or overwrite the base functions
@@ -12,8 +12,8 @@ const controller = new Base('sponsor');
 *this.model -> Current module model
 */
 
-
 controller.getFunc = async function (req, res) {
+
 	const { id } = req.params;
 	const { limit, offset, order, attributes } = req.body;
 	try {
@@ -36,14 +36,14 @@ controller.getFunc = async function (req, res) {
 			message: 'something went wrong',
 		});
 	}
+
 }
 
 controller.postFunc = async function (req, res) {
-
-	const { id_partnership, description, id_type_sponsor, id_event, active } = req.body;
+	const { title, head, body, script, footer, main_page, url } = req.body;
 	try {
 		let newdate = await this.insert({
-			id_partnership, description, id_type_sponsor, id_event, active
+			title, head, body, script, footer, main_page, url
 		});
 		if (newdate) {
 			return this.response({
@@ -62,17 +62,15 @@ controller.postFunc = async function (req, res) {
 	}
 }
 
-
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { id_partnership, description, id_type_sponsor, id_event, active, return_data } = req.body;
-	
+	const { title, head, body, script, footer, main_page, url, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
 				id,
 				data: {
-					id_partnership, description, id_type_sponsor, id_event, active
+					title, head, body, script, footer, main_page, url
 				},
 				return_data
 			});
@@ -99,7 +97,6 @@ controller.putFunc = async function (req, res) {
 		});
 	}
 }
-
 
 controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
@@ -129,56 +126,8 @@ controller.deleteFunc = async function (req, res) {
 	}
 }
 
-//-------------special fuction--------------------
-controller.getSponsorByEvent = async function (req, res) {
-    const { id_event } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.sponsor.findAll({
-            limit,
-            offset,
-            attributes: ['id'],
-            order,
-            where: {
-				id_event,
-				active: true
-            },
-            include: [
-                {
-                    attributes: ['name', 'description','contribution_value','currency_symbol'],
-                    model: this.db.type_sponsor,
-                    as: 'type_sponsor',
-                    where:{
-                        active: true
-                    }
-				},
-				{
-					attributes: ['name', 'description', 'registry_number', 'logo','host','web'],
-                    model: this.db.partnership,
-                    as: 'partnership',
-                    where:{
-                        active: true
-                    }
-				}
-            ]
-        });
+/* ---------- special functions ---------- */
 
-        this.response({
-            res,
-            payload: [data]
-        });
-
-    } catch (error) {
-		
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-
-    }
-}
 
 
 module.exports = controller;

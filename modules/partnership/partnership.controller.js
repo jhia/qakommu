@@ -49,7 +49,7 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, registry_number, web, active } = req.body;
+    const { name, description, registry_number, web, active, id_community } = req.body;
 
     let logo = null;
     try {
@@ -65,7 +65,8 @@ controller.postFunc = async function (req, res) {
             logo,
             host,
             web,
-            active
+            active,
+            id_community
         });
         if (newdate) {
             if(logo) upload_images(avatar,archive[0],archive[1].split(".")[0]);
@@ -87,7 +88,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, registry_number, active, web, return_data } = req.body;
+    const { name, description, registry_number, active, web, id_community, return_data } = req.body;
     let find_image = await this.db.partnership.findOne({
         where: { id }
     });
@@ -108,7 +109,8 @@ controller.putFunc = async function (req, res) {
                     registry_number,
                     logo,
                     web,
-                    active
+                    active,
+                    id_community
                 },
                 return_data
             });
@@ -125,7 +127,8 @@ controller.putFunc = async function (req, res) {
                     registry_number,
                     logo,
                     web,
-                    active
+                    active,
+                    id_community
                 } : []
             });
         } else {
@@ -181,5 +184,46 @@ controller.deleteFunc = async function (req, res) {
         });
     }
 }
+
+
+//-------------special fuction--------------------
+controller.getPartnershiptByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.partnership.findAll({
+            limit,
+            offset,
+            attributes: ['id','name','description','registry_number','logo','host','web','active'],
+            order,
+            where: {
+				id_community
+            },
+            include: [
+                {
+                    attributes: ['id','job_title','description','name_contact','email','phone','active'],
+                    model: this.db.partnership_position,
+                    as: 'partnership_position',
+				}
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+    } catch (error) {
+		console.log(error);
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+
+    }
+}
+
 
 module.exports = controller;
