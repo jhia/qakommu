@@ -873,7 +873,8 @@ let type_sponsors = [
 		"contribution_value": 0.00005685,
 		"active": true,
 		"currency_symbol":"$",
-		"id_community":1
+		"id_community":1,
+		"display_number":2
 	}
 ]
 

@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         id_community: {
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+        display_number:{
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     });
 

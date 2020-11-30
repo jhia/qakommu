@@ -39,9 +39,9 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-    const { name, description, contribution_value, currency_symbol, id_community, active } = req.body;
+    const { name, description, contribution_value, currency_symbol, id_community, display_number, active } = req.body;
 
-    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null) {
+    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null || display_number == null) {
         return this.response({
             res,
             success: false,
@@ -66,7 +66,8 @@ controller.postFunc = async function (req, res) {
             contribution_value,
             currency_symbol,
             active,
-            id_community
+            id_community,
+            display_number
         });
         if (newdate) {
             return this.response({
@@ -87,9 +88,9 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, contribution_value, currency_symbol, active, id_community, return_data } = req.body;
+    const { name, description, contribution_value, currency_symbol, active, id_community, display_number, return_data } = req.body;
 
-    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null) {
+    if (name == null || contribution_value == null || currency_symbol == null || active == null || id_community == null || display_number == null) {
         return this.response({
             res,
             success: false,
@@ -116,7 +117,8 @@ controller.putFunc = async function (req, res) {
                     contribution_value,
                     currency_symbol,
                     active,
-                    id_community
+                    id_community,
+                    display_number
                 },
                 return_data
             });
@@ -180,7 +182,7 @@ controller.getTypeSponsorByCommunity = async function (req, res) {
         const data = await this.db.type_sponsor.findAll({
             limit,
             offset,
-            attributes: ['id', 'name', 'description', 'contribution_value', 'currency_symbol', 'active', 'id_community'],
+            attributes: ['id', 'name', 'description', 'contribution_value', 'currency_symbol', 'active', 'id_community', 'display_number'],
             order,
             where: {
                 id_community
