@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.BOOLEAN,
             defaultValue: true
+        },
+        image: {
+            type: DataTypes.TEXT
+        },
+        host:{
+            type: DataTypes.TEXT
         }
     });
 

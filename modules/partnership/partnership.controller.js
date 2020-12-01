@@ -50,7 +50,6 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
     const { name, description, registry_number, web, active, id_community } = req.body;
-
     let logo = null;
     try {
         const host = req.headers.host
@@ -214,7 +213,6 @@ controller.getPartnershiptByCommunity = async function (req, res) {
         });
 
     } catch (error) {
-		console.log(error);
         this.response({
             res,
             success: false,

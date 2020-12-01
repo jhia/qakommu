@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('sponsor');
-
+const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
 /*
 *Extend or overwrite the base functions
 *All the controllers already have implicit the models by:
@@ -39,13 +39,25 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
-
 	const { id_partnership, description, id_type_sponsor, id_event, active } = req.body;
+	let image = null;
 	try {
+		const host = req.headers.host
+        const avatar = req.files ? req.files.image: null;
+        image = verify_and_upload_image_post(avatar,"sponsor");
+        const archive = image ? image.split("_") : null;
+
 		let newdate = await this.insert({
-			id_partnership, description, id_type_sponsor, id_event, active
+			id_partnership,
+			description, 
+			id_type_sponsor, 
+			id_event, 
+			active,
+			image,
+			host
 		});
 		if (newdate) {
+			if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
 			return this.response({
 				res,
 				statusCode: 201,
@@ -66,17 +78,34 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
 	const { id_partnership, description, id_type_sponsor, id_event, active, return_data } = req.body;
+	let find_image = await this.db.sponsor.findOne({
+        where: { id }
+    });
+    const fnd_image = find_image.image ? find_image.image : null;
+    const avatar = req.files ? req.files.image : undefined;
+    let image = avatar && verify_and_upload_image_put(avatar, "sponsor", fnd_image);
+    if(req.body.image == 'not-image') image = null;
+
+	const archive = image ? image.split("_") : null;
 	
 	try {
 		let result = await this.update(
 			{
 				id,
 				data: {
-					id_partnership, description, id_type_sponsor, id_event, active
+					id_partnership, 
+					description, 
+					id_type_sponsor, 
+					id_event, 
+					active,
+					image
 				},
 				return_data
 			});
 		if (result) {
+			if(fnd_image && image) delete_image(fnd_image);
+            if(req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
+            if(image) upload_images(avatar,archive[0],archive[1].split(".")[0]);
 			return this.response({
 				res,
 				statusCode: 200,
@@ -104,6 +133,11 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
 	const { id } = req.params;
 	try {
+		let find_image = await this.db.sponsor.findOne({
+            where: { id }
+        });
+        if (find_image.image) delete_image(find_image.image);
+
 		let deleterows = await this.delete({ id });
 		if (deleterows > 0) {
 			return this.response({
