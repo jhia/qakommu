@@ -5,10 +5,7 @@ const controller = new Base('schedule');
 const moment = require('moment');
 
 controller.getFunc = async function (req, res) {
-
-    /*
-     * Validar si el rango es el correcto
-     * */
+/*
     const start = moment('14/11/2018 19:59:00', 'DD/MM/YYYY HH:mm:ss');
     const end = moment('14/11/2018 20:00:00', 'DD/MM/YYYY HH:mm:ss');
 
@@ -31,7 +28,7 @@ controller.getFunc = async function (req, res) {
     console.log( moment.duration(lunch - breakfast).humanize() + ' para el almuerzo' )
 
     // ---------------------------------------------------------------------------
-
+*/
 
 
 
@@ -72,11 +69,12 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { id_user, id_community, time_zone } = req.body;
+    const { id_user, id_community, id_event, time_zone } = req.body;
     try {
 	let newdata = await this.insert({
 	    id_user, 
 	    id_community,
+	    id_event,
 	    time_zone
 	});
 	if (newdata) {
@@ -100,7 +98,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, id_community, time_zone } = req.body;
+    const { id_user, id_community, id_event, time_zone } = req.body;
 
     try {
 
@@ -110,6 +108,7 @@ controller.putFunc = async function (req, res) {
 		data: {
 		    id_user, 
 		    id_community,
+		    id_event,
 		    time_zone
 		},
 		return_data
