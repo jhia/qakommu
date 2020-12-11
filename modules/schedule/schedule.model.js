@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     const schedule = sequelize.define('schedule', {
 	id_user: DataTypes.INTEGER,
 	id_community: DataTypes.INTEGER,
+	id_event: DataTypes.INTEGER,
 	time_zone: {
 	    type: DataTypes.TEXT,
 	    allowNull: false,
