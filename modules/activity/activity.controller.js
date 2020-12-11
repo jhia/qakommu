@@ -54,7 +54,7 @@ controller.getScheduleActivity = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, id_schedule } = req.body;
+    const { title, description, start, end, color, email_notification, reminder, location, time_zone, repetition, id_schedule } = req.body;
 
     const st = moment(start, 'DD/MM/YYYY HH:mm:ss');
     const en = moment(end, 'DD/MM/YYYY HH:mm:ss');
@@ -99,7 +99,7 @@ controller.postFunc = async function (req, res) {
 	    end: end_date, 
 	    color, 
 	    email_notification, 
-	    pre_notification, 
+	    reminder, 
 	    location, 
 	    time_zone, 
 	    repetition,
@@ -128,7 +128,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { title, description, start, end, color, email_notification, pre_notification, location, time_zone, repetition, return_data } = req.body;
+    const { title, description, start, end, color, email_notification, reminder, location, time_zone, repetition, return_data } = req.body;
 
     const st = moment(start, 'DD/MM/YYYY HH:mm:ss');
     const en = moment(end, 'DD/MM/YYYY HH:mm:ss');
@@ -170,7 +170,7 @@ controller.putFunc = async function (req, res) {
 		    end: end_date, 
 		    color, 
 		    email_notification, 
-		    pre_notification, 
+		    reminder, 
 		    location, 
 		    time_zone, 
 		    repetition,
