@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+router.get('/:id_topic?',function(req, res){
   //HTTP get route
   like_topicController.getFunc(req,res);
 });
@@ -18,12 +18,12 @@ router.post('/',(req, res) => {
   like_topicController.postFunc(req,res);
 });
 
-router.put('/',(req, res) => {
+router.put('/:id',(req, res) => {
   //HTTP put route
   like_topicController.putFunc(req,res);
 });
 
-router.delete('/',(req, res) => {
+router.delete('/:id',(req, res) => {
   //HTTP delete route
   like_topicController.deleteFunc(req,res);
 });
