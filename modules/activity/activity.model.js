@@ -24,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
 	},
 	color: DataTypes.TEXT,
 	email_notification: DataTypes.BOOLEAN,
-	pre_notification: DataTypes.DATE,
+	reminder: DataTypes.DATE,
 	location: DataTypes.TEXT,
 	time_zone: DataTypes.TEXT,
-	repetition: DataTypes.INTEGER,
+	repetition: DataTypes.TEXT,
     });
 
     activity.associate = function(models){
