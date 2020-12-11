@@ -526,6 +526,81 @@ let tracks = [
 	}
 ]
 
+
+//  partnership model
+let partnerships = [
+	{
+		"name": "google company",
+		"description": "test descrioption facebook",
+		"registry_number": "c26174178",
+		"logo": "",
+		"host": "35.122.343.2:871",
+		"web": "google.com",
+		"active": true,
+		"id_community": 1
+	}
+]
+
+let partnership_positions = [
+	{
+		"job_title": "empleado",
+		"description": "something",
+		"name_contact": "carlos",
+		"email": "pnfi.carlos@gmail.com",
+		"phone": "04146825919",
+		"active": true,
+		"id_partnership": 1
+	}
+]
+
+// sponsor module
+let type_sponsors = [
+	{
+		"name": "general",
+		"description": "standard fee for sponsors",
+		"contribution_value": 0.00005685,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1,
+		"display_number":2
+	}
+]
+
+let sponsors = [
+	{
+		"id_partnership": 1,
+		"description":"text test",
+		"id_type_sponsor": 1,
+		"id_event": 1,
+		"active": true,
+	}
+]
+
+//exibitor
+let type_booths = [
+	{
+		"name": "booth standard",
+		"description": "generic size",
+		"cost": 887.12,
+		"size_width": 5,
+		"size_height": 5,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1
+	}
+]
+
+let exhibitors = [
+	{
+		"id_partnership": 1,
+		"description":"text test",
+		"id_type_booth": 1,
+		"id_event": 1,
+		"active": true
+	}
+]
+
+
 let events = [
 	{
 		"name": "CES 2020",
@@ -611,52 +686,6 @@ let events = [
 ]
 
 
-let coupons = [
-	{
-		"name": "early bird",
-		"description": "coupon available for morning purchases",
-		"percentage": 50,
-		"id_state": 1,
-		"limit": 5,
-		"original_limit": 5,
-		"unlimited": false,
-		"id_user_creator": 1,
-		"active": true,
-		"since": "2020-10-01",
-		"until": "2020-10-09",
-		"id_user": 1
-	},
-	{
-		"name": "early early bird",
-		"description": "coupon available for morning purchases",
-		"percentage": 70,
-		"id_state": 1,
-		"limit": 5,
-		"original_limit": 5,
-		"unlimited": false,
-		"id_user_creator": 1,
-		"active": true,
-		"since": "2020-10-01",
-		"until": "2020-10-25",
-		"id_user": 1
-	},
-	{
-		"name": "early early bird",
-		"description": "coupon available for morning purchases",
-		"percentage": 100,
-		"id_state": 1,
-		"limit": 2,
-		"original_limit": 2,
-		"unlimited": false,
-		"id_user_creator": 1,
-		"active": true,
-		"since": "2020-10-01",
-		"until": "2020-11-25",
-		"is_reserved": true,
-		"id_user": 1
-	}
-]
-
 
 let tickets = [
 	{
@@ -719,6 +748,58 @@ let tickets = [
 		"is_discount4": false
 	}
 ]
+
+
+let coupons = [
+	{
+		"name": "early bird",
+		"description": "coupon available for morning purchases",
+		"percentage": 50,
+		"id_state": 1,
+		"limit": 5,
+		"original_limit": 5,
+		"unlimited": false,
+		"id_user_creator": 1,
+		"active": true,
+		"since": "2020-10-01",
+		"until": "2021-10-09",
+		"id_user": 1,
+		"id_ticket": 1,
+		"id_sponsor":1,
+		"id_exhibitor":1,
+		"id_event":null
+	},
+	{
+		"name": "early early bird",
+		"description": "coupon available for morning purchases",
+		"percentage": 70,
+		"id_state": 1,
+		"limit": 5,
+		"original_limit": 5,
+		"unlimited": false,
+		"id_user_creator": 1,
+		"active": true,
+		"since": "2020-10-01",
+		"until": "2020-10-25",
+		"id_user": 1
+	},
+	{
+		"name": "early early bird",
+		"description": "coupon available for morning purchases",
+		"percentage": 100,
+		"id_state": 1,
+		"limit": 2,
+		"original_limit": 2,
+		"unlimited": false,
+		"id_user_creator": 1,
+		"active": true,
+		"since": "2020-10-01",
+		"until": "2020-11-25",
+		"is_reserved": true,
+		"id_user": 1
+	}
+]
+
 
 let ticket_sales = [
 	{
@@ -839,78 +920,6 @@ let repository_objects = [
 	}
 ]
 
-//  partnership model
-let partnerships = [
-	{
-		"name": "google company",
-		"description": "test descrioption facebook",
-		"registry_number": "c26174178",
-		"logo": "",
-		"host": "35.122.343.2:871",
-		"web": "google.com",
-		"active": true,
-		"id_community": 1
-	}
-]
-
-let partnership_positions = [
-	{
-		"job_title": "empleado",
-		"description": "something",
-		"name_contact": "carlos",
-		"email": "pnfi.carlos@gmail.com",
-		"phone": "04146825919",
-		"active": true,
-		"id_partnership": 1
-	}
-]
-
-// sponsor module
-let type_sponsors = [
-	{
-		"name": "general",
-		"description": "standard fee for sponsors",
-		"contribution_value": 0.00005685,
-		"active": true,
-		"currency_symbol":"$",
-		"id_community":1,
-		"display_number":2
-	}
-]
-
-let sponsors = [
-	{
-		"id_partnership": 1,
-		"description":"text test",
-		"id_type_sponsor": 1,
-		"id_event": 1,
-		"active": true,
-	}
-]
-
-//exibitor
-let type_booths = [
-	{
-		"name": "booth standard",
-		"description": "generic size",
-		"cost": 887.12,
-		"size_width": 5,
-		"size_height": 5,
-		"active": true,
-		"currency_symbol":"$",
-		"id_community":1
-	}
-]
-
-let exhibitors = [
-	{
-		"id_partnership": 1,
-		"description":"text test",
-		"id_type_booth": 1,
-		"id_event": 1,
-		"active": true
-	}
-]
 
 // session
 let rooms = [
@@ -1069,14 +1078,6 @@ let loadtables = async () => {
 	await repository_object.bulkCreate(repository_objects, { returning: true });
 
 	await event.bulkCreate(events, { returning: true });
-	await coupon.bulkCreate(coupons, { returning: true });
-	await ticket.bulkCreate(tickets, { returning: true });
-	await ticket_sale.bulkCreate(ticket_sales, { returning: true });
-	await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
-	await attendee.bulkCreate(attendees, { returning: true });
-	await room.bulkCreate(rooms, { returning: true });
-	await session.bulkCreate(sessions, { returning: true });
-	await speaker.bulkCreate(speakers, { returning: true });
 
 	await partnership.bulkCreate(partnerships, { returning: true });
 	await partnership_position.bulkCreate(partnership_positions, { returning: true });
@@ -1086,6 +1087,16 @@ let loadtables = async () => {
 
 	await type_booth.bulkCreate(type_booths, { returning: true });
 	await exhibitor.bulkCreate(exhibitors, { returning: true });
+
+	
+	await ticket.bulkCreate(tickets, { returning: true });
+	await coupon.bulkCreate(coupons, { returning: true });
+	await ticket_sale.bulkCreate(ticket_sales, { returning: true });
+	await ticket_sale_detail.bulkCreate(ticket_sale_details, { returning: true });
+	await attendee.bulkCreate(attendees, { returning: true });
+	await room.bulkCreate(rooms, { returning: true });
+	await session.bulkCreate(sessions, { returning: true });
+	await speaker.bulkCreate(speakers, { returning: true });
 
 	await track_session.bulkCreate(track_sessions, { returning: true });
 	await session_attendee.bulkCreate(session_attendees, { returning: true });

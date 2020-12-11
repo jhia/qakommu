@@ -52,7 +52,27 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
+    let code;
     try {
+
+        if(type==='w' && !online ){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, webinars cannot be in person'
+            });
+        }
+
+        if((type==='w' && no_cfp) || (type==='m' && no_cfp)){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, this type of event requires us to use call for papers'
+            });
+        }
+
         let image = null;
         const host = req.headers.host
         const avatar = req.files ? req.files.image : null;
@@ -65,6 +85,7 @@ controller.postFunc = async function (req, res) {
             type,
             online,
             no_cfp,
+            code,
             url_code,
             id_webside,
             is_private,
@@ -101,6 +122,25 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
     const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state, return_data } = req.body;
     try {
+
+        if(type==='w' && !online ){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, webinars cannot be in person'
+            });
+        }
+
+        if((type==='w' && no_cfp) || (type==='m' && no_cfp)){
+            return this.response({
+                res,
+                success: false,
+                statusCode: 500,
+                message: 'something went wrong, this type of event requires us to use call for papers'
+            });
+        }
+
         let find_image = await this.db.event.findOne({
             where: { id }
         });
@@ -225,6 +265,46 @@ controller.getEventsByCommunity = async function (req, res) {
 
 
     } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
+
+
+controller.getPublicEventsByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    const { limit, offset, order } = req.body;
+    try {
+        const data = await this.db.event.findAll({
+            limit,
+            offset,
+            attributes: ['id', 'name', 'description', 'type', 'online', 'no_cfp', 'url_code', 'id_webside', 'is_private', 'start', 'end', 'active', 'prom_rate', 'id_repository', 'image', 'host'],
+            order,
+            where: { id_community, is_private: false },
+            include: [
+                {
+                    attributes: ['name', 'blocker'],
+                    model: this.db.state,
+                    as: 'state',
+                    where: {
+                        active: true
+                    }
+                }
+            ]
+        });
+
+        this.response({
+            res,
+            payload: [data]
+        });
+
+
+    } catch (error) {
+        console.log(error);
         this.response({
             res,
             success: false,

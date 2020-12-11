@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
         url_code:{
             type: DataTypes.TEXT
         },
+        code:{
+            allowNull: false,
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+        },
         id_webside:{
             type: DataTypes.INTEGER
         },
