@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 	},
 	color: DataTypes.TEXT,
 	email_notification: DataTypes.BOOLEAN,
-	reminder: DataTypes.DATE,
+	reminder: DataTypes.TEXT,
 	location: DataTypes.TEXT,
 	time_zone: DataTypes.TEXT,
 	repetition: DataTypes.TEXT,
