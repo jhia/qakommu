@@ -23,6 +23,13 @@ router.get('/community/:id_community/all/',function(req, res){
   eventController.getEventsByCommunity(req,res);
 });
 
+
+router.get('/community/:id_community/public/',function(req, res){
+  //HTTP get route
+  eventController.getPublicEventsByCommunity(req,res);
+});
+
+
 router.get('/:id_event/speaker/all/',function(req, res){
   //HTTP get route
   eventController.getSpeakersByEvent(req,res);
