@@ -41,7 +41,7 @@ controller.postFunc = async function(req,res){
         return this.response({
             res,
             success: false,
-            statusCode: 500,
+            statusCode: 401,
             message: 'Incorrect login',
         });
     } else {
@@ -52,7 +52,7 @@ controller.postFunc = async function(req,res){
             return this.response({
                 res,
                 success: false,
-                statusCode: 500,
+                statusCode: 401,
                 message: 'Password error',
             });
         }
