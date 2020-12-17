@@ -42,7 +42,7 @@ controller.postFunc = async function(req,res){
             res,
             success: false,
             statusCode: 401,
-            message: 'Incorrect login',
+            message: 'Error email',
         });
     } else {
         const { password }  = req.body;
