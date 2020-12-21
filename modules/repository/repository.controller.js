@@ -88,7 +88,7 @@ controller.postFunc = async function (req, res) {
 	this.response({
 	    res,
 	    success: false,
-	    statusCode: 500,
+	    statusCode: 404,
 	    message: error.message,
 	});
     }
@@ -100,17 +100,16 @@ controller.putFunc = async function (req, res) {
     const { name, location, id_community, active, return_data } = req.body;
 
     const find_repository = await this.db.repository.findOne({
-	where: {id},
-	attributes: ["location"]
+	where: {id_community: id},
+	attributes: ["id","location"]
     });
 
     try {
-        if ( location ) fs.renameSync(dir+find_repository.location, dir+location);
-
+	if ( location ) fs.renameSync(dir+find_repository.location, dir+location);
 
 	let result = await this.update(
 	    {
-		id,
+		id: find_repository.id,
 		data: {
 		    name,
 		    location,
@@ -119,6 +118,9 @@ controller.putFunc = async function (req, res) {
 		},
 		return_data
 	    });
+
+
+
 	if (result) {
 	    return this.response({
 		res,
@@ -141,20 +143,32 @@ controller.putFunc = async function (req, res) {
 	    message: 'something went wrong'
 	});
     }
-    
+
 }
 
 
 controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
+    const { id_community } = req.params;
     try {
 	const find_repository = await this.db.repository.findOne({
-	    where: {id},
+	    where: {id_community},
 	    attributes: ['location'],
 	});
-	fs.rmdirSync(dir+find_repository.location,{ recursive: true })
-	let deleterows = await this.delete({ id });
-	if (deleterows > 0) {
+	const del_folder = fs.rmdirSync(dir+find_repository.location,{ recursive: true })
+	console.log(del_folder);
+
+	//let deleterows = await this.delete({ id_community });
+	let deleterows = this.db.repository.destroy({
+	    where: {
+		id_community
+	    }
+	});
+
+
+
+	console.log('muestrame',deleterows)
+
+	if (deleterows) {
 	    return this.response({
 		res,
 		success: true,
@@ -169,13 +183,11 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
-	console.log('--------------',error.original.code)
-	if (error.original.code == 23503) error.message = "this folder is not empty"
 	this.response({
 	    res,
 	    success: false,
-	    statusCode: 500,
-	    message: error.message
+	    statusCode: 404,
+	    message: "no repository" 
 	});
     }
 }
