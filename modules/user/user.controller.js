@@ -40,6 +40,7 @@ controller.getFunc = async function (req, res) {
 		username: data.username,
 		birthdate: data.birthdate,
 		profile_photo: data.profile_photo ? req.headers.host+"/uploads/"+data.profile_photo : null,
+		host,
 		type: data.type,
 		country: data.country,
 		city: data.city,
@@ -71,12 +72,14 @@ controller.postFunc = async function (req, res) {
 
     const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body
     try {
+        const host = req.headers.host
 	const result = await this.db[this.moduleName].create(
 	    {
 		name,
 		last_name,
 		username,
 		profile_photo,
+		host:'xxxx',
 		address,
 		phone,
 		email,

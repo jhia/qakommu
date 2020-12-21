@@ -68,6 +68,8 @@ controller.postFunc = async function (req, res) {
 	    throw new Error("the code does not belong to any community!");
 	}
 
+
+        const host = req.headers.host
 	let result = await user.create(
 	    {
 		name,
@@ -76,6 +78,7 @@ controller.postFunc = async function (req, res) {
 		type,
 		organization,
 		profile_photo,
+		host,
 		type,
 		organization,
 		country,
