@@ -106,7 +106,7 @@ const delete_image = (x) => {
 
 // ----------------------------------------------------------------------------------------
 // host dinamic
-const host_dinamic = (req) => (req.headers['x-forwarded-proto']) ? "https://" + req.headers.host : "http://" + req.headers.host;
+const dynamic_host = (req) => (req.headers['x-forwarded-proto']) ? "https://" + req.headers.host : "http://" + req.headers.host;
 
 // end host_str
 
@@ -201,5 +201,5 @@ module.exports = {
     calculateDiscountPercentage,
     calculatePercentageIncrease,
     validateEmail,
-    host_dinamic
+    dynamic_host
 };
