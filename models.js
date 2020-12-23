@@ -10,13 +10,18 @@ const db = {};
 let sequelize = null;
 
 if (!sequelize) {
-  sequelize = new Sequelize(
-    database.NAME, 
-    database.USER, 
-    database.PASSWORD,{
-       host: database.HOST,
-       dialect:'postgresql' 
-  });
+  const { DATABASE_URL } = process.env;
+  if (!!DATABASE_URL) {
+    sequelize = new Sequelize(DATABASE_URL);
+  } else {
+    sequelize = new Sequelize(
+      database.NAME, 
+      database.USER, 
+      database.PASSWORD,{
+        host: database.HOST,
+        dialect:'postgresql' 
+    });
+  }
 (function connectionVerify(){
   let retries = 5;
   let verify = function(){
