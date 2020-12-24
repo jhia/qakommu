@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.TEXT
         },
-        dni:{
-            allowNull: false,
-            type: DataTypes.TEXT
-        },
         email:{
             allowNull: false,
             type: DataTypes.TEXT
@@ -67,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_user',
             as: 'user'
         });
-
 
         attendee.hasMany(models.session_attendee, {
             foreignKey: 'id_attendee',
