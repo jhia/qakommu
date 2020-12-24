@@ -1,6 +1,6 @@
 'use strict'
 
-const { makeid, host_dinamic } = require('../../helpers/utilities')
+const { makeid, dynamic_host } = require('../../helpers/utilities')
 
 
 const _ = require('lodash');
@@ -54,7 +54,7 @@ controller.getFunc = async function (req, res) {
 		id_repository: data.id_repository,
 		code: data.code,
 		invitation: invitation_code,
-		url_invitation: host_dinamic(req) + "/register/"+data.code+"/"+llama(invitation_code,data.id, time),
+		url_invitation: dynamic_host(req) + "/register/"+data.code+"/"+llama(invitation_code,data.id, time),
 		createdAt: data.createdAt,
 		updatedAt: data.updatedAt
 	    }
