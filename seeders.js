@@ -50,6 +50,8 @@ const {
 	data
 } = db
 
+var hostname = "localhost:8000";
+
 let resources = [
 	{ "name": "community", "url_resource": "/api/community" },
 	{ "name": "role", "url_resource": "/api/role" },
@@ -115,7 +117,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MOCI9U.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$GSRqgYv73A/lg.X8O3k/wujYWV1GQaWFp.E6I.wSAvEwbEX1j/qdK"
 	},
 	{
@@ -134,7 +136,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MOK123.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO"
 	},
 	{
@@ -153,7 +155,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MG9KDD.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
 	},
 	{
@@ -172,7 +174,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_FTF2N2.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK"
 	},
 	{
@@ -191,7 +193,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_X7C02N.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy"
 	},
 	{
@@ -210,7 +212,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_S9PPF1.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS"
 	},
 	{
@@ -229,7 +231,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_P3PO45.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu"
 	},
 	{
@@ -248,7 +250,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_RTR44U.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi"
 	},
 	{
@@ -267,7 +269,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_B23J1J.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe"
 	},
 	{
@@ -286,7 +288,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_Z543MM.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu"
 	},
 	{
@@ -305,7 +307,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_OOG2PP.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci"
 	},
 	{
@@ -324,7 +326,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_F7F7II.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
 	}
 
@@ -546,10 +548,10 @@ let partnerships = [
 		"description": "test descrioption facebook",
 		"registry_number": "c26174178",
 		"logo": "",
-		"host": "35.122.343.2:871",
+		"host": hostname,
 		"web": "google.com",
 		"active": true,
-		"id_community": 1
+		"id_community": 1,
 	}
 ]
 
@@ -632,7 +634,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 4,
 		"image": "event_DY72EI.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "Oracle Code 2020",
@@ -652,7 +654,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_3H0945.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "microsoft ignite",
@@ -672,7 +674,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_IOZC8S.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "Deep Learning Summit",
@@ -692,7 +694,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_H1RN6X.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 
 ]
