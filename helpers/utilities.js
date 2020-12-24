@@ -105,6 +105,10 @@ const delete_image = (x) => {
 }
 
 // ----------------------------------------------------------------------------------------
+// host dinamic
+const dynamic_host = (req) => (req.headers['x-forwarded-proto']) ? "https://" + req.headers.host : "http://" + req.headers.host;
+
+// end host_str
 
 function findRelation(relations, relation_model) {
     if (typeof relations[Symbol.iterator] === 'function') {
@@ -193,8 +197,9 @@ module.exports = {
     multi_verify_and_upload_image_post,
     verify_and_upload_image_put,
     upload_images,
-	delete_image,
-	calculateDiscountPercentage,
-	calculatePercentageIncrease,
-	validateEmail
+    delete_image,
+    calculateDiscountPercentage,
+    calculatePercentageIncrease,
+    validateEmail,
+    dynamic_host
 };
