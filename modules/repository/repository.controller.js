@@ -154,11 +154,9 @@ controller.deleteFunc = async function (req, res) {
 	    where: {id_community},
 	    attributes: ['location'],
 	});
-	const del_folder = fs.rmdirSync(dir+find_repository.location,{ recursive: true })
-	console.log(del_folder);
 
 	//let deleterows = await this.delete({ id_community });
-	let deleterows = this.db.repository.destroy({
+	let deleterows = await this.db.repository.destroy({
 	    where: {
 		id_community
 	    }
@@ -166,9 +164,10 @@ controller.deleteFunc = async function (req, res) {
 
 
 
-	console.log('muestrame',deleterows)
+	console.log('-------------------muestrame--------------------',deleterows)
 
 	if (deleterows) {
+	    const del_folder = fs.rmdirSync(dir+find_repository.location,{ recursive: true })
 	    return this.response({
 		res,
 		success: true,
@@ -183,11 +182,16 @@ controller.deleteFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
+
+	console.log('--------------',[error][0].original.table)
+	let message = null;
+	if ( [error][0].original.table == "events" ) message = 'error, contains an event';
+	if ( [error][0].original.table == "folders" ) message = 'error, contains an folder';
 	this.response({
 	    res,
 	    success: false,
 	    statusCode: 404,
-	    message: "no repository" 
+	    message: message 
 	});
     }
 }
