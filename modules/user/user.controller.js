@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('user');
 const jwt = require('jsonwebtoken');
-const { makeid, verify_and_upload_image_put, upload_images,  delete_image } = require('../../helpers/utilities')
+const { makeid, verify_and_upload_image_put, upload_images,  delete_image, dynamic_host } = require('../../helpers/utilities')
 
 const fs = require('fs');
 
@@ -39,8 +39,8 @@ controller.getFunc = async function (req, res) {
 		last_name: data.last_name,
 		username: data.username,
 		birthdate: data.birthdate,
-		profile_photo: data.profile_photo ? req.headers.host+"/uploads/"+data.profile_photo : null,
-		host,
+		profile_photo: data.profile_photo ? dynamic_host(req) + "/uploads/"+data.profile_photo : null,
+		host: data.host,
 		type: data.type,
 		country: data.country,
 		city: data.city,
@@ -62,7 +62,8 @@ controller.getFunc = async function (req, res) {
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: 'something went wrong',
+	    //message: 'something went wrong',
+	    message: error.message
 	});
     }
 }
@@ -72,14 +73,12 @@ controller.postFunc = async function (req, res) {
 
     const { name, last_name, username, address, email, password, gender, id_repository, id_rol, id_community } = req.body
     try {
-        const host = req.headers.host
 	const result = await this.db[this.moduleName].create(
 	    {
 		name,
 		last_name,
 		username,
 		profile_photo,
-		host:'xxxx',
 		address,
 		phone,
 		email,
