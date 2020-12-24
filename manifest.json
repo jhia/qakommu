@@ -1,0 +1,8 @@
+{
+    "runtime": {
+        "majorVersion": "10"
+    },
+    "command": "node ./bin/www",
+    "release": {},
+    "notes": {}
+}
