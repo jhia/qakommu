@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('register');
-const { makeid , verify_and_upload_image_post, upload_images } = require('../../helpers/utilities')
+const { makeid , verify_and_upload_image_post, upload_images, dynamic_host } = require('../../helpers/utilities')
 
 controller.postFunc = async function (req, res) {
 
@@ -69,7 +69,8 @@ controller.postFunc = async function (req, res) {
 	}
 
 
-        const host = req.headers.host
+	const host = dynamic_host(req);
+
 	let result = await user.create(
 	    {
 		name,
