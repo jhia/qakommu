@@ -5,39 +5,6 @@ const controller = new Base('schedule');
 const moment = require('moment');
 
 controller.getFunc = async function (req, res) {
-/*
-    const start = moment('14/11/2018 19:59:00', 'DD/MM/YYYY HH:mm:ss');
-    const end = moment('14/11/2018 20:00:00', 'DD/MM/YYYY HH:mm:ss');
-
-    const a = end.diff(start,'minutes');
-    const b = start.diff(end,'minutes');
-
-    if ( a > 0 ) { console.log('rango correcto: ',a) };
-    if ( b < 0 ) { console.log('rango incorrecto: ',b) };
-
-
-    // Consulta si es posterior
-    const post1 = moment({ year: 2020, month: 10, day: 20, hour:19, minute: 59 }).isBefore({ year: 2020, month: 10, day: 20, hour: 19, minute: 58 })
-    const post2 = moment({ year: 2020, month: 10, day: 20, hour:19, minute: 59 }).isBefore({ year: 2020, month: 10, day: 20, hour: 19, minute: 59 })
-    const post3 = moment({ year: 2020, month: 10, day: 20, hour:19, minute: 59 }).isBefore({ year: 2020, month: 10, day: 20, hour: 20, minute: 20 })
-    console.log('------------------',post1,post2,post3)
-
-    // Calcula rango
-    const breakfast = moment('8:32','HH:mm');
-    const lunch = moment('7:52','HH:mm');
-    console.log( moment.duration(lunch - breakfast).humanize() + ' para el almuerzo' )
-
-    // ---------------------------------------------------------------------------
-*/
-
-
-
-
-
-
-
-
-
 
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
@@ -168,43 +135,5 @@ controller.deleteFunc = async function (req, res) {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = controller;
