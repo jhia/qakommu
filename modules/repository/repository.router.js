@@ -28,7 +28,7 @@ router.put('/:id',(req, res) => {
   repositoryController.putFunc(req,res);
 });
 
-router.delete('/:id_community',(req, res) => {
+router.delete('/community/:id_community',(req, res) => {
   //HTTP delete route
   repositoryController.deleteFunc(req,res);
 });
