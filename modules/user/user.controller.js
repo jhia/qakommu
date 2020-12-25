@@ -34,7 +34,6 @@ controller.getFunc = async function (req, res) {
 		id: data.id,
 		id_role: find_role.id_role,
 		id_community: decoded.community_id,
-		dni: data.dni, //----
 		name: data.name,
 		last_name: data.last_name,
 		username: data.username,
