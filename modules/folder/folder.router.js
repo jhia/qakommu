@@ -8,7 +8,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:id',function(req, res){
+router.get('/:id/repository/:id_repository',function(req, res){
   //HTTP get route
   folderController.getFunc(req,res);
 });
