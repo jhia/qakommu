@@ -13,7 +13,7 @@ router.get('/',function(req, res){
   repositoryController.getFunc(req,res);
 });
 
-router.get('/:id',function(req, res){
+router.get('/community/:id',function(req, res){
   //HTTP get route
   repositoryController.getFunc(req,res);
 });
