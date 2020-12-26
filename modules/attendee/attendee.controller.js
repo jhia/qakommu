@@ -14,7 +14,6 @@ const controller = new Base('attendee');
 */
 
 controller.getFunc = async function (req, res) {
-
     const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
     try {
@@ -37,15 +36,12 @@ controller.getFunc = async function (req, res) {
             message: 'something went wrong',
         });
     }
-
 }
 
 controller.postFunc = async function (req, res) {
-
-    const { id_user, name, dni,email, is_present, id_ticket_sale_detail, rate, id_state, id_event } = req.body;
-    
+    const { id_user, name, email, is_present, id_ticket_sale_detail, rate, id_state, id_event } = req.body;
     try {
-        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1 || dni.length < 1 || email < 1 ) {
+        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1  || email.length < 1 ) {
             return this.response({
                 res,
                 success: false,
@@ -64,7 +60,6 @@ controller.postFunc = async function (req, res) {
         let newdate = await this.insert({
             id_user,
             name,
-            dni,
             email : email.toLowerCase(),
             is_present,
             id_ticket_sale_detail,
@@ -91,10 +86,10 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, name, dni, email, is_present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
+    const { id_user, name, email, is_present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
 
     try {
-        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1 || dni.length < 1 || email < 1 ) {
+        if (id_event < 1 || id_state < 1 ||  id_ticket_sale_detail < 1 || name.length < 1 || email.length < 1 ) {
             return this.response({
                 res,
                 success: false,
@@ -116,7 +111,6 @@ controller.putFunc = async function (req, res) {
                 data: {
                     id_user,
                     name,
-                    dni,
                     email,
                     is_present,
                     id_ticket_sale_detail,
@@ -179,12 +173,11 @@ controller.deleteFunc = async function (req, res) {
 }
 
 
-//--------------------sepcial functions--------------------
+//--------------------special functions--------------------
 
 controller.getSessionsByAttendee = async function (req, res) {
     const { id } = req.params;
     const { limit, offset, order } = req.body;
-
     try {
         const data = await this.db.session_attendee.findAll({
             limit,
@@ -203,24 +196,18 @@ controller.getSessionsByAttendee = async function (req, res) {
                 }]
             }]
         });
-
         this.response({
             res,
             payload: [data]
         });
-
     } catch (error) {
-        console.log(error);
         this.response({
             res,
             success: false,
             statusCode: 500,
             message: 'something went wrong',
         });
-
     }
-
 }
-
 
 module.exports = controller;

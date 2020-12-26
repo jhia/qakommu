@@ -50,6 +50,8 @@ const {
 	data
 } = db
 
+var hostname = "localhost:8000";
+
 let resources = [
 	{ "name": "community", "url_resource": "/api/community" },
 	{ "name": "role", "url_resource": "/api/role" },
@@ -103,7 +105,6 @@ let users = [
 		"name": "John Maximilian",
 		"last_name": "Vail Brown",
 		"username": "j_vail983",
-		"dni": "494-07-7602",
 		"email": "j_vail983@kommu.com",
 		"phone": "0013146498261",
 		"birthdate": "1983-12-12T00:00:00+00:00",
@@ -115,14 +116,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MOCI9U.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$GSRqgYv73A/lg.X8O3k/wujYWV1GQaWFp.E6I.wSAvEwbEX1j/qdK"
 	},
 	{
 		"name": "Shelly Eileen",
 		"last_name": "Wimbley Bateman",
 		"username": "s_wimbley84",
-		"dni": "267-11-6536",
 		"email": "s_wimbley84@kommu.com",
 		"phone": "0018502453248",
 		"birthdate": "1984-05-22T00:00:00+00:00",
@@ -134,14 +134,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MOK123.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO"
 	},
 	{
 		"name": "Patricia Chae",
 		"last_name": "Ellett Meneses",
 		"username": "p_ellett87",
-		"dni": "752-45-2360",
 		"email": "p_ellett87@kommu.com",
 		"phone": "0018512652106",
 		"birthdate": "1986-02-22T00:00:00+00:00",
@@ -153,14 +152,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_MG9KDD.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
 	},
 	{
 		"name": "Kenneth Harold.",
 		"last_name": "Varney Moore",
 		"username": "k_varney88",
-		"dni": "047-10-4763",
 		"email": "k_varney88@kommu.com",
 		"phone": "0012037563475",
 		"birthdate": "1988-05-11T00:00:00+00:00",
@@ -172,14 +170,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_FTF2N2.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK"
 	},
 	{
 		"name": "Alexander Bryant.",
 		"last_name": "Simmons Anderson",
 		"username": "a_simmons85",
-		"dni": "750-05-8956",
 		"email": "a_simmons85@kommu.com",
 		"phone": "0018088710725",
 		"birthdate": "1985-01-20T00:00:00+00:00",
@@ -191,14 +188,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_X7C02N.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy"
 	},
 	{
 		"name": "Jeanette Susan",
 		"last_name": "Jenkins Steiner",
 		"username": "j_jenkins988",
-		"dni": "765-14-6587",
 		"email": "j_jenkins988@kommu.com",
 		"phone": "0018657404446",
 		"birthdate": "1986-02-22T00:00:00+00:00",
@@ -210,14 +206,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_S9PPF1.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS"
 	},
 	{
 		"name": "Alexander Levi",
 		"last_name": "Smith Brown",
 		"username": "a_Smith225",
-		"dni": "646-42-4502",
 		"email": "a_Smith225@kommu.com",
 		"phone": "0013159050626",
 		"birthdate": "1986-08-17T00:00:00+00:00",
@@ -229,14 +224,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_P3PO45.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu"
 	},
 	{
 		"name": "Christine Isabela",
 		"last_name": "Peterson Miller",
 		"username": "c_pert83",
-		"dni": "556-20-4750",
 		"email": "c_pert83@kommu.com",
 		"phone": "0018507468889",
 		"birthdate": "1983-05-22T00:00:00+00:00",
@@ -248,14 +242,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_RTR44U.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi"
 	},
 	{
 		"name": "Camila Victoria",
 		"last_name": "Rojas Brown",
 		"username": "c_rojas85",
-		"dni": "752-45-2360",
 		"email": "c_victori83@kommu.com",
 		"phone": "0018512652106",
 		"birthdate": "1986-02-22T00:00:00+00:00",
@@ -267,14 +260,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_B23J1J.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe"
 	},
 	{
 		"name": "Robert Lucas. ",
 		"last_name": "Taylor McIntyre ",
 		"username": "r_taylor85",
-		"dni": "303-44-4896",
 		"email": "r_taylor85@kommu.com",
 		"phone": "0014526638753",
 		"birthdate": "1985-06-26T00:00:00+00:00",
@@ -286,14 +278,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_Z543MM.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu"
 	},
 	{
 		"name": "Pedro alexander. ",
 		"last_name": "Maxwell Ransdell",
 		"username": "p_max87",
-		"dni": "425-10-4450",
 		"email": "p_max87@kommu.com",
 		"phone": "0016522364789",
 		"birthdate": "1987-10-14T00:00:00+00:00",
@@ -305,14 +296,13 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_OOG2PP.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci"
 	},
 	{
 		"name": "Bennie Jane",
 		"last_name": "Bond Stryker",
 		"username": "b_bond88",
-		"dni": "412-07-4546",
 		"email": "b_bond88@kommu.com",
 		"phone": "0018657404446",
 		"birthdate": "1986-02-22T00:00:00+00:00",
@@ -324,7 +314,7 @@ let users = [
 		"organization": "personal",
 		"type": "other",
 		"profile_photo": "profile_photo_F7F7II.png",
-		"host": "localhost:8000",
+		"host": hostname,
 		"password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
 	}
 
@@ -546,10 +536,10 @@ let partnerships = [
 		"description": "test descrioption facebook",
 		"registry_number": "c26174178",
 		"logo": "",
-		"host": "35.122.343.2:871",
+		"host": hostname,
 		"web": "google.com",
 		"active": true,
-		"id_community": 1
+		"id_community": 1,
 	}
 ]
 
@@ -632,7 +622,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 4,
 		"image": "event_DY72EI.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "Oracle Code 2020",
@@ -652,7 +642,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_3H0945.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "microsoft ignite",
@@ -672,7 +662,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_IOZC8S.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 	{
 		"name": "Deep Learning Summit",
@@ -692,7 +682,7 @@ let events = [
 		"id_repository": 1,
 		"id_state": 1,
 		"image": "event_H1RN6X.png",
-		"host": "localhost:8000"
+		"host": hostname
 	},
 
 ]
@@ -841,7 +831,6 @@ let attendees = [
 	{
 		"id_user": 1,
 		"name": "carlos",
-		"dni": "x127665254",
 		"email": "carlos@gmail.com",
 		"is_present": true,
 		"id_ticket_sale_detail": 1,
