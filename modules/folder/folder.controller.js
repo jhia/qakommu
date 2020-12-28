@@ -16,7 +16,7 @@ controller.getFunc = async function (req, res) {
 
     try {
 	const data = id ?  
-	    await this.db.folder.findAll({
+	    await this.db.folder.findOne({
 		where: { id, id_repository },
 	    })
 	    : 
