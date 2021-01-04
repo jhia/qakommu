@@ -48,7 +48,7 @@ controller.getFunc = async function (req, res) {
 		zip_code: data.zip_code,
 		phone: data.phone,
 		email: data.email,
-		password: data.password,
+		//password: data.password,
 		active: data.active,
 		gender: data.gender,
 		id_repository: data.id_repository,
