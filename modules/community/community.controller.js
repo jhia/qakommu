@@ -18,7 +18,7 @@ function llama(invitation_code, community_id ,time) {
     if (time){ 
 	t = time+"d";
     }else{ 
-	t = "30d";
+	t = "1d";
     };
     let tk = jwt.sign({
 	data: { invitation_code, community_id}
@@ -55,6 +55,7 @@ controller.getFunc = async function (req, res) {
 		code: data.code,
 		invitation: invitation_code,
 		url_invitation: dynamic_host(req) + "/register/"+data.code+"/"+llama(invitation_code,data.id, time),
+		show_community: data.show_community,
 		createdAt: data.createdAt,
 		updatedAt: data.updatedAt
 	    }
@@ -64,14 +65,15 @@ controller.getFunc = async function (req, res) {
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: 'something went wrong',
+	    //message: 'something went wrong',
+	    message: error.message,
 	});
     }
 }
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, show_community } = req.body;
     try {
 	let newdate = await this.insert({
 	    name,
@@ -82,7 +84,8 @@ controller.postFunc = async function (req, res) {
 	    prefix,
 	    member_verification,
 	    id_repository,
-	    code: makeid(6)
+	    code: makeid(6),
+	    show_community
 	});
 	if (newdate) {
 	    return this.response({
@@ -103,7 +106,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, return_data } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, show_community, return_data } = req.body;
 
     await this.update(
 	{
@@ -117,7 +120,8 @@ controller.putFunc = async function (req, res) {
 		prefix,
 		member_verification,
 		id_repository,
-		code                
+		code,                
+		show_community
 	    },
 	    return_data
 	}            
