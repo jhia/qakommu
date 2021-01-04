@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 		msg: 'code community exists!'
 	    }
 	},
-	show_community:{
+	is_privated: {
 	    type: DataTypes.BOOLEAN,
 	    defaultValue: true 
 	},     

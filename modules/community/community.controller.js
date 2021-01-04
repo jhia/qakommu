@@ -55,7 +55,7 @@ controller.getFunc = async function (req, res) {
 		code: data.code,
 		invitation: invitation_code,
 		url_invitation: dynamic_host(req) + "/register/"+data.code+"/"+llama(invitation_code,data.id, time),
-		show_community: data.show_community,
+		is_privated: data.is_privated,
 		createdAt: data.createdAt,
 		updatedAt: data.updatedAt
 	    }
@@ -73,7 +73,7 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, show_community } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, is_privated } = req.body;
     try {
 	let newdate = await this.insert({
 	    name,
@@ -85,7 +85,7 @@ controller.postFunc = async function (req, res) {
 	    member_verification,
 	    id_repository,
 	    code: makeid(6),
-	    show_community
+	    is_privated 
 	});
 	if (newdate) {
 	    return this.response({
@@ -106,7 +106,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, show_community, return_data } = req.body;
+    const { name, description, id_type_of_account, users_count, id_website, prefix, member_verification, id_repository, code, is_privated, return_data } = req.body;
 
     await this.update(
 	{
@@ -121,7 +121,7 @@ controller.putFunc = async function (req, res) {
 		member_verification,
 		id_repository,
 		code,                
-		show_community
+		is_privated
 	    },
 	    return_data
 	}            
