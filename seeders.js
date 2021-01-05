@@ -523,7 +523,7 @@ let tracks = [
 		"name": "back-end",
 		"description": "is the logic that is processed on the server side",
 		"active": true,
-		"id_module_name": 1,
+		"id_community": 1,
 		"color": "#333333"
 	}
 ]

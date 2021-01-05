@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        id_module_name: {
+        id_community: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -41,9 +41,9 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         // track to module
-        track.belongsTo(models.module_name, {
-            foreignKey: 'id_module_name',
-            as: 'module_name'
+        track.belongsTo(models.community, {
+            foreignKey: 'id_community',
+            as: 'community'
         });
 
     }

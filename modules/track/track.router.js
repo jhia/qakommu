@@ -18,9 +18,9 @@ router.get('/:id',function(req, res){
   trackController.getFunc(req,res);
 });
 
-router.get('/module/:id',function(req, res){
+router.get('/community/:id_community',function(req, res){
   //HTTP get route
-  trackController.getDataByModuleName(req,res);
+  trackController.getTrackByCommunity(req,res);
 });
 
 router.post('/',(req, res) => {

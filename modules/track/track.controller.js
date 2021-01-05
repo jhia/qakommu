@@ -42,13 +42,13 @@ controller.getFunc = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const { name, description, active, id_module_name, color } = req.body;
+	const { name, description, active, id_community, color } = req.body;
 	try {
 		let newdate = await this.insert({
 			name,
 			description,
 			active,
-			id_module_name,
+			id_community,
 			color
 		});
 		if (newdate) {
@@ -70,7 +70,7 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const { name, description, active, id_module_name, color, return_data } = req.body;
+	const { name, description, active, id_community, color, return_data } = req.body;
 	try {
 		let result = await this.update(
 			{
@@ -80,7 +80,7 @@ controller.putFunc = async function (req, res) {
 					name,
 					description,
 					active,
-					id_module_name,
+					id_community,
 					color
 				},
 				return_data
@@ -141,8 +141,8 @@ controller.deleteFunc = async function (req, res) {
 
 /* ---------- special functions ---------- */
 
-controller.getDataByModuleName = async function(req, res){
-	const { id } = req.params;
+controller.getTrackByCommunity = async function(req, res){
+	const { id_community } = req.params;
 	const { limit, offset, order } = req.body;
 	try {
 		const data = await this.db.track.findAll({
@@ -150,7 +150,7 @@ controller.getDataByModuleName = async function(req, res){
 			offset,
 			attributes: ['id', 'name', 'description', 'active', 'color'],
             order,
-            where: { id_module_name: id, active: true }
+            where: { id_community, active: true }
         });
 		this.response({
             res,

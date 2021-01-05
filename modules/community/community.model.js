@@ -48,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'community_event'
 	});
 
+	community.hasMany(models.track, {
+	    foreignKey: 'id_community',
+	    as: 'community_track'
+	});
+
 	community.hasMany(models.type_sponsor, {
 	    foreignKey: 'id_community',
 	    as: 'community_type_sponsor'
