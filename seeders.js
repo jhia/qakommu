@@ -525,6 +525,20 @@ let tracks = [
 		"active": true,
 		"id_community": 1,
 		"color": "#333333"
+	},
+	{
+		"name": "DataBase",
+		"description": "everything related to database",
+		"active": true,
+		"id_community": 1,
+		"color": "#7E49E6"
+	},
+	{
+		"name": "DJango",
+		"description": "",
+		"active": true,
+		"id_community": 1,
+		"color": "#8329E6"
 	}
 ]
 
@@ -560,11 +574,29 @@ let type_sponsors = [
 	{
 		"name": "general",
 		"description": "standard fee for sponsors",
-		"contribution_value": 0.00005685,
+		"contribution_value": 500,
 		"active": true,
 		"currency_symbol":"$",
 		"id_community":1,
-		"display_number":2
+		"display_number":3
+	},
+	{
+		"name": "premium",
+		"description": "premium for sponsors",
+		"contribution_value": 700,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1,
+		"display_number":5
+	},
+	{
+		"name": "low cost",
+		"description": "low cost  for sponsors",
+		"contribution_value": 100,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1,
+		"display_number":1
 	}
 ]
 

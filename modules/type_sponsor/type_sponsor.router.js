@@ -33,9 +33,20 @@ router.put('/:id',(req, res) => {
   type_sponsorController.putFunc(req,res);
 });
 
+
+router.delete('/multiple',(req, res) => {
+  //HTTP delete route
+  type_sponsorController.deleteMultiple(req,res);
+});
+
 router.delete('/:id',(req, res) => {
   //HTTP delete route
   type_sponsorController.deleteFunc(req,res);
 });
+
+
+
+
+
 
 module.exports = router;
