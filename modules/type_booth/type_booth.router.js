@@ -34,6 +34,13 @@ router.put('/:id',(req, res) => {
   type_boothController.putFunc(req,res);
 });
 
+
+router.delete('/multiple',(req, res) => {
+  //HTTP delete route
+  type_boothController.deleteMultiple(req,res);
+});
+
+
 router.delete('/:id',(req, res) => {
   //HTTP delete route
   type_boothController.deleteFunc(req,res);

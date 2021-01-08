@@ -616,12 +616,33 @@ let type_booths = [
 		"name": "booth standard",
 		"description": "generic size",
 		"cost": 887.12,
+		"size_width": 10,
+		"size_height": 10,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1
+	},
+	{
+		"name": "booth small",
+		"description": "small size",
+		"cost": 505.12,
 		"size_width": 5,
 		"size_height": 5,
 		"active": true,
 		"currency_symbol":"$",
 		"id_community":1
+	},
+	{
+		"name": "booth Big",
+		"description": "big size",
+		"cost": 1300.10,
+		"size_width": 25,
+		"size_height": 25,
+		"active": true,
+		"currency_symbol":"$",
+		"id_community":1
 	}
+	
 ]
 
 let exhibitors = [
