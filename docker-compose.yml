@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: kommu_password
       POSTGRES_USER: kommu
     networks: [kommu]
+    volumes:
+      - "./.data:/var/lib/postgresql/data"
     ports:
       - 5432:5432
   kommu:

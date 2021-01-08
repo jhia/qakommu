@@ -9,4 +9,5 @@ test/report/assets/
 test/report/*.json
 mochawesome-report/
 upload
+data
 app.zip
