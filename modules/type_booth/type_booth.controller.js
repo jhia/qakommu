@@ -209,9 +209,35 @@ controller.getTypeBoothByCommunity = async function (req, res) {
             statusCode: 500,
             message: 'something went wrong',
         });
-
     }
+}
 
+controller.deleteMultiple = async function (req, res) {
+    const { ids } = req.body;
+    try {
+        let deleterows = await this.db.type_booth.destroy({ where: {id: ids}   });
+        if (deleterows > 0) {
+            return this.response({
+                res,
+                success: true,
+                statusCode: 200
+            });
+        } else {
+            this.response({
+                res,
+                success: false,
+                statusCode: 202,
+                message: 'it was not possible to delete the item because it does not exist'
+            });
+        }
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong'
+        });
+    }
 }
 
 module.exports = controller;
