@@ -10,4 +10,5 @@ test/report/*.json
 mochawesome-report/
 upload
 data
+.data
 app.zip
