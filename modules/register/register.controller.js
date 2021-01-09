@@ -77,7 +77,7 @@ controller.postFunc = async function (req, res) {
 		last_name,
 		username,
 		type,
-		organization,
+		zip_code,
 		profile_photo,
 		host,
 		organization,
