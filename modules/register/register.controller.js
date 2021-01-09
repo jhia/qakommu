@@ -8,7 +8,7 @@ const { makeid , verify_and_upload_image_post, upload_images, dynamic_host } = r
 controller.postFunc = async function (req, res) {
 
     const {user_type,user,community,channel} = this.db
-    const { name, last_name, username, type, organization, country, city, address, country_code, phone, email, password, gender, id_repository, id_role, id_community, nameCommunity, return_data} = req.body;
+    const { name, last_name, username, type, organization, country, city, zip_code, address, country_code, phone, birthdate, email, password, gender, id_repository, id_role, id_community, nameCommunity, return_data} = req.body;
     let {codeCommunity} = req.body;
     const { comunity_code,invitation_code } = req.params;
     const jwt = require('jsonwebtoken');
@@ -80,13 +80,13 @@ controller.postFunc = async function (req, res) {
 		organization,
 		profile_photo,
 		host,
-		type,
 		organization,
 		country,
 		city,
 		address,
 		country_code,    
 		phone,
+                birthdate,
 		email,
 		password,
 		gender,
