@@ -43,27 +43,6 @@ controller.postFunc = async function (req, res) {
 	    });
 	}
 
-	let query_user = await user.findOne({
-	    where: { email }
-	});
-
-	if (query_user) {
-	    throw new Error("Email exist")
-	}
-
-	if(nameCommunity){
-	    data = await community.create({
-		name: nameCommunity,
-		code: makeid(6)
-	    }); 			
-
-	    await channel.create({
-		name: nameCommunity,
-		description: nameCommunity,
-		id_community: invitation_code ? decoded.data.community_id : data['id']
-	    });
-	}		
-
 	if (!data) {
 	    throw new Error("the code does not belong to any community!");
 	}
@@ -86,23 +65,39 @@ controller.postFunc = async function (req, res) {
 		address,
 		country_code,    
 		phone,
-                birthdate,
+		birthdate,
 		email,
 		password,
 		gender,
 		id_repository,
 	    });
 
-	await user_type.create(
-	    {
-		id_user: result.id,
-		id_role: id_role,
-		id_community: invitation_code ? decoded.data.community_id : data['id'],
-		invitation_code: invitation_code ? decoded.data.invitation_code : null
-	    });
 
-	if(result)
 	{
+
+
+	    if(nameCommunity){
+		data = await community.create({
+		    name: nameCommunity,
+		    code: makeid(6)
+		}); 			
+
+		await channel.create({
+		    name: nameCommunity,
+		    description: nameCommunity,
+		    id_community: invitation_code ? decoded.data.community_id : data['id']
+		});
+	    }		
+
+
+
+	    await user_type.create(
+		{
+		    id_user: result.id,
+		    id_role: id_role,
+		    id_community: invitation_code ? decoded.data.community_id : data['id'],
+		    invitation_code: invitation_code ? decoded.data.invitation_code : null
+		});
 
 	    if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
 
@@ -111,18 +106,33 @@ controller.postFunc = async function (req, res) {
 		statusCode: 201,
 		message: "Created Successfully",
 		payload: {
-		    //result: true
 		    result: return_data ? { id_community: data.id } : true
 		}
 	    });
 	}
 
     } catch (err) {
+
+	const msg = []; 
+
+	if (err.errors) {
+	    err.errors.forEach((error) => {
+		console.log('------------',error.path, error.validatorKey,'--------------')
+		if (error.path === 'name' && error.validatorKey === 'is_null') msg.push( { "name": "the name field is empty" } );
+		if (error.path === 'last_name' && error.validatorKey === 'is_null') msg.push( { "last_name": "the last_name field is empty" } );
+		if (error.path === 'username' && error.validatorKey === 'is_null') msg.push( { "username": "the username field is empty" } );
+		if (error.path === 'address' && error.validatorKey === 'is_null') msg.push( { "address": "the address field is empty" } );
+		if (error.path === 'gender' && error.validatorKey === 'is_null') msg.push( { "gender": "the gender field is empty" } );
+		if (error.path === 'email' && error.validatorKey === 'is_null') msg.push( { "email": "the email field is empty" } );
+		if (error.path === 'email' && error.validatorKey === 'isEmail') msg.push( { "email": "email has a format error" } );
+	    });
+	}
+
 	return this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: err.message
+	    message: msg 
 	});
     }
 }

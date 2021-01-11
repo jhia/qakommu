@@ -12,9 +12,18 @@ const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
 	const user = sequelize.define('user', {
-		name: DataTypes.STRING,
-		last_name: DataTypes.STRING,
-		username: DataTypes.STRING,
+		name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		last_name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		username: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
 		profile_photo: DataTypes.STRING,
 		host: DataTypes.STRING,
 		type: DataTypes.ENUM('professional', 'student', 'other'),
@@ -22,17 +31,23 @@ module.exports = (sequelize, DataTypes) => {
 		country: DataTypes.STRING,
 		city: DataTypes.STRING,
 		zip_code: DataTypes.STRING,
-		address: DataTypes.STRING,
+
+		address: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+
 		country_code: DataTypes.STRING,
 		phone: DataTypes.STRING,
 		birthdate: {
 			type: DataTypes.DATE
 		},
 		email: {
-			type: Sequelize.STRING,
+			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
-				isEmail: true
+				//isEmail: true
+			    isEmail: true 
 			},
 			unique: {
 				args: true,
@@ -48,7 +63,14 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: true,
 			defaultValue: true
 		},
-		gender: DataTypes.STRING,
+
+		gender: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+
+
+		//gender: DataTypes.STRING,
 		id_repository: DataTypes.INTEGER,
 		last_login: DataTypes.DATE
 	},
