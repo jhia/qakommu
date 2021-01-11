@@ -50,66 +50,64 @@ controller.postFunc = async function (req, res) {
 
 	const host = dynamic_host(req);
 
-	let result = await user.create(
-	    {
-		name,
-		last_name,
-		username,
-		type,
-		zip_code,
-		profile_photo,
-		host,
-		organization,
-		country,
-		city,
-		address,
-		country_code,    
-		phone,
-		birthdate,
-		email,
-		password,
-		gender,
-		id_repository,
+
+
+
+	if(nameCommunity){
+	    data = await community.create({
+		name: nameCommunity,
+		code: makeid(6)
+	    }); 			
+
+	    await channel.create({
+		name: nameCommunity,
+		description: nameCommunity,
+		id_community: invitation_code ? decoded.data.community_id : data['id']
 	    });
+	}		
 
 
-	{
-
-
-	    if(nameCommunity){
-		data = await community.create({
-		    name: nameCommunity,
-		    code: makeid(6)
-		}); 			
-
-		await channel.create({
-		    name: nameCommunity,
-		    description: nameCommunity,
-		    id_community: invitation_code ? decoded.data.community_id : data['id']
-		});
-	    }		
-
-
-
-	    await user_type.create(
+	    let result = await user.create(
 		{
-		    id_user: result.id,
-		    id_role: id_role,
-		    id_community: invitation_code ? decoded.data.community_id : data['id'],
-		    invitation_code: invitation_code ? decoded.data.invitation_code : null
+		    name,
+		    last_name,
+		    username,
+		    type,
+		    zip_code,
+		    profile_photo,
+		    host,
+		    organization,
+		    country,
+		    city,
+		    address,
+		    country_code,    
+		    phone,
+		    birthdate,
+		    email,
+		    password,
+		    gender,
+		    id_repository,
 		});
 
-	    if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
 
-	    return this.response({
-		res,
-		statusCode: 201,
-		message: "Created Successfully",
-		payload: {
-		    result: return_data ? { id_community: data.id } : true
-		}
+	await user_type.create(
+	    {
+		id_user: result.id,
+		id_role: id_role,
+		id_community: invitation_code ? decoded.data.community_id : data['id'],
+		invitation_code: invitation_code ? decoded.data.invitation_code : null
 	    });
-	}
+
+	if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
+
+	return this.response({
+	    res,
+	    statusCode: 201,
+	    message: "Created Successfully",
+	    payload: {
+		result: return_data ? { id_community: data.id } : true
+	    }
+	});
 
     } catch (err) {
 
@@ -117,15 +115,15 @@ controller.postFunc = async function (req, res) {
 
 	if (err.errors) {
 	    err.errors.forEach((error) => {
-		console.log('------------',error.path, error.validatorKey,'--------------')
-		if (error.path === 'name' && error.validatorKey === 'is_null') msg.push( { "name": "the name field is empty" } );
-		if (error.path === 'last_name' && error.validatorKey === 'is_null') msg.push( { "last_name": "the last_name field is empty" } );
-		if (error.path === 'username' && error.validatorKey === 'is_null') msg.push( { "username": "the username field is empty" } );
-		if (error.path === 'address' && error.validatorKey === 'is_null') msg.push( { "address": "the address field is empty" } );
-		if (error.path === 'gender' && error.validatorKey === 'is_null') msg.push( { "gender": "the gender field is empty" } );
-		if (error.path === 'email' && error.validatorKey === 'is_null') msg.push( { "email": "the email field is empty" } );
-		if (error.path === 'email' && error.validatorKey === 'isEmail') msg.push( { "email": "email has a format error" } );
-	    });
+		console.log("---",error.path, error.validatorKey,"---")
+		if (error.path === 'name' && error.validatorKey === 'is_null') msg.push( "the name field is empty" );
+		if (error.path === 'last_name' && error.validatorKey === 'is_null') msg.push( "the last_name field is empty" );
+		if (error.path === 'username' && error.validatorKey === 'is_null') msg.push( "the username field is empty" );
+		if (error.path === 'address' && error.validatorKey === 'is_null') msg.push( "the address field is empty" );
+		if (error.path === 'gender' && error.validatorKey === 'is_null') msg.push( "the gender field is empty" );
+		if (error.path === 'email' && error.validatorKey === 'is_null') msg.push( "the email field is empty" );
+		if (error.path === 'email' && error.validatorKey === 'isEmail') msg.push( "email has a format error" );
+	    })
 	}
 
 	return this.response({
