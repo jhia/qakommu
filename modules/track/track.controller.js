@@ -150,7 +150,7 @@ controller.getTrackByCommunity = async function(req, res){
 			offset,
 			attributes: ['id', 'name', 'description', 'active', 'color'],
             order,
-            where: { id_community, active: true }
+            where: { id_community }
         });
 		this.response({
             res,
