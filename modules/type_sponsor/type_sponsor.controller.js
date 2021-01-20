@@ -15,7 +15,7 @@ const controller = new Base('type_sponsor');
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { limit, offset, order, attributes } = req.body;
+    const { limit, offset, order, attributes } = req.query;
     try {
         const data = await this.getData({
             id,
