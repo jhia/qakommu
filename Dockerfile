@@ -8,6 +8,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
+ENV NODE_ENV=development
+
 USER node
 
 RUN npm install

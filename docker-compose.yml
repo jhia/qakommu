@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: kommu
     networks: [kommu]
     volumes:
-      - "./.data:/var/lib/postgresql/data"
+      - "$HOME/.kommu-data:/var/lib/postgresql/data"
     ports:
       - 5432:5432
   kommu:
@@ -20,7 +20,7 @@ services:
       DB_NAME: kommu
       DB_PASSWORD: kommu_password
       DB_USER: kommu
-      NODE_ENV: development_docker
+      NODE_ENV: development
       PORT: 8000
       DEBUG_PORT: 9228
       KOMMU_DB_PORT: 5432

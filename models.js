@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const env =  process.env.NODE_ENV || 'development_local';
-const { database } = require('./config/config');
+const env =  process.env.NODE_ENV || 'development';
+const { production, development } = require('./config/config');
 const db = {};
 
 let sequelize = null;
@@ -14,13 +14,12 @@ if (!sequelize) {
   if (!!DATABASE_URL) {
     sequelize = new Sequelize(DATABASE_URL);
   } else {
+    const database = env === 'production' ? production : development;
     sequelize = new Sequelize(
-      database.NAME, 
-      database.USER, 
-      database.PASSWORD,{
-        host: database.HOST,
-        dialect:'postgresql' 
-    });
+      database.database, 
+      database.username, 
+      database.password,
+      database);
   }
 (function connectionVerify(){
   let retries = 5;
