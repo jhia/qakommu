@@ -45,25 +45,6 @@ base.prototype.putFunc = async function (req, res) {
 base.prototype.deleteFunc = function (req, res) {
 	res.status('200').send(`GET to ${this.moduleName}`);
 }
-/* 
-base.prototype.update = async function(identity, data){
-	const{ id } = identity;
-	const fillables = _.keys(data) 		
-	const result = await this.model.update(data, {
-        where: {
-            id
-		},
-		fields: fillables
-	});
-	return result
-}
- */
-/* {
-	id: int,
-	data: json,
-	return_data: bool
-} 
-*/
 
 base.prototype.update = async function (data) {
 	const { id } = data;
@@ -100,14 +81,12 @@ base.prototype.getData = async function (data) {
 	const { id, limit, offset, order, attributes, modelstoextended } = data;
 	
 	if (id) {
-	  console.log('yes')
 		const one = await this.model.findOne({
 			where: {
 				id
 			},
 			attributes,
-			order,
-			//include: modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
+			order
 		});
 		return one;
 	} else {
@@ -115,8 +94,7 @@ base.prototype.getData = async function (data) {
 			limit,
 			offset,
 			attributes,
-			order,
-			//include:  modelstoextended ? eval("(" + modelstoextended + ")") : [] ,
+			order
 		});
 		return list;
 	}
