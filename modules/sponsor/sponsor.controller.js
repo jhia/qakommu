@@ -171,28 +171,21 @@ controller.getSponsorByEvent = async function (req, res) {
         const data = await this.db.sponsor.findAll({
             limit,
             offset,
-            attributes: ['id'],
+            attributes: ['id', 'description','active'],
             order,
             where: {
-				id_event,
-				active: true
+				id_event
             },
             include: [
                 {
-                    attributes: ['name', 'description','contribution_value','currency_symbol'],
+                    attributes: ['id','name', 'description','active','contribution_value','currency_symbol'],
                     model: this.db.type_sponsor,
-                    as: 'type_sponsor',
-                    where:{
-                        active: true
-                    }
+                    as: 'type_sponsor'
 				},
 				{
-					attributes: ['name', 'description', 'registry_number', 'logo','host','web'],
+					attributes: ['id','name', 'description', 'registry_number', 'active' ,'logo','host','web'],
                     model: this.db.partnership,
-                    as: 'partnership',
-                    where:{
-                        active: true
-                    }
+                    as: 'partnership'
 				}
             ]
         });

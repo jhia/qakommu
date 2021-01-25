@@ -43,13 +43,15 @@ controller.postFunc = async function (req, res) {
 	    });
 	}
 
-	let query_user = await user.findOne({
-	    where: { email }
-	});
-
-	if (query_user) {
-	    throw new Error("Email exist")
+	if (!data) {
+	    throw new Error("the code does not belong to any community!");
 	}
+
+
+	const host = dynamic_host(req);
+
+
+
 
 	if(nameCommunity){
 	    data = await community.create({
@@ -64,34 +66,29 @@ controller.postFunc = async function (req, res) {
 	    });
 	}		
 
-	if (!data) {
-	    throw new Error("the code does not belong to any community!");
-	}
 
+	    let result = await user.create(
+		{
+		    name,
+		    last_name,
+		    username,
+		    type,
+		    zip_code,
+		    profile_photo,
+		    host,
+		    organization,
+		    country,
+		    city,
+		    address,
+		    country_code,    
+		    phone,
+		    birthdate,
+		    email,
+		    password,
+		    gender,
+		    id_repository,
+		});
 
-	const host = dynamic_host(req);
-
-	let result = await user.create(
-	    {
-		name,
-		last_name,
-		username,
-		type,
-		zip_code,
-		profile_photo,
-		host,
-		organization,
-		country,
-		city,
-		address,
-		country_code,    
-		phone,
-                birthdate,
-		email,
-		password,
-		gender,
-		id_repository,
-	    });
 
 	await user_type.create(
 	    {
@@ -101,28 +98,39 @@ controller.postFunc = async function (req, res) {
 		invitation_code: invitation_code ? decoded.data.invitation_code : null
 	    });
 
-	if(result)
-	{
+	if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
 
-	    if(profile_photo) upload_images( avatar, archive[0]+"_"+archive[1], archive[2].split(".")[0]);
-
-	    return this.response({
-		res,
-		statusCode: 201,
-		message: "Created Successfully",
-		payload: {
-		    //result: true
-		    result: return_data ? { id_community: data.id } : true
-		}
-	    });
-	}
+	return this.response({
+	    res,
+	    statusCode: 201,
+	    message: "Created Successfully",
+	    payload: {
+		result: return_data ? { id_community: data.id } : true
+	    }
+	});
 
     } catch (err) {
+
+	const msg = []; 
+
+	if (err.errors) {
+	    err.errors.forEach((error) => {
+		console.log("---",error.path, error.validatorKey,"---")
+		if (error.path === 'name' && error.validatorKey === 'is_null') msg.push( "the name field is empty" );
+		if (error.path === 'last_name' && error.validatorKey === 'is_null') msg.push( "the last_name field is empty" );
+		if (error.path === 'username' && error.validatorKey === 'is_null') msg.push( "the username field is empty" );
+		if (error.path === 'address' && error.validatorKey === 'is_null') msg.push( "the address field is empty" );
+		if (error.path === 'gender' && error.validatorKey === 'is_null') msg.push( "the gender field is empty" );
+		if (error.path === 'email' && error.validatorKey === 'is_null') msg.push( "the email field is empty" );
+		if (error.path === 'email' && error.validatorKey === 'isEmail') msg.push( "email has a format error" );
+	    })
+	}
+
 	return this.response({
 	    res,
 	    success: false,
 	    statusCode: 500,
-	    message: err.message
+	    message: msg 
 	});
     }
 }

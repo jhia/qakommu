@@ -145,28 +145,21 @@ controller.getExhibitorByEvent = async function (req, res) {
         const data = await this.db.exhibitor.findAll({
             limit,
             offset,
-            attributes: ['id'],
+            attributes: ['id','description','active'],
             order,
             where: {
-				id_event,
-				active: true
+				id_event
             },
             include: [
                 {
-                    attributes: ['name', 'description','cost','size_width','size_height', 'currency_symbol'],
+                    attributes: ['id','name', 'description','active','cost','size_width','size_height', 'currency_symbol'],
                     model: this.db.type_booth,
-                    as: 'type_booth',
-                    where:{
-                        active: true
-                    }
+                    as: 'type_booth'
 				},
 				{
-					attributes: ['name', 'description', 'registry_number', 'logo','host','web'],
+					attributes: ['id','name', 'description', 'active','registry_number', 'logo','host','web'],
                     model: this.db.partnership,
-                    as: 'partnership',
-                    where:{
-                        active: true
-                    }
+                    as: 'partnership'
 				}
             ]
         });
@@ -177,7 +170,6 @@ controller.getExhibitorByEvent = async function (req, res) {
         });
 
     } catch (error) {
-		console.log(error);
         this.response({
             res,
             success: false,
