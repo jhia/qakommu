@@ -1,7 +1,5 @@
-
 'use strict';
-const _ = require('lodash');
-const utils = require('./utilities');
+
 const db = require('../models')
 
 function base(name) {
@@ -9,10 +7,9 @@ function base(name) {
 	this.db = db;
 	this.moduleName = name;
 
-	if (_.has(this.db, name))
+	if (this.db.hasOwnProperty(name) && !!this.db[name]) {
 		this.model = this.db[this.moduleName];
-
-	this.response = utils.response;
+	}
 }
 
 base.prototype.getFunc = function (req, res) {
@@ -50,7 +47,7 @@ base.prototype.update = async function (data) {
 	const { id } = data;
 	if (!id) throw new Error("id is needed");
 
-	const fillables = _.keys(data.data);
+	const fillables = Object.keys(data.data);
 	const result = await this.model.update(data.data,
 		{
 			fields: fillables,
@@ -69,10 +66,9 @@ base.prototype.update = async function (data) {
 }
 
 base.prototype.insert = async function (data) {
-	const fillables = _.keys(data)
 	const res = await this.db[this.moduleName].create(data, {
 		retuning: true,
-		fields: fillables
+		fields: Object.keys(cleanData)
 	});
 	return res;
 }

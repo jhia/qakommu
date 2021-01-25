@@ -4,47 +4,28 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const env =  process.env.NODE_ENV || 'development';
-const { production, development } = require('./config/config');
+const config = require('./config/config')[env];
 const db = {};
 
 let sequelize = null;
 
-if (!sequelize) {
-  const { DATABASE_URL } = process.env;
-  if (!!DATABASE_URL) {
-    sequelize = new Sequelize(DATABASE_URL);
-  } else {
-    const database = env === 'production' ? production : development;
-    sequelize = new Sequelize(
-      database.database, 
-      database.username, 
-      database.password,
-      database);
-  }
-(function connectionVerify(){
-  let retries = 5;
-  let verify = function(){
-    console.log(`try number ${retries} to connect to the database`);
-    
-    if(!retries) return;
-
-    sequelize
-      .authenticate()
-      .then(()=>{
-        console.log("Successfully connected to the database");
-        retries = 0;
-      })
-      .catch( async err =>{
-        console.log(err);
-        setTimeout(verify,5000);
-      });
-      retries -= 1;
-  };
-  verify();
-
-})();
+if(config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
 }
- 
+
+sequelize.authenticate().catch(() => {
+  if(env !== 'production') {
+    throw err; // connection error, please reset connection
+  }
+})
+
 fs
   .readdirSync(__dirname+'/modules')
   .forEach( moduleName => {
