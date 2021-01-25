@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert([
+    return queryInterface.bulkInsert('communities', [
       {
         id: 1,
         name: "python",
@@ -21,7 +21,7 @@ module.exports = {
         code: "8OTUHR",
         is_private: false
       }
-    ], { ignoreOnDuplicate: true })
+    ], { ignoreOnDuplicates: true })
   },
 
   down: (queryInterface, Sequelize) => {

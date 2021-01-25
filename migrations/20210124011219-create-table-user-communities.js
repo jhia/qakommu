@@ -30,6 +30,17 @@ module.exports = {
         },
         allowNull: false
       },
+      membershipId: { // default is basic
+        field: 'id_membership',
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: {
+            tableName: 'memberships'
+          },
+          key: 'id'
+        },
+        defaultValue: 1
+      },
       approvedBy: { //only for private communities
         field: 'id_approved_by',
         type: Sequelize.DataTypes.INTEGER,
@@ -43,13 +54,11 @@ module.exports = {
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false,
         defaultValue: Sequelize.DataTypes.NOW,
         field: 'created_at'
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false,
         defaultValue: Sequelize.DataTypes.NOW,
         field: 'updated_at'
       }

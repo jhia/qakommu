@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 	    foreignKey: "id_schedule",
 	});
 
-	schedule.belongsTo(models.User,{
+	schedule.belongsTo(models.user,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});

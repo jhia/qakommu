@@ -2,19 +2,21 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.bulkInsert('memberships', [
+    return queryInterface.bulkInsert('memberships', [
       {
         id: 1,
         name: 'Basic',
         description: 'Covers the basic usage, no extras',
         price: 0,
         free: true,
-        duration: -1 //no renew needed, forever
+        duration: -1, //no renew needed, forever
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], { ignoreOnDuplicates: true });
   },
 
   down: (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete('memberships', null, {})
+    return queryInterface.bulkDelete('memberships', null, {})
   }
 };

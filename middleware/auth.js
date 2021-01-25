@@ -6,12 +6,17 @@ const {user,user_type,role,permission,resource,community,event} = db
 
 const permissionsVerification = async function (req, res, next){
     
-    if ((req.url).split("/")[1]=="uploads") {
+    if ((req.url).split("/")[1] === "uploads") {
         return next();
     }
 
-    // para saltarse el auth
+    // TODO: REMOVE IT
     if (req.headers.skip) {
+        return next();
+    }
+
+    // get endpoint from country or language api
+    if (/^\/api\/(country|language)\/?/.test(req.url)) {
         return next();
     }
 
@@ -24,7 +29,7 @@ const permissionsVerification = async function (req, res, next){
         let community_id
 
     
-        if (name_module[2]=="community") {
+        if (name_module[2] === "community") {
             community_id = name_module[3];
         }
 
@@ -132,7 +137,7 @@ const permissionsVerification = async function (req, res, next){
     }
 
     if (!validate()) {
-        return url==req.baseUrl;
+        return url===req.baseUrl;
     }
     else{
         req.userData = decoded;

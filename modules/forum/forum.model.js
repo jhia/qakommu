@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
     forum.associate = function(models){
 
-	forum.belongsTo(models.User,{
+	forum.belongsTo(models.user,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'communities'
 	});
 
-	forum.belongsToMany(models.User, {
+	forum.belongsToMany(models.user, {
 	    as: "userss",
 	    through: "my_forum",
 	    foreignKey: "id_forum",

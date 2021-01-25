@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     speaker.associate = function(models){
         //To create model associations
         //speaker to user
-        speaker.belongsTo(models.User, {
+        speaker.belongsTo(models.user, {
             foreignKey: 'id_user',
             as: 'user'
         });

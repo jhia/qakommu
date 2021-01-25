@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'topics'
 	});
 
-	comment_topic.belongsTo(models.User,{
+	comment_topic.belongsTo(models.user,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});

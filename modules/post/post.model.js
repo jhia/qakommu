@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'communities'
         });
 
-        post.belongsTo(models.User,{
+        post.belongsTo(models.user,{
             foreignKey: 'id_user',
             as: 'users'
         });

@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'event'
         });
 
-        attendee.belongsTo(models.User, {
+        attendee.belongsTo(models.user, {
             foreignKey: 'id_user',
             as: 'user'
         });

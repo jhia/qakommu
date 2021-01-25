@@ -2,8 +2,7 @@
 const Model = require('sequelize').Model;
 
 module.exports = (sequelize, DataTypes) => {
-  class Language extends Model {}
-  Language.init({
+  const Language = sequelize.define('language', {
     name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -15,10 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     timestamps: false,
-    sequelize,
-    modelName: 'Language',
     tableName: 'languages',
   })
 
+  Language.associates = (models) => {
+
+  }
+  
   return Language;
 }

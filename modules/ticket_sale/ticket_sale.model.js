@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'ticket'
         });
 
-        ticket_sale.belongsTo(models.User, {
+        ticket_sale.belongsTo(models.user, {
             foreignKey: 'id_user',
             as: 'user'
         });

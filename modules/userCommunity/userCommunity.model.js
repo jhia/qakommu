@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         approvedBy: { //only for private communities
+            field: 'id_membership',
+            type: DataTypes.INTEGER,
+            defaultValue: 1
+        },
+        approvedBy: { //only for private communities
             field: 'id_approved_by',
             type: DataTypes.INTEGER,
             allowNull: true,
@@ -26,18 +31,22 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         sequelize,
-        modelName: 'UserCommunity',
+        modelName: 'userCommunity',
         tableName: 'user_communities'
     })
 
     UserCommunity.associate = function(models){
+        UserCommunity.belongsTo(models.membership, {
+            foreignKey: 'id_membership',
+            as: 'membership'
+        })
         //To create model associations
-        UserCommunity.belongsTo(models.User, {
+        UserCommunity.belongsTo(models.user, {
             foreignKey: 'id_user',
             as: 'user'
         });
 
-        UserCommunity.belongsTo(models.Community, {
+        UserCommunity.belongsTo(models.community, {
             foreignKey: 'id_community',
             as: 'community'
         });

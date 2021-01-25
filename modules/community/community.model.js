@@ -37,13 +37,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		sequelize,
-		modelName: 'Community',
+		modelName: 'community',
 		tableName: 'communities'
 	})
 
 	Community.associate = function (models) {
 		// associations can be defined here
-		Community.belongsToMany(models.User, {
+		Community.belongsToMany(models.user, {
 			as: 'members',
 			through: "user_communities",
 			foreignKey: "id_community",

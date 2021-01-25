@@ -38,6 +38,16 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         field: 'is_private'
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.DataTypes.NOW,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.DataTypes.NOW,
+        field: 'updated_at'
       }
     })
   },
