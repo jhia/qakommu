@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     post.associate = function(models){
         //To create model associations
         
-        post.belongsTo(models.Community,{
+        post.belongsTo(models.community,{
             foreignKey: 'id_community',
             as: 'communities'
         });

@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         //event to community
-        event.belongsTo(models.Community, {
+        event.belongsTo(models.community, {
             foreignKey: 'community_id',
             as: 'community'
         });

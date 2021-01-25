@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'users'
 	});
 
-	schedule.belongsTo(models.Community,{
+	schedule.belongsTo(models.community,{
 	    foreignKey: 'id_community',
 	    as: 'communities'
 	});

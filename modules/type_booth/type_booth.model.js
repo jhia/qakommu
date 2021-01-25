@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         //type_booth to community
-        type_booth.belongsTo(models.Community, {
+        type_booth.belongsTo(models.community, {
             foreignKey: 'id_community',
             as: 'community'
         });

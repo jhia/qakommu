@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
 
-        user_type.belongsTo(models.Community,{
+        user_type.belongsTo(models.community,{
             foreignKey: 'id_community',
             as: 'communities'
         });

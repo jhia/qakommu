@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         // track to module
-        track.belongsTo(models.Community, {
+        track.belongsTo(models.community, {
             foreignKey: 'id_community',
             as: 'community'
         });

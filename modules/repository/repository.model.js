@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     repository.associate = function (models) {
-	repository.belongsTo(models.Community, {
+	repository.belongsTo(models.community, {
 	    foreignKey: 'id_community',
 	    as: 'community'
 	});
