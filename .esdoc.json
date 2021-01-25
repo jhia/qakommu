@@ -1,0 +1,9 @@
+{
+  "source": "./",
+  "includes": ["\\.js$"],
+  "excludes": ["^(node_modules|docs|test|postman|kommu-modules-creator|config|Gruntfile.js)"],
+  "destination": "./docs",
+  "plugins": [
+    { "name": "esdoc-standard-plugin" }
+  ]
+}
