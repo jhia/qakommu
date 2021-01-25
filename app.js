@@ -2,16 +2,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const api_router = require('./routes');
-const db = require('./models');
-const loadtables = require('./seeders')
 const cors = require('cors');
 const auth = require('./middleware/auth');
 const fileUpload = require('express-fileupload');
 
-
-
-db.sequelize.sync( {force: true} )
-.then(loadtables)
 
 const app = express();
 //MIDDLEWARE

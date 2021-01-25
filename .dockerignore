@@ -1,6 +1,8 @@
 node_modules
 npm-debug.log
+docs
 Dockerfile
+Dockerfile.test
 .dockerignore
 .gitignore
 app.zip
