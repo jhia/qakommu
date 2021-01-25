@@ -19,7 +19,7 @@ router.get('/:id?',function(req, res){
 });
 
 router.post('/',(req, res) => {
-  ///HTTP post route
+  ///HTTP post route: Add user
   userController.postFunc(req,res);
 });
 

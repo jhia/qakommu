@@ -20,9 +20,6 @@ app.use(fileUpload({
 }));
 app.use('/uploads', express.static('upload'));
 
-const register = require('./modules/register/register.router')
-app.use('/register', register);
-
 
 
 const login = require('./modules/login/login.router')

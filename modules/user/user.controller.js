@@ -2,6 +2,8 @@
 
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
+const Response = require('../../http/response')
+const ResponseError = require('../../http/response')
 const controller = new Base('user');
 const jwt = require('jsonwebtoken');
 const { makeid, verify_and_upload_image_put, upload_images,  delete_image, dynamic_host } = require('../../helpers/utilities')
@@ -101,14 +103,10 @@ controller.postFunc = async function (req, res) {
 	    });
 	}
     } catch (error) {
+			
 
-	this.response({
-	    res,
-	    success: false,
-	    statusCode: 500,
-	    message: 'something went wrong',
-	});
-    }
+			Response.from(res).send(new ResponseError(401, 'Try again later'))
+		}
 }
 
 

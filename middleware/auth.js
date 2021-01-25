@@ -20,6 +20,10 @@ const permissionsVerification = async function (req, res, next){
         return next();
     }
 
+    if(/^\/api\/user\/?$/.test(req.url) && req.method === 'POST') {
+        return next();
+    }
+
 
     try {
         const name_module = (req.url).split("/")    
