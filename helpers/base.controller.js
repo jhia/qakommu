@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../models')
+const Response = require('../http/response');
 
 function base(name) {
 	//controller constructor
@@ -13,29 +14,20 @@ function base(name) {
 }
 
 base.prototype.getFunc = function (req, res) {
-	this.response({
-		res,
-		message: 'Everything is ok!'
-	});
+	Response.from(res).send();
 }
 
 base.prototype.postFunc = async function (req, res) {
 	const id = await this.insert(req.body);
 	if (id) {
-		this.response({
-			res,
-			payload: [id]
-		})
+		Response.from(res).send([id]);
 	}
 }
 
 base.prototype.putFunc = async function (req, res) {
 	const id = await this.update(req.body);
 	if (id) {
-		this.response({
-			res,
-			payload: [id]
-		})
+		Response.from(res).send([id])
 	}
 }
 

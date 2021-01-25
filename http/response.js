@@ -77,6 +77,13 @@ class Response {
       });
   }
 
+  /**
+   * Create a new response
+   * @param {*} res from HTTP/Express response
+   */
+  static from(res) {
+    return new Response(res);
+  }
 }
 
 module.exports = Response;
