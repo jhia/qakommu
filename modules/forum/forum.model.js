@@ -12,17 +12,17 @@ module.exports = (sequelize, DataTypes) => {
 
     forum.associate = function(models){
 
-	forum.belongsTo(models.user,{
+	forum.belongsTo(models.User,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});
 
-	forum.belongsTo(models.community,{
+	forum.belongsTo(models.Community,{
 	    foreignKey: 'id_community',
 	    as: 'communities'
 	});
 
-	forum.belongsToMany(models.user, {
+	forum.belongsToMany(models.User, {
 	    as: "userss",
 	    through: "my_forum",
 	    foreignKey: "id_forum",

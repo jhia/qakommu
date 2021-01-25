@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             as: "event"
         });
 
-        survey.belongsTo(models.community, {
+        survey.belongsTo(models.Community, {
             foreignKey: 'id_community',
             as: "community"
         });

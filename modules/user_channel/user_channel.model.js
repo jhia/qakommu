@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'channels'
         });
 
-        user_channel.belongsTo(models.user,{
+        user_channel.belongsTo(models.User,{
             foreignKey: 'id_user',
             as: 'users'
         });

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 	    as: 'forums'
 	});
 
-	topic.belongsTo(models.user,{
+	topic.belongsTo(models.User,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});

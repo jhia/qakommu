@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     data.associate = function(models){
         //To create model associations
         
-        data.belongsTo(models.user, {
+        data.belongsTo(models.User, {
             foreignKey: 'id_user',
             as: 'user'
         });

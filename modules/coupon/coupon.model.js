@@ -107,7 +107,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'exhibitor'
         });
 
-        coupon.belongsTo(models.user, {
+        coupon.belongsTo(models.User, {
             foreignKey: 'id_user',
             as: 'user'
         });

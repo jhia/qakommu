@@ -22,12 +22,12 @@ module.exports = (sequelize, DataTypes) => {
 	    foreignKey: "id_schedule",
 	});
 
-	schedule.belongsTo(models.user,{
+	schedule.belongsTo(models.User,{
 	    foreignKey: 'id_user',
 	    as: 'users'
 	});
 
-	schedule.belongsTo(models.community,{
+	schedule.belongsTo(models.Community,{
 	    foreignKey: 'id_community',
 	    as: 'communities'
 	});

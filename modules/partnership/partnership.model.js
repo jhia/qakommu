@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         //To create model associations
 
         //partnership to community
-        partnership.belongsTo(models.community, {
+        partnership.belongsTo(models.Community, {
             foreignKey: 'id_community',
             as: 'community'
         });

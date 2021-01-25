@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     user_type.associate = function(models){
-        user_type.belongsTo(models.user,{
+        user_type.belongsTo(models.User,{
             foreignKey: 'id_user',
             as: 'users'
         });
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
 
-        user_type.belongsTo(models.community,{
+        user_type.belongsTo(models.Community,{
             foreignKey: 'id_community',
             as: 'communities'
         });

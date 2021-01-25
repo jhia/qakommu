@@ -17,12 +17,12 @@ module.exports = (sequelize, DataTypes) => {
     post.associate = function(models){
         //To create model associations
         
-        post.belongsTo(models.community,{
+        post.belongsTo(models.Community,{
             foreignKey: 'id_community',
             as: 'communities'
         });
 
-        post.belongsTo(models.user,{
+        post.belongsTo(models.User,{
             foreignKey: 'id_user',
             as: 'users'
         });
