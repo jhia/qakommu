@@ -18,6 +18,7 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
+app.uset('secret', process.env.SECRET || 'secret')
 app.use('/uploads', express.static('upload'));
 
 
