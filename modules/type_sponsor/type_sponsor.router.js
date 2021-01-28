@@ -23,6 +23,13 @@ router.get('/community/:id_community',function(req, res){
   type_sponsorController.getTypeSponsorByCommunity(req,res);
 });
 
+
+router.get('/community/:id_community/count',function(req, res){
+  //HTTP get route
+  type_sponsorController.getCountTypeSponsorByCommunity(req,res);
+});
+
+
 router.post('/',(req, res) => {
   ///HTTP post route
   type_sponsorController.postFunc(req,res);

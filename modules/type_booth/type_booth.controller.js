@@ -16,14 +16,14 @@ const controller = new Base('type_booth');
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { limit, offset, order, attributes } = req.body;
+    const { limit, offset } = req.query;
     try {
         const data = await this.getData({
             id,
             limit,
             offset,
-            attributes,
-            order
+            attributes: ['id', 'name', 'description', 'cost', 'size_width', 'size_height', 'active', 'currency_symbol', 'id_community'],
+            order: [['id', 'DESC']]
         });
         this.response({
             res,
@@ -182,17 +182,17 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
-//--------------------sepcial functions--------------------
+//--------------------special functions--------------------
 
 controller.getTypeBoothByCommunity = async function (req, res) {
     const { id_community } = req.params;
-    const { limit, offset, order } = req.body;
+    const { limit, offset } = req.query;
     try {
         const data = await this.db.type_booth.findAll({
             limit,
             offset,
             attributes: ['id', 'name', 'description', 'cost', 'size_width', 'size_height', 'active', 'currency_symbol', 'id_community'],
-            order,
+            order: [['id', 'DESC']],
             where: {
                 id_community
             }
@@ -211,6 +211,32 @@ controller.getTypeBoothByCommunity = async function (req, res) {
         });
     }
 }
+
+controller.getCountTypeBoothByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    try {
+        const data = await this.db.type_booth.count({
+            where: {
+                id_community
+            }
+        });
+        this.response({
+            res,
+            payload: {
+                count: data
+            }
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
+}
+
 
 controller.deleteMultiple = async function (req, res) {
     const { ids } = req.body;
