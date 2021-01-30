@@ -25,6 +25,11 @@ router.get('/community/:id_community',function(req, res){
 });
 
 
+router.get('/community/:id_community/count',function(req, res){
+  //HTTP get route
+  partnershipController.getCountPartnershiptByCommunity(req,res);
+});
+
 
 router.post('/',(req, res) => {
   ///HTTP post route
