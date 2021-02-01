@@ -5,6 +5,10 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
     class Membership extends Model {}
     Membership.init({
+        communityId: {
+            field: 'id_community',
+            type: DataTypes.INTEGER
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -31,12 +35,28 @@ module.exports = (sequelize, DataTypes) => {
         free: {
             type: DataTypes.BOOLEAN,
             defaultValue: true
-        }
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            field: 'created_by'
+          },
     }, {
         sequelize,
         modelName: 'membership',
         tableName: 'memberships'
     })
+
+    Membership.associate = function(models) {
+        Membership.belongsTo(models.community, {
+            foreignKey: 'id_community',
+            as: 'community'
+        })
+        Membership.belongsTo(models.user, {
+            foreignKey: 'createdBy',
+            as: 'creator'
+        })
+    }
 
     return Membership;
 }

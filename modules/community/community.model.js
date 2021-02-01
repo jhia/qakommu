@@ -2,8 +2,7 @@
 const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-	class Community extends Model {}
-	Community.init({
+	const Community = sequelize.define('community', {
 		name: {
 			type: DataTypes.STRING,
 			allowNull: false
@@ -36,8 +35,6 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'is_private'
 		}
 	}, {
-		sequelize,
-		modelName: 'community',
 		tableName: 'communities'
 	})
 
@@ -91,6 +88,35 @@ module.exports = (sequelize, DataTypes) => {
 		});
 
 	};
+
+	Community.exists = async function (id) {
+		if(!id) {
+			throw new Error('Country ID is required')
+		}
+		const community = await this.findByPk(id, { attributes: ['id'] })
+		return !!community;
+	},
+
+	Community.validateCode = async function (code) {
+		if(!code) {
+			throw new Error('Community code is required')
+		}
+		const community = await this.findOne({
+			code
+		})
+		return !!community;
+	},
+
+	Community.findByCode = function (code) {
+		if(!code) {
+				throw new Error('Invitation code is required')
+		}
+		return this.findOne({
+				where: {
+					code
+				}
+		})
+}
 
 	return Community;
 };

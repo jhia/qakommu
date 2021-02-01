@@ -17,6 +17,17 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'languages',
   })
 
+  Language.findByCode = function (code) {
+    if(!code) {
+        throw new Error('Language code is required')
+    }
+    return this.findOne({
+        where: {
+            code
+        }
+    })
+  }
+
   Language.associates = (models) => {
 
   }

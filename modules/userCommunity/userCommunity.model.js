@@ -15,10 +15,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        approvedBy: { //only for private communities
+        membershipId: { //only for private communities
             field: 'id_membership',
             type: DataTypes.INTEGER,
             defaultValue: 1
+        },
+        approved: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         },
         approvedBy: { //only for private communities
             field: 'id_approved_by',

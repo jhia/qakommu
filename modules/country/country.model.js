@@ -3,10 +3,7 @@ const { Model, Deferrable } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
     const Language = require('../language/language.model')(sequelize, DataTypes)
-
-    class Country extends Model {}
-
-    Country.init({
+    const Country = sequelize.define('country', {
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -33,11 +30,28 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     }, {
-        timestamps: false,
-        sequelize,
-        modelName: 'country',
         tableName: 'countries',
-    });
+        timestamps: false
+    })
+
+    Country.exists = async function (id) {
+        if(!id) {
+            throw new Error('Country ID is required')
+        }
+        const country = await this.findByPk(id, { attributes: ['id'] })
+        return !!country;
+    }
+
+    Country.findByCode = function (code) {
+        if(!code) {
+            throw new Error('Country code is required')
+        }
+        return this.findOne({
+            where: {
+                alphaCode3: code
+            }
+        })
+    }
 
     return Country;
 }
