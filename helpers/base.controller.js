@@ -60,7 +60,7 @@ base.prototype.update = async function (data) {
 base.prototype.insert = async function (data) {
 	const res = await this.db[this.moduleName].create(data, {
 		retuning: true,
-		fields: Object.keys(cleanData)
+		fields: Object.keys(data)
 	});
 	return res;
 }
@@ -89,8 +89,7 @@ base.prototype.getData = async function (data) {
 }
 
 
-base.prototype.delete = async function (data) {
-	const { id } = data;
+base.prototype.delete = async function (id) {
 	const row = await this.model.destroy({
 		where: {
 			id
