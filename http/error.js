@@ -50,6 +50,10 @@ class ResponseError extends Error {
     delete(this.payload[name]);
   }
 
+  hasContext() {
+    return Object.keys(this.payload).length > 0;
+  }
+
 }
 
 module.exports = ResponseError;

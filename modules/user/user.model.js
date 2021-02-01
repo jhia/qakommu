@@ -7,21 +7,12 @@ function encrypt_password(password) {
 	return bcrypt.hashSync(newPassword, saltRounds);
 }
 
-const { Model } = require('sequelize')
-
 module.exports = (sequelize, DataTypes) => {
 
 	const Language = require('../language/language.model')(sequelize, DataTypes);
 	const Country = require('../country/country.model')(sequelize, DataTypes);
 
-	class User extends Model {
-
-		static comparePasswords(password) {
-			return bcrypt.compareSync(password, this.password);
-		}
-	}
-
-	User.init({
+	const User = sequelize.define('user', {
 		firstName: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -42,9 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'profile_photo'
 		},
 		organization: DataTypes.STRING, // only if needed, cooler if this is a datalist
-		jobTitle: {
+		occupation: {
 			type: DataTypes.STRING, // cooler if this is a datalist
-			field: 'job_title'
+			allowNull: false,
+			field: 'occupation'
 		},
 		countryId: {
 			field: 'id_country',
@@ -90,18 +82,7 @@ module.exports = (sequelize, DataTypes) => {
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			validate: {
-				//isEmail: true
-			    isEmail: true 
-			},
-			unique: {
-				args: true,
-				msg: 'Email address already in use!'
-			}
-		},
-		password: {
-			type: DataTypes.STRING,
-			allowNull: false
+			unique: true
 		},
 		active: {
 			type: DataTypes.BOOLEAN,
@@ -126,13 +107,11 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 	}, {
-		sequelize,
-		modelName: 'user',
-		tableName: 'users'
+		tableName: 'users',
 	})
 
 
-	User.associate = function (models) {
+	User.associates = function (models) {
 		// associations can be defined here
 		User.belongsToMany(models.community, {
 			as: 'communities',
@@ -190,6 +169,113 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "id_user",
  		});
 	};
+
+	User.findByUsername = function (username) {
+		if(!username) {
+			throw new Error('Username is required')
+		}
+		return this.findOne({
+			where: {
+				username
+			}
+		})
+	}
+	
+	User.validateFirstName = function (value) {
+		if(!value) {
+			throw new Error('First name is required')
+		}
+		return typeof value === typeof '' &&
+			!/[.,-_\\/*$%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+	}
+
+	User.validateLastName = function (value) {
+		if(!value) {
+			throw new Error('Last name is required')
+		}
+		return typeof value === typeof '' &&
+			!/[.,-_\\/*$%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+	}
+
+	User.validateBirthdate = function (value) {
+		if(!value) {
+			throw new Error('Date of birth is required')
+		}
+		return validateDate(value);
+	}
+
+	User.validateGender = function (value) {
+		if(!value) {
+			throw new Error('Gender is required')
+		}
+		return ['M', 'F', 'O'].includes(value.toUpperCase())
+	}
+
+	User.validateOccupation = function (value) {
+		if(!value) {
+			throw new Error('Occupation is required')
+		}
+		return typeof value === typeof '' && value.length >= 3;
+	}
+
+	User.validateOrganization = function (value) {
+		return !!value && typeof value === typeof '' && value.length >= 3;
+	}
+
+	User.validateZipCode = function (value) {
+		const regex = /^[a-z\d\-\s]+$/i;
+		return regex.test(value);
+	}
+
+	User.validateUsername = async function (value) {
+		const regex = /^[a-z\d._]+$/i;
+		if(!value) {
+			throw new Error('Username is required')
+		}
+		if(!regex.test(value)) {
+			throw new Error('Username has unvalid characters')
+		}
+		try {
+			const user = await this.findOne({
+				where: { username: value },
+				attributes: ['username']
+			})
+			return !user;
+		} catch (err) {
+			throw new Error('Try again later'); // connection error
+		}
+	}
+
+	User.validateEmail = async function (value) {
+		if(!value) {
+			throw new Error('Email is required')
+		}
+		if(!validateEmail(value)) {
+			throw new Error('Email has unvalid characters')
+		}
+		try {
+			const user = await this.findOne({
+				where: { email: value },
+				attributes: ['email']
+			})
+			return !user;
+		} catch (err) {
+			throw new Error('Try again later'); // connection error
+		}
+	}
+
+	User.validatePassword = function (value) {
+		if(!password) {
+			throw new Error('Password is required')
+		}
+		const regex1 = /[a-zA-Z0-9]{8,}/;
+		const regex2 = /[0-9]{1,}/;
+		return regex1.test(value) && regex2.test(value);
+	}
+
+	User.prototype.comparePasswords = function (password) {
+		return bcrypt.compareSync(password, this.password);
+	}
 
 	return User;
 };

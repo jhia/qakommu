@@ -18,14 +18,15 @@ app.use(cookieParser());
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
-app.uset('secret', process.env.SECRET || 'secret')
+app.set('secret', process.env.SECRET || 'secret')
 app.use('/uploads', express.static('upload'));
 
 
 
 const login = require('./modules/login/login.router')
+const authorize = require('./modules/authorize/authorize.router');
 app.use('/auth', login);
-
+app.use('/authorize', authorize);
 app.use(auth)
 
 app.use('/api', api_router);

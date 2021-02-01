@@ -1,17 +1,24 @@
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
-const db = require('../models');
+const { user: User } = require('../models');
+const { Response, ResponseError } = require('../http');
 
-const {user,user_type,role,permission,resource,community,event} = db
-
-const permissionsVerification = async function (req, res, next){
+/**
+ * First Middleware: verification
+ * If this is a valid token
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ * @param {function} next 
+ */
+const permissionsVerification = async function (req, res, next) {
+    const authorizationError = new ResponseError(401);
+    const response = Response.from(res);
     
     if ((req.url).split("/")[1] === "uploads") {
         return next();
     }
 
-    // TODO: REMOVE IT
-    if (req.headers.skip) {
+    if(/^\/(auth|authorize)/.test(req.url)) {
         return next();
     }
 
@@ -24,134 +31,29 @@ const permissionsVerification = async function (req, res, next){
         return next();
     }
 
+    let bearer = req.headers.Authorization || req.headers.authorization;
+
+    if(!bearer) {
+        return response.send(authorizationError);
+    }
+
+    let token = bearer.split(' ')[1];
+
+    if(!token) {
+        return response.send(authorizationError);
+    }
 
     try {
-        const name_module = (req.url).split("/")    
-        const token = req.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, 'secret');
-        const name_action = req.method
-        let community_id
+        const decoded = jwt.verify(token, req.app.get('secret'));
 
-    
-        if (name_module[2] === "community") {
-            community_id = name_module[3];
+        let user = await User.findByPk(decoded.user, { attributes: ['id', 'email', 'username']})
+        if(!user) {
+            return response.send(authorizationError);
         }
-
-
-        if (name_module[2]=="event" && name_module[3]) {
-			let query_event = await event.findOne({
-				where: { id: name_module[3] }
-			});
-            community_id = query_event.id_community;
-        }
-
-
-
-        if (name_module[2]=="user" && name_module[3]) {
-            const result2 = await user.findOne({
-				where: { id: name_module[3] },
-                include: [{
-                    model: user_type,
-                    as: 'user_types'
-                }]
-            });
-            community_id = result2.user_types[0].id_community
-        }
-
-
-
-        const result2 = await user.findOne({
-            where: {
-                email: decoded.email
-            },
-
-            include: [{
-                model: user_type,
-                as: 'user_types'
-            }]
-        });
-
-
-
-
-        if (!name_module[3]) {
-            community_id = result2.user_types[0].id_community
-        }
-
-        if (name_module[3]) {
-            community_id = result2.user_types[0].id_community
-        }
- 
-
-        const result = await user.findOne({
-            where: {
-                email: decoded.email
-            },
-
-            include: [{
-                model: user_type,
-                as: 'user_types',
- 
-                where: {
-                    id_community: community_id
-                },
-                 
-                include: [{
-                    model: role,
-                    as: 'roles',
-                    include: [{
-                        model: permission,
-                        as: 'permissions',
-                        include: [{
-                            model: resource,
-                            as: 'resources',
-                            where: {
-                                name: name_module
-                            },
-                        }]                                
-                    }],                    
-                }],
-            }]
-        });    
-
-
-    function validate(){
-
-        const { _create, _read, _update, _delete } = result.user_types[0].roles.permissions[0]
-
-
-        switch (name_action.toUpperCase()) {
-            case 'POST':
-                return _create;
-                break;
-        
-            case 'GET':
-                return _read;
-                    break;
-       
-            case 'PUT':
-                return _update;
-                    break;
-
-            case 'DELETE':
-                return _delete;
-                    break;
-        }
-
-    }
-
-    if (!validate()) {
-        return url===req.baseUrl;
-    }
-    else{
-        req.userData = decoded;
-    }
-
-    next();
-    } catch (error) {
-        return res.status(401).json({
-            message: 'Auth failed'
-        });
+        req.user = user;
+        next();
+    } catch {
+        return response.send(authorizationError);
     }
 }
 

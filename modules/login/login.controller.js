@@ -1,85 +1,69 @@
 'use strict'
 
 const _ = require('lodash');
-const Base = require('../../helpers/base.controller');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
-const controller = new Base('login');
-const db = require('../../models')
-const {user,user_type,role,permission,resource} = db
+const randToken = require('rand-token');
 
-controller.postFunc = async function(req,res){
-    const email = req.body.email || '';
-    const result = await user.findOne({
-        where: {
-            email,
-            active: true
-        },
-        include: [{
-            model: user_type,
-            as: 'user_types',
-            include: [{
-                model: role,
-                as: 'roles',
-                include: [{
-                    model: permission,
-                    as: 'permissions',
-                    include: [
-                        {
-                            model: resource,
-                            as: 'resources'
-                        }
+const { user: User, authorize:Authorize } = require('../../models');
+const {Response, ResponseError } = require('../../http');
+const { validateEmail, validateLoginPassword } = require('../../helpers/validations');
 
-                    ]
-                }]
-            }]
-        }]
-    });
+exports.signUpEmail = async function (req,res) {
 
-    if (!result) {
-        return this.response({
-            res,
-            success: false,
-            statusCode: 401,
-            message: 'Error email',
-        });
-    } else {
-        const { password }  = req.body;
-        const hash = await bcrypt.compare(password, result.password);
+    const { email, password } = req.body;
+    const response = new Response(res);
 
-        if (!hash) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 401,
-                message: 'Password error',
-            });
-        }
+    if(!email || !password || !validateEmail(email) || !validateLoginPassword(password)) {
+        let validationError = new ResponseError(400)
+        return response.send(validationError)
     }
 
-    const community_id = result.user_types[0].id_community;
-    const user_id = result.user_types[0].id_user;
-    let User = {
-        email: email,
-        user_id: user_id,
-        community_id: community_id
-    };
+    try {
+        const user = await User.findOne({
+            where: {
+                email,
+                active: true,
+                emailVerified: true
+            },
+            attributes: ['id', 'username', 'email', 'password']
+        });
 
-    User.token = jwt.sign(
-        User,
-        'secret',
-        {
-            expiresIn: '30d',
-            algorithm: 'HS512',
+        if(!user) {
+            let emailError = new ResponseError(400, 'This email is not registered')
+            return response.send(emailError)
         }
-    );            
 
-    return this.response({
-        res,
-        statusCode: 200,
-        payload: User.token
-    });
-};
+        if(!user.comparePasswords(password)) {
+            let passwordError = new ResponseError(400, 'Email or password incorrect')
+            return response.send(passwordError)
+        }
+        
+        const data = {
+            user: user.id,
+            username: user.username
+        }
 
-module.exports = controller;
+        const refreshToken = randToken.uid(256)
+
+        const authorize = Authorize.build({
+            refreshToken,
+            userId: user.id
+        })
+
+
+        let token = authorize.generateAccessToken(req.app.get('secret'))
+
+        await authorize.save()
+
+        return response.send({
+            ...token,
+            refreshToken
+        })
+
+    } catch ({ message }) {
+        const connectionError = new ResponseError(403)
+        console.log(message)
+        return response.send(connectionError)
+    }
+
+}
