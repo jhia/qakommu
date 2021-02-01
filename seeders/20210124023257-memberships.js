@@ -10,8 +10,7 @@ module.exports = {
         price: 0,
         free: true,
         duration: -1, //no renew needed, forever
-        created_at: new Date(),
-        updated_at: new Date()
+        created_by: 1
       }
     ], { ignoreOnDuplicates: true });
   },

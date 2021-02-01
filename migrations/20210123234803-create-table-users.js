@@ -28,9 +28,10 @@ module.exports = {
         field: 'profile_photo'
       },
       organization: Sequelize.STRING, // only if needed, cooler if this is a datalist
-      jobTitle: {
+      occupation: {
+        allowNull: false,
         type: Sequelize.STRING, // cooler if this is a datalist
-        field: 'job_title'
+        field: 'occupation'
       },
       countryId: {
         field: 'id_country',
@@ -103,13 +104,11 @@ module.exports = {
       },
       createdAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'created_at'
+        defaultValue: Sequelize.DataTypes.NOW
       },
       updatedAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'updated_at'
+        defaultValue: Sequelize.DataTypes.NOW
       }
     })
   },

@@ -8,6 +8,16 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
+      communityId: {
+        field: 'id_community',
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'communities'
+          },
+          key: 'id'
+        }
+      },
       name: {
         type: Sequelize.STRING,
         allowNull: false
@@ -37,13 +47,11 @@ module.exports = {
       },
       createdAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'created_at'
+        defaultValue: Sequelize.DataTypes.NOW
       },
       updatedAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'updated_at'
+        defaultValue: Sequelize.DataTypes.NOW
       }
     })
   },

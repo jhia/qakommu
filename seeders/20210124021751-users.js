@@ -1,6 +1,5 @@
 'use strict';
 
-const { sequelize } = require("../models");
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -15,27 +14,25 @@ module.exports = {
 
       return queryInterface.bulkInsert('users', [
         {
-          "first_name": "John Maximilian",
-          "last_name": "Vail Brown",
-          "username": "j_vail983",
-          "email": "j_vail983@kommu.com",
+          "id": 1,
+          "first_name": "Kommu",
+          "last_name": "Community",
+          "username": "kommu",
+          "email": "hello@kommu.com",
           "phone_number": "3146498261",
           "phone_code": "1",
           "birthdate": "1983-12-12T00:00:00+00:00",
-          "gender": "M",
+          "gender": "O",
           "id_country": country,
           "id_language": language,
-          "city": "Missouri",
-          "zip_code": "63146",
-          "organization": "Unifersity of Missouri",
-          "job_title": "Student",
+          "organization": "Kommu",
+          "occupation": "Owner",
           "email_verified": true,
           "profile_photo": "profile_photo_MOCI9U.png",
-          "password": "$2b$10$GSRqgYv73A/lg.X8O3k/wujYWV1GQaWFp.E6I.wSAvEwbEX1j/qdK",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
         },
         {
+          "id": 2,
           "first_name": "Shelly Eileen",
           "last_name": "Wimbley Bateman",
           "username": "s_wimbley84",
@@ -49,14 +46,13 @@ module.exports = {
           "city": "Florida",
           "zip_code": "32301",
           "organization": "personal",
-          "job_title": "owner",
+          "occupation": "owner",
           "email_verified": true,
           "profile_photo": "profile_photo_MOK123.png",
-          "password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO"
         },
         {
+          "id": 3,
           "first_name": "Patricia Chae",
           "last_name": "Ellett Meneses",
           "username": "p_ellett87",
@@ -70,14 +66,13 @@ module.exports = {
           "city": "Connecticut",
           "zip_code": "06320",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_MG9KDD.png",
-          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
         },
         {
+          "id": 4,
           "first_name": "Kenneth Harold",
           "last_name": "Varney Moore",
           "username": "k_varney88",
@@ -91,14 +86,13 @@ module.exports = {
           "city": "Connecticut",
           "zip_code": "06702",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_FTF2N2.png",
-          "password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK"
         },
         {
+          "id": 5,
           "first_name": "Alexander Bryant",
           "last_name": "Simmons Anderson",
           "username": "a_simmons85",
@@ -112,14 +106,13 @@ module.exports = {
           "city": "Hawái",
           "zip_code": "96732",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "profile_photo": "profile_photo_X7C02N.png",
           "email_verified": true,
-          "password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy"
         },
         {
+          "id": 6,
           "first_name": "Jeanette Susan",
           "last_name": "Jenkins Steiner",
           "username": "j_jenkins988",
@@ -133,14 +126,13 @@ module.exports = {
           "city": "Arizona",
           "zip_code": "85716",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "profile_photo": "profile_photo_S9PPF1.png",
           "email_verified": true,
-          "password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS"
         },
         {
+          "id": 7,
           "first_name": "Alexander Levi",
           "last_name": "Smith Brown",
           "username": "a_Smith225",
@@ -154,14 +146,13 @@ module.exports = {
           "city": "New York",
           "zip_code": "13202",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_P3PO45.png",
-          "password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu"
         },
         {
+          "id": 8,
           "first_name": "Christine Isabela",
           "last_name": "Peterson Miller",
           "username": "c_pert83",
@@ -175,14 +166,13 @@ module.exports = {
           "city": "Florida",
           "zip_code": "32501",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_RTR44U.png",
-          "password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi"
         },
         {
+          "id": 9,
           "first_name": "Camila Victoria",
           "last_name": "Rojas Brown",
           "username": "c_rojas85",
@@ -196,14 +186,13 @@ module.exports = {
           "city": "Ohio",
           "zip_code": "45402",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_B23J1J.png",
-          "password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe"
         },
         {
+          "id": 10,
           "first_name": "Robert Lucas",
           "last_name": "Taylor McIntyre ",
           "username": "r_taylor85",
@@ -217,14 +206,13 @@ module.exports = {
           "city": "Utah",
           "zip_code": "84104",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_Z543MM.png",
-          "password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu"
         },
         {
+          "id": 11,
           "first_name": "Pedro alexander",
           "last_name": "Maxwell Ransdell",
           "username": "p_max87",
@@ -238,14 +226,13 @@ module.exports = {
           "city": "Misisipi",
           "zip_code": "39208",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_OOG2PP.png",
-          "password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci"
         },
         {
+          "id": 12,
           "first_name": "Bennie Jane",
           "last_name": "Bond Stryker",
           "username": "b_bond88",
@@ -259,12 +246,10 @@ module.exports = {
           "city": "Ohio",
           "zip_code": "45402",
           "organization": "personal",
-          "job_title": "other",
+          "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_F7F7II.png",
-          "password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm",
-          created_at: new Date(),
-          updated_at: new Date()
+          "password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
         }
       ], { ignoreOnDuplicates: true })
     })

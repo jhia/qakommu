@@ -41,6 +41,10 @@ module.exports = {
         },
         defaultValue: 1
       },
+      approved: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       approvedBy: { //only for private communities
         field: 'id_approved_by',
         type: Sequelize.DataTypes.INTEGER,
@@ -54,13 +58,11 @@ module.exports = {
       },
       createdAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'created_at'
+        defaultValue: Sequelize.DataTypes.NOW
       },
       updatedAt: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.DataTypes.NOW,
-        field: 'updated_at'
+        defaultValue: Sequelize.DataTypes.NOW
       }
     })
   },

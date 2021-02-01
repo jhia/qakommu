@@ -18,7 +18,6 @@ module.exports = {
       },
       active: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
         defaultValue: true
       },
       prefix: {
@@ -42,12 +41,10 @@ module.exports = {
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.DataTypes.NOW,
-        field: 'created_at'
       },
       updatedAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.DataTypes.NOW,
-        field: 'updated_at'
       }
     })
   },
