@@ -16,3 +16,8 @@ exports.validateEmail = (email) => {
 exports.validateLoginPassword = (password) => {
   return typeof password === typeof '' && password.length > 0;
 }
+
+exports.validateDate = (value) => {
+	let regex = /^\d{4,4}-\d{2,2}-\d{2,2}$/;
+	return regex.test(value);
+}

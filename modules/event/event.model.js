@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-    const event = sequelize.define('event', {
+    const Event = sequelize.define('event', {
         id: {
 			allowNull: false,
 			autoIncrement: true,
@@ -10,95 +10,77 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             allowNull: false,
-            type: DataTypes.TEXT
+            type: DataTypes.STRING
         },
         description: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: false
         },
-        type:{
+        type: {
             allowNull: false,
             type: DataTypes.ENUM('c', 'w', 'm')
-
         },
-        id_community:{
+        communityId: {
             allowNull: false,
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            field: 'id_community'
         },
-        online:{
-            type: DataTypes.BOOLEAN
+        online: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
-        no_cfp:{
-            type: DataTypes.BOOLEAN
+        noCfp:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            field: 'no_cfp'
         },
-        url_code:{
-            type: DataTypes.TEXT
-        },
-        code:{
+        url: {
+            type: DataTypes.TEXT,
             allowNull: false,
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            field: 'url_code'
         },
-        id_webside:{
-            type: DataTypes.INTEGER
-        },
-        is_private:{
-            type: DataTypes.BOOLEAN
+        isPrivate: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            field: 'is_private'
         },
         start: {
-            type: DataTypes.DATE
+            type: DataTypes.DATE,
+            allowNull: false
         },
         end: {
-            type: DataTypes.DATE
+            type: DataTypes.DATE,
+            allowNull: false
         },
-        active:{
-            type: DataTypes.BOOLEAN
-        },/*
-        id_call_for_paper:{
-            allowNull: false,
-            type: DataTypes.INTEGER
-        },*/
-        prom_rate: {
-            type: DataTypes.FLOAT
+        active: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         },
-        id_repository:{
-            allowNull: false,
-            type: DataTypes.INTEGER
-        },
-        id_state:{
-            allowNull: false,
-            type: DataTypes.INTEGER
+        promRate: {
+            type: DataTypes.FLOAT,
+            defaultValue: 5.0,
+            field: 'prom_rate'
         },
         image: {
             type: DataTypes.STRING
         },
-        host: {
-            type: DataTypes.TEXT
-        }
+        primary_color: DataTypes.STRING,
+        secondary_color: DataTypes.STRING,
+    }, {
+        tableName: 'events'
     });
 
-    event.associate = function(models){
+    Event.associate = function(models){
         //To create model associations
-        
-        //evento to state
-        event.belongsTo(models.state, {
-            foreignKey: 'id_state',
-            as: 'state'
-        });
 
         //event to community
-        event.belongsTo(models.community, {
+        Event.belongsTo(models.community, {
             foreignKey: 'community_id',
             as: 'community'
         });
 
-        //event to repository
-        event.belongsTo(models.repository, {
-            foreignKey: 'id_repository',
-            as: 'repository'
-        });
-
         //event to sponsor
-        event.hasMany(models.sponsor, {
+        /*event.hasMany(models.sponsor, {
             foreignKey: 'id_event',
             as: 'event_sponsor'
         });
@@ -125,8 +107,38 @@ module.exports = (sequelize, DataTypes) => {
         event.hasMany(models.speaker, {
             foreignKey: 'id_event',
             as: 'event_speaker'
-        });
+        });*/
     }
 
-    return event;
+    Event.validateName = function(value) {
+        if(!value) {
+            throw new Error('Name is required')
+        }
+        return typeof value === typeof '' && value.length >= 3;
+    }
+
+    Event.validateDescription = function (value) {
+        if(!value) {
+            throw new Error('Decription is required')
+        }
+        return typeof value === typeof '' && value.length > 3;
+    }
+
+    Event.validateType = function (value) {
+        if(!value) {
+            throw new Error('Type is required')
+        }
+        return ['c', 'w', 'm'].includes(value);
+    }
+
+    Event.validateUrl = function(value) {
+        if(!value) {
+            throw new Error('URL is required');
+        }
+        let regex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+
+        return regex.text(value)
+    }
+
+    return Event;
 }

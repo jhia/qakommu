@@ -7,6 +7,8 @@ function encrypt_password(password) {
 	return bcrypt.hashSync(newPassword, saltRounds);
 }
 
+const { validateDate, validateEmail } = require('../../helpers/validations')
+
 module.exports = (sequelize, DataTypes) => {
 
 	const Language = require('../language/language.model')(sequelize, DataTypes);
@@ -111,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
 	})
 
 
-	User.associates = function (models) {
+	User.associate = function (models) {
 		// associations can be defined here
 		User.belongsToMany(models.community, {
 			as: 'communities',
@@ -119,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "id_user",
 		})
 
-		User.hasMany(models.user_channel, {
+		/*User.hasMany(models.user_channel, {
 			foreignKey: 'id_user',
 			as: 'user_channels'
 		});
@@ -167,7 +169,7 @@ module.exports = (sequelize, DataTypes) => {
 			as: "forums",
 			through: "my_forum",
 			foreignKey: "id_user",
- 		});
+ 		});*/
 	};
 
 	User.findByUsername = function (username) {
@@ -242,6 +244,7 @@ module.exports = (sequelize, DataTypes) => {
 			})
 			return !user;
 		} catch (err) {
+			console.log(err.message)
 			throw new Error('Try again later'); // connection error
 		}
 	}
@@ -265,7 +268,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 
 	User.validatePassword = function (value) {
-		if(!password) {
+		if(!value) {
 			throw new Error('Password is required')
 		}
 		const regex1 = /[a-zA-Z0-9]{8,}/;

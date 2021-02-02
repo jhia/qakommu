@@ -27,6 +27,7 @@ module.exports = {
 
 const router = require('express').Router();
 const ${name}Controller = require('./${name}.controller');
+const Response = require('../../http/response')
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
@@ -35,22 +36,22 @@ router.use((req, res, next) => {
 
 router.get('/',function(req, res){
   //HTTP get route
-  ${name}Controller.getFunc(req,res);
+  ${name}Controller.getFunc(req, new Response(res));
 });
 
 router.post('/',(req, res) => {
   ///HTTP post route
-  ${name}Controller.postFunc(req,res);
+  ${name}Controller.postFunc(req, new Response(res));
 });
 
 router.put('/',(req, res) => {
   //HTTP put route
-  ${name}Controller.putFunc(req,res);
+  ${name}Controller.putFunc(req, new Response(res));
 });
 
 router.delete('/',(req, res) => {
   //HTTP delete route
-  ${name}Controller.deleteFunc(req,res);
+  ${name}Controller.deleteFunc(req, new Response(res));
 });
 
 module.exports = router;`

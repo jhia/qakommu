@@ -1,26 +1,19 @@
 'use strict'
 
-const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
-
+const getColors = require('get-image-colors');
 const controller = new Base('event');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities')
+const { validateDate } = require('../../helpers/validations');
+const { verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities');
+const { ResponseError } = require('../../http');
+const Archive = require('../../helpers/archive');
 
-/*
-*Extend or overwrite the base functions
-*All the controllers already have implicit the models by:
-*this.db -> All models
-*this.model -> Current module model
-*/
-
-/* ---------- basic functions ---------- */
 
 controller.getFunc = async function (req, res) {
 
-    const { id } = req.params;
     const { limit, offset, order, attributes } = req.body;
     try {
-        const data = await this.getData({
+        let events = await this.getData({
             id,
             limit,
             offset,
@@ -28,93 +21,178 @@ controller.getFunc = async function (req, res) {
             order
         });
 
-        const update_logo_path = x => x.map(x => {
-            x.logo = x.logo && '/uploads/' + x.logo;
-            return x;
-        })
-        data.logo = data.logo && '/uploads/' + data.logo;
+        for(let i = 0; i < events.length; i++) {
+            if(!!events[i].image) {
+                events[i].image = Archive.fromString(events[i].image).route;
+            }
+        }
+
+        res.send(events);
 
         this.response({
             res,
             payload: id ? data : update_logo_path(data)
         });
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
+    } catch {
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
     }
 
 }
 
+controller.getOne = async function(req, res) {
+    const { id } = req.params;
+
+    if(isNaN(id)) {
+        const validationError = new ResponseError(400, 'Event id is not valid')
+        return res.send(validationError);
+    }
+
+    try {
+        const event = this.model.findByPk(id);
+        if(!!event.image) {
+            event.image = Archive.fromString(event.image).route;
+        }
+        return res.send(event);
+    } catch {
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
+    
+}
+
 
 controller.postFunc = async function (req, res) {
-    const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state } = req.body;
-    let code;
+    const {
+        name, // required
+        description, // required
+        community,
+        type, // required
+        online, // required
+        noCfp,
+        url, // required
+        isPrivate,
+        start,
+        end,
+        active,
+        promRate,
+        primaryColor,
+        secondaryColor
+    } = req.body;
+
+    const validationError = new ResponseError(400);
+
+    let eventData = {
+        name,
+        description,
+        type,
+        online,
+        url,
+        noCfp,
+        isPrivate,
+        active,
+        promRate,
+        primaryColor,
+        secondaryColor
+    }
+
     try {
-
-        if(type==='w' && !online ){
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, webinars cannot be in person'
-            });
+        if(!this.model.validateName(name)) {
+            throw new Error('Name is not valid')
         }
+    } catch ({message}) {
+        validationError.addContext('name', message)
+    }
 
-        if((type==='w' && no_cfp) || (type==='m' && no_cfp)){
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, this type of event requires us to use call for papers'
-            });
+    try {
+        if(!this.model.validateDescription(description)) {
+            throw new Error('Description is not valid')
         }
+    } catch ({message}) {
+        validationError.addContext('description', message)
+    }
 
-        let image = null;
-        const host = req.headers.host
-        const avatar = req.files ? req.files.image : null;
-        image = verify_and_upload_image_post(avatar, "event");
-        const archive = image ? image.split("_") : null;
-        let newdate = await this.insert({
-            name,
-            description,
-            id_community,
-            type,
-            online,
-            no_cfp,
-            code,
-            url_code,
-            id_webside,
-            is_private,
-            start,
-            end,
-            active,
-            //id_call_for_paper, 
-            prom_rate,
-            id_repository,
-            id_state,
-            image,
-            host
-        });
-        if (newdate) {
-            if (image) upload_images(avatar, archive[0], archive[1].split(".")[0]);
-            return this.response({
-                res,
-                statusCode: 201,
-                payload: [newdate]
-            });
+    try {
+        if(!this.model.validateType(type)) {
+            throw new Error('Not a valid type')
         }
-    } catch (error) {
-        console.log(error);
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
+        if(type === 'w' && !online) {
+            throw new Error('Webinars cannot be in person')
+        }
+    } catch ({message}) {
+        validationError.addContext('type', message)
+    }
+
+    try {
+        if(!this.model.validateUrl(url)) {
+            throw new Error('Not a valid url')
+        }
+        if(type === 'w' && !online) {
+            throw new Error('Webinars cannot be in person')
+        }
+    } catch ({message}) {
+        validationError.addContext('url', message)
+    }
+
+    if(start) {
+        try {
+            console.log(start, validateDate(start))
+            if(!validateDate(start)) {
+                throw new Error('Start date must follow the yyyy-mm-dd format')
+            }
+            eventData.start = start;
+        } catch ({message}) {
+            validationError.addContext('start', message)
+        }
+    }
+
+    if(end) {
+        try {
+            if(!validateDate(end)) {
+                throw new Error('End date must follow the yyyy-mm-dd format')
+            }
+            eventData.end = end;
+        } catch ({message}) {
+            validationError.addContext('end', message)
+        }
+    }
+
+    if(community) {
+        try {
+            if(!(await this.db.community.exists(community))) {
+                throw new Error('This community does not exists')
+            }
+            event.communityId = community;
+        } catch ({message}) {
+            validationError.addContext('community', message)
+        }
+    }
+
+    if(validationError.hasContext()) {
+		return res.send(validationError)
+	}
+
+    try {
+        if(req.files && req.files.image) {
+            let image = new Archive('event', req.files.image);
+            await image.upload()
+            eventData.image = image.route;
+            if(!primaryColor || !secondaryColor) {
+                let [primaryColor, secondaryColor] = await getColors(path.join(__dirname, '.' + image.route), { count: 2 })
+                eventData.primaryColor = primaryColor.hex()
+                eventData.secondaryColor = secondaryColor.hex()
+            }
+        }
+        
+        let result = await this.insert(eventData);
+
+        res.statusCode = 201;
+        res.send(result);
+
+    } catch({ message }) {
+        console.log(message)
+        const connectionError = new ResponseError(503, 'Try again later')
+        return res.send(connectionError)
     }
 }
 

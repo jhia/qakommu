@@ -46,17 +46,17 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "id_community",
 		})
 
-		Community.hasMany(models.post, {
+		/*Community.hasMany(models.post, {
 			foreignKey: 'id_community',
 			as: 'posts'
-		});
+		});*/
 
 		Community.hasMany(models.event, {
 	    foreignKey: 'id_community',
 	    as: 'community_event'
 		});
 
-		Community.hasMany(models.track, {
+		/*Community.hasMany(models.track, {
 	    foreignKey: 'id_community',
 	    as: 'community_track'
 		});
@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
 		Community.hasMany(models.partnership, {
 	    foreignKey: 'id_community',
 	    as: 'community_partnership'
-		});
+		});*/
 
 	};
 

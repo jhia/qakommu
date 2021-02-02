@@ -82,6 +82,11 @@ class Response {
    * @param {*} res from HTTP/Express response
    */
   static from(res) {
+    if(res instanceof Response) {
+      let newResponse = new Response(_res);
+      newResponse.statusCode = res.statusCode;
+      return newResponse;
+    }
     return new Response(res);
   }
 }

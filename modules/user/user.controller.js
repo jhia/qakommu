@@ -1,12 +1,11 @@
 'use strict'
 
 const Base = require('../../helpers/base.controller');
-const { Response, ResponseError } = require('../../http')
+const { ResponseError } = require('../../http')
 const controller = new Base('user');
 const Archive = require('../../helpers/archive');
 
 controller.getFunc = async function (req, res) {
-	let response = new Response(res);
 	try {
 		let user = await this.model.findByPk(req.user.id, {
 			attributes: [
@@ -26,16 +25,14 @@ controller.getFunc = async function (req, res) {
 		let lang = await this.db.language.findByPk(user.languageId);
 		user.language = lang;
 
-		return response.send(user);
+		return res.send(user);
 	} catch({ message }) {
-		console.log(message)
-		let err = new ResponseError(403, 'Try again later')
-		return response.send(err);
+		let err = new ResponseError(503, 'Try again later')
+		return res.send(err);
 	}
 }
 
 controller.postFunc = async function (req, res) {
-	const response = new Response(res);
 	const validationError = new ResponseError(400);
 
 	let {
@@ -90,7 +87,7 @@ controller.postFunc = async function (req, res) {
 	// birthdate
 	try {
 		if (!this.model.validateBirthdate(birthdate)) {
-			validationError.addContext('birthdate', 'Date of birth must follow the mm/dd/yyyy format')
+			validationError.addContext('birthdate', 'Date of birth must follow the yyyy-mm-dd format')
 		}
 	} catch ({ message }) {
 		validationError.addContext('birthdate', message)
@@ -148,6 +145,9 @@ controller.postFunc = async function (req, res) {
 			validationError.addContext('country', 'Country is not valid')
 		} else {
 			userData.country = countryInfo
+			if(!language) {
+				userData.language = userData.country.languageId;
+			}
 		}
 	} catch ({ message }) {
 		validationError.addContext('country', message)
@@ -204,8 +204,6 @@ controller.postFunc = async function (req, res) {
 		} catch({ message }) {
 			validationError.addContext('language', message)
 		}
-	} else {
-		userData.language = userData.country.languageId;
 	}
 	
 	// phone number
@@ -240,7 +238,7 @@ controller.postFunc = async function (req, res) {
 	}
 
 	if(validationError.hasContext()) {
-		return response.send(validationError)
+		return res.send(validationError)
 	}
 
 	try {
@@ -252,22 +250,21 @@ controller.postFunc = async function (req, res) {
 			communityId: c
 		})))
 
-		response.statusCode = 201
+		res.statusCode = 201
 
-		return response.send({
+		return res.send({
 			username: user.username
 		})
 
 	} catch (err) {
 		process.stdout.write(err.message)
-		const connectionError = new ResponseError(403, 'Try again later')
-		return response.send(connectionError)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 
 
 controller.putFunc = async function (req, res) {
-	const response = new Response(res);
 	const validationError = new ResponseError(400);
 	let userData = {};
 
@@ -301,7 +298,7 @@ controller.putFunc = async function (req, res) {
 		// birthdate
 		try {
 			if (!this.model.validateBirthdate(req.body.birthdate)) {
-				validationError.addContext('birthdate', 'Date of birth must follow the mm/dd/yyyy format')
+				validationError.addContext('birthdate', 'Date of birth must follow the yyyy-mm-dd format')
 			} else {
 				userData.birthdate = req.body.birthdate;
 			}
@@ -435,7 +432,7 @@ controller.putFunc = async function (req, res) {
 	}
 
 	if(validationError.hasContext()) {
-		return response.send(validationError);
+		return res.send(validationError);
 	}
 
 	try {
@@ -456,26 +453,25 @@ controller.putFunc = async function (req, res) {
 			Archive.fromString(previousAvatarName).remove();
 		}
 
-		return response.send([])
+		return res.send([])
 	} catch {
 		// connection error
-		let err = new ResponseError(403, 'Try again later');
-		Response.from(res).send(err);
+		let err = new ResponseError(503, 'Try again later');
+		return res.send(err);
 	}
 }
 
 controller.deleteFunc = async function (req, res) {
-	const response = new Response(res);
 	try {
 		const { profilePhoto } = await this.model.findByPk(req.user.id);
 		const rows = await this.delete(req.user.id);
 		if(rows > 0 && !!profilePhoto) {
 			Archive.fromString(profilePhoto).remove();
 		}
-		response.send([])
+		res.send([])
 	} catch {
-		const err = ResponseError(403, 'Try again later');
-		return response.send(err);
+		const err = new ResponseError(503, 'Try again later');
+		return res.send(err);
 	}
 }
 

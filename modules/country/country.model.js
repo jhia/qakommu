@@ -42,11 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         return !!country;
     }
 
-    Country.findByCode = function (code) {
+    Country.findByCode = async function (code) {
         if(!code) {
             throw new Error('Country code is required')
         }
-        return this.findOne({
+        return await this.findOne({
             where: {
                 alphaCode3: code
             }

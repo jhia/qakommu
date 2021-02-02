@@ -1,5 +1,4 @@
 'use strict'
-const Model = require('sequelize').Model;
 
 module.exports = (sequelize, DataTypes) => {
   const Language = sequelize.define('language', {
@@ -26,10 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             code
         }
     })
-  }
-
-  Language.associates = (models) => {
-
   }
   
   return Language;

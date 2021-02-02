@@ -29,11 +29,13 @@ sequelize.authenticate().catch(() => {
 fs
   .readdirSync(__dirname+'/modules')
   .forEach( moduleName => {
+    if(!/^_/.test(moduleName)) {
       const modelFile = path.join(__dirname,"modules",moduleName, moduleName+'.model.js')
       if(fs.existsSync(modelFile)){
         const model = sequelize['import'](modelFile);
         db[model.name] = model;
       }
+    }
   }) 
 
 Object.keys(db).forEach(modelName => {

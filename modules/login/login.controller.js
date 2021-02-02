@@ -1,21 +1,18 @@
 'use strict'
 
-const _ = require('lodash');
-
 const randToken = require('rand-token');
 
 const { user: User, authorize:Authorize } = require('../../models');
-const {Response, ResponseError } = require('../../http');
+const { ResponseError } = require('../../http');
 const { validateEmail, validateLoginPassword } = require('../../helpers/validations');
 
-exports.signUpEmail = async function (req,res) {
+exports.signUpEmail = async function (req, res) {
 
     const { email, password } = req.body;
-    const response = new Response(res);
 
     if(!email || !password || !validateEmail(email) || !validateLoginPassword(password)) {
         let validationError = new ResponseError(400)
-        return response.send(validationError)
+        return res.send(validationError)
     }
 
     try {
@@ -30,17 +27,12 @@ exports.signUpEmail = async function (req,res) {
 
         if(!user) {
             let emailError = new ResponseError(400, 'This email is not registered')
-            return response.send(emailError)
+            return res.send(emailError)
         }
 
         if(!user.comparePasswords(password)) {
             let passwordError = new ResponseError(400, 'Email or password incorrect')
-            return response.send(passwordError)
-        }
-        
-        const data = {
-            user: user.id,
-            username: user.username
+            return res.send(passwordError)
         }
 
         const refreshToken = randToken.uid(256)
@@ -55,15 +47,15 @@ exports.signUpEmail = async function (req,res) {
 
         await authorize.save()
 
-        return response.send({
+        return res.send({
             ...token,
             refreshToken
         })
 
     } catch ({ message }) {
-        const connectionError = new ResponseError(403)
-        console.log(message)
-        return response.send(connectionError)
+        process.stdout.write(message)
+        const connectionError = new ResponseError(503, 'Try again later')
+        return res.send(connectionError)
     }
 
 }
