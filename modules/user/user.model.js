@@ -188,7 +188,7 @@ module.exports = (sequelize, DataTypes) => {
 			throw new Error('First name is required')
 		}
 		return typeof value === typeof '' &&
-			!/[.,-_\\/*$%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
 	}
 
 	User.validateLastName = function (value) {
@@ -196,7 +196,7 @@ module.exports = (sequelize, DataTypes) => {
 			throw new Error('Last name is required')
 		}
 		return typeof value === typeof '' &&
-			!/[.,-_\\/*$%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
 	}
 
 	User.validateBirthdate = function (value) {
