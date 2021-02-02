@@ -23,6 +23,10 @@ router.get('/community/:id_community',function(req, res){
   type_boothController.getTypeBoothByCommunity(req,res);
 });
 
+router.get('/community/:id_community/count',function(req, res){
+  //HTTP get route
+  type_boothController.getCountTypeBoothByCommunity(req,res);
+});
 
 router.post('/',(req, res) => {
   ///HTTP post route

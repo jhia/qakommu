@@ -16,14 +16,12 @@ const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image,
 
 controller.getFunc = async function (req, res) {
     const { id } = req.params;
-    const { limit, offset, order, attributes } = req.body;
+    const { limit, offset } = req.query;
     try {
         const data1 = await this.getData({
             id,
             limit,
             offset,
-            attributes,
-            order
         });
 
         const update_logo_path = x => x.map(x => {
@@ -188,13 +186,13 @@ controller.deleteFunc = async function (req, res) {
 //-------------special fuction--------------------
 controller.getPartnershiptByCommunity = async function (req, res) {
     const { id_community } = req.params;
-    const { limit, offset, order } = req.body;
+    const { limit, offset } = req.query;
     try {
         const data = await this.db.partnership.findAll({
             limit,
             offset,
             attributes: ['id','name','description','registry_number','logo','host','web','active'],
-            order,
+            order: [['id', 'DESC']],
             where: {
 				id_community
             },
@@ -220,6 +218,31 @@ controller.getPartnershiptByCommunity = async function (req, res) {
             message: 'something went wrong',
         });
 
+    }
+}
+
+controller.getCountPartnershiptByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    try {
+        const data = await this.db.partnership.count({
+            where: {
+                id_community
+            }
+        });
+        this.response({
+            res,
+            payload: {
+                count: data
+            }
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
     }
 }
 

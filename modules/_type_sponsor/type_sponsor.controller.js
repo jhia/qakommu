@@ -15,14 +15,14 @@ const controller = new Base('type_sponsor');
 controller.getFunc = async function (req, res) {
 
     const { id } = req.params;
-    const { limit, offset, order, attributes } = req.query;
+    const { limit, offset } = req.query;
     try {
         const data = await this.getData({
             id,
             limit,
             offset,
-            attributes,
-            order
+            attributes: ['id', 'name','description','contribution_value','currency_symbol','active','display_number'],
+            order: [['id', 'DESC']]
         });
         this.response({
             res,
@@ -177,13 +177,13 @@ controller.deleteFunc = async function (req, res) {
 //--------------------sepcial functions--------------------
 controller.getTypeSponsorByCommunity = async function (req, res) {
     const { id_community } = req.params;
-    const { limit, offset, order } = req.body;
+    const { limit, offset } = req.query;
     try {
         const data = await this.db.type_sponsor.findAll({
             limit,
             offset,
             attributes: ['id', 'name', 'description', 'contribution_value', 'currency_symbol', 'active', 'id_community', 'display_number'],
-            order,
+            order: [['id', 'DESC']],
             where: {
                 id_community
             }
@@ -200,9 +200,33 @@ controller.getTypeSponsorByCommunity = async function (req, res) {
             statusCode: 500,
             message: 'something went wrong',
         });
-
     }
+}
 
+
+controller.getCountTypeSponsorByCommunity = async function (req, res) {
+    const { id_community } = req.params;
+    try {
+        const data = await this.db.type_sponsor.count({
+            where: {
+                id_community
+            }
+        });
+        this.response({
+            res,
+            payload: {
+                count: data
+            }
+        });
+
+    } catch (error) {
+        this.response({
+            res,
+            success: false,
+            statusCode: 500,
+            message: 'something went wrong',
+        });
+    }
 }
 
 
