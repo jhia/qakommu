@@ -11,14 +11,11 @@ const Archive = require('../../helpers/archive');
 
 controller.getFunc = async function (req, res) {
 
-    const { limit, offset, order, attributes } = req.body;
+    const { limit, offset } = req.body;
     try {
         let events = await this.getData({
-            id,
             limit,
-            offset,
-            attributes,
-            order
+            offset
         });
 
         for(let i = 0; i < events.length; i++) {
@@ -29,11 +26,8 @@ controller.getFunc = async function (req, res) {
 
         res.send(events);
 
-        this.response({
-            res,
-            payload: id ? data : update_logo_path(data)
-        });
-    } catch {
+    } catch({ message }) {
+        console.log(message)
         const connectionError = new ResponseError(503, 'Try again later');
         return res.send(connectionError);
     }
@@ -49,7 +43,9 @@ controller.getOne = async function(req, res) {
     }
 
     try {
-        const event = this.model.findByPk(id);
+        const event = await this.model.findByPk(id, {
+            include: [this.model.associations.community]
+        });
         if(!!event.image) {
             event.image = Archive.fromString(event.image).route;
         }
@@ -116,8 +112,12 @@ controller.postFunc = async function (req, res) {
         if(!this.model.validateType(type)) {
             throw new Error('Not a valid type')
         }
-        if(type === 'w' && !online) {
-            throw new Error('Webinars cannot be in person')
+        if(req.body.hasOwnProperty('online')) {
+            if(type === 'w' && !online) {
+                throw new Error('Webinars cannot be in person')
+            }
+        } else {
+            eventData.online = type !== 'c'; // by default conferences are not online
         }
     } catch ({message}) {
         validationError.addContext('type', message)
@@ -127,16 +127,12 @@ controller.postFunc = async function (req, res) {
         if(!this.model.validateUrl(url)) {
             throw new Error('Not a valid url')
         }
-        if(type === 'w' && !online) {
-            throw new Error('Webinars cannot be in person')
-        }
     } catch ({message}) {
         validationError.addContext('url', message)
     }
 
     if(start) {
         try {
-            console.log(start, validateDate(start))
             if(!validateDate(start)) {
                 throw new Error('Start date must follow the yyyy-mm-dd format')
             }
@@ -189,8 +185,8 @@ controller.postFunc = async function (req, res) {
         res.statusCode = 201;
         res.send(result);
 
-    } catch({ message }) {
-        console.log(message)
+    } catch(err) {
+        console.error(err)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }

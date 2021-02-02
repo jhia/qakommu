@@ -3,7 +3,6 @@
 module.exports = (sequelize, DataTypes) => {
     const Event = sequelize.define('event', {
         id: {
-			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true,
 			type: DataTypes.INTEGER
@@ -21,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('c', 'w', 'm')
         },
         communityId: {
-            allowNull: false,
             type: DataTypes.INTEGER,
             field: 'id_community'
         },
@@ -64,8 +62,14 @@ module.exports = (sequelize, DataTypes) => {
         image: {
             type: DataTypes.STRING
         },
-        primary_color: DataTypes.STRING,
-        secondary_color: DataTypes.STRING,
+        primaryColor: {
+            field: 'primary_color',
+            type: DataTypes.STRING,
+        },
+        secondaryColor: {
+            field: 'secondary_color',
+            type: DataTypes.STRING,
+        }
     }, {
         tableName: 'events'
     });
@@ -75,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
 
         //event to community
         Event.belongsTo(models.community, {
-            foreignKey: 'community_id',
+            foreignKey: 'id_community',
             as: 'community'
         });
 
@@ -137,7 +141,7 @@ module.exports = (sequelize, DataTypes) => {
         }
         let regex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 
-        return regex.text(value)
+        return regex.test(value)
     }
 
     return Event;

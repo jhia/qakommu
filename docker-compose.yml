@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: kommu
     networks: [kommu]
     volumes:
-      - "$HOME/.kommu-data:/var/lib/postgresql/data"
+      - db-data
     ports:
       - 5432:5432
   # test database
@@ -23,7 +23,7 @@ services:
       POSTGRES_USER: kommu_test
     networks: [kommu]
     volumes:
-      - "$HOME/.kommu-test-data:/var/lib/postgresql/data"
+      - db-test
     ports:
       - 5435:5432
 
@@ -85,3 +85,12 @@ networks:
   kommu:
     name: kommu
     driver: bridge
+volumes:
+  db-data:
+    driver_opts:
+      type: "nfs"
+      device: "$HOME/.kommu-data:/var/lib/postgresql/data"
+  db-test:
+    driver_opts:
+      type: "nfs"
+      device: "$HOME/.kommu-test-data:/var/lib/postgresql/data"

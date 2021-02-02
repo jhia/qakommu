@@ -2,17 +2,26 @@
 
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.rawSelect('countries', {
-      where: { alpha_code_3: 'USA' }
-    }, ['id'])
-    .then(country => {
-      let language = 1;
-      if(!country) {
+  up: async (queryInterface, Sequelize) => {
+
+    const transaction = await queryInterface.sequelize.transaction();
+
+    try {
+      const results = await queryInterface.sequelize.query(
+        `SELECT id, id_language FROM countries WHERE alpha_code_3='USA' LIMIT 1`,
+        { transaction }
+      )
+      let country = results[0][0]
+      let language;
+      if(country) {
+        language = country.id_language;
+        country = country.id;
+      } else {
         country = 240;
+        language = 1;
       }
 
-      return queryInterface.bulkInsert('users', [
+      await queryInterface.bulkInsert('users', [
         {
           "id": 1,
           "first_name": "Kommu",
@@ -251,12 +260,46 @@ module.exports = {
           "profile_photo": "profile_photo_F7F7II.png",
           "password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
         }
-      ], { ignoreOnDuplicates: true })
-    })
+      ], { transaction, ignoreDuplicates: true })
+
+      // get max id
+      const rows = await queryInterface.sequelize.query("SELECT max(id) as maxid FROM users", {
+        type: Sequelize.QueryTypes.SELECT,
+        transaction
+      })
+
+      const maxid = rows[0].maxid
+
+      // setup secuence manually for id
+      await queryInterface.sequelize.query(`SELECT setval('users_id_seq', ${maxid})`, {
+        type: Sequelize.QueryTypes.SELECT,
+        transaction
+      })
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('users', null, {});
-
+  down: async (queryInterface, Sequelize) => {
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+      await queryInterface.bulkDelete('users', null, { transaction })
+      const rows = await queryInterface.sequelize.query("SELECT max(id) as maxid FROM users", {
+        type: Sequelize.QueryTypes.SELECT,
+        transaction
+      })
+      const maxid = rows[0].maxid
+      await queryInterface.sequelize.query(`SELECT setval('users_id_seq', ${maxid})`, {
+        type: Sequelize.QueryTypes.SELECT,
+        transaction
+      })
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 };

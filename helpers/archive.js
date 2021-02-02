@@ -3,6 +3,10 @@ const { makeid } = require('./utilities');
 
 /**
  * Type for archives and images
+ * @example
+ * let image = new Archive('test', req.files.image)
+ * await image.upload() // saved on the server
+ * console.log(image.route) // /upload/test_123456.png
  */
 class Archive {
   /**
