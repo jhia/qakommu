@@ -3,8 +3,7 @@ const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
     const User = require('../user/user.model')(sequelize, DataTypes);
-    class UserCommunity extends Model {}
-    UserCommunity.init({
+    sequelize.define('user_communities', {
         userId: {
             field: 'id_user',
             type: DataTypes.INTEGER,
@@ -20,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 1
         },
+        owner: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
         approved: {
             type: DataTypes.BOOLEAN,
             defaultValue: true
@@ -34,8 +38,6 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     }, {
-        sequelize,
-        modelName: 'userCommunity',
         tableName: 'user_communities'
     })
 
@@ -55,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
             as: 'community'
         });
     }
+
+    UserCommunity.prototype.canCreateEvents = async function() {
+		return this.owner;
+	}
 
     return UserCommunity;
 }

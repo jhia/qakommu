@@ -18,12 +18,6 @@ controller.getFunc = async function (req, res) {
             offset
         });
 
-        for(let i = 0; i < events.length; i++) {
-            if(!!events[i].image) {
-                events[i].image = Archive.fromString(events[i].image).route;
-            }
-        }
-
         res.send(events);
 
     } catch({ message }) {
@@ -46,9 +40,6 @@ controller.getOne = async function(req, res) {
         const event = await this.model.findByPk(id, {
             include: [this.model.associations.community]
         });
-        if(!!event.image) {
-            event.image = Archive.fromString(event.image).route;
-        }
         return res.send(event);
     } catch {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -82,6 +73,7 @@ controller.postFunc = async function (req, res) {
         name,
         description,
         type,
+        communityId: community,
         online,
         url,
         noCfp,
@@ -131,6 +123,14 @@ controller.postFunc = async function (req, res) {
         validationError.addContext('url', message)
     }
 
+    try {
+        if(!(await this.db.community.exists(community))) {
+            throw new Error('This community does not exists')
+        }
+    } catch ({message}) {
+        validationError.addContext('community', message)
+    }
+
     if(start) {
         try {
             if(!validateDate(start)) {
@@ -153,27 +153,16 @@ controller.postFunc = async function (req, res) {
         }
     }
 
-    if(community) {
-        try {
-            if(!(await this.db.community.exists(community))) {
-                throw new Error('This community does not exists')
-            }
-            event.communityId = community;
-        } catch ({message}) {
-            validationError.addContext('community', message)
-        }
-    }
-
     if(validationError.hasContext()) {
 		return res.send(validationError)
 	}
 
     try {
-        if(req.files && req.files.image) {
-            let image = new Archive('event', req.files.image);
-            await image.upload()
+        if(req.files && req.files.image) { // there's image
+            let image = new Archive('event', req.files.image); // let the handler do it
+            await image.upload() // save image
             eventData.image = image.route;
-            if(!primaryColor || !secondaryColor) {
+            if(!primaryColor || !secondaryColor) { // get main colors if not set
                 let [primaryColor, secondaryColor] = await getColors(path.join(__dirname, '.' + image.route), { count: 2 })
                 eventData.primaryColor = primaryColor.hex()
                 eventData.secondaryColor = secondaryColor.hex()
@@ -194,117 +183,184 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { name, description, id_community, type, online, no_cfp, url_code, id_webside, is_private, start, end, active, id_call_for_paper, prom_rate, id_repository, id_state, return_data } = req.body;
+
+    if(isNaN(id)) {
+        const validationError = new ResponseError(400, 'Event id is not valid')
+        return res.send(validationError);
+    }
+
+    let eventData = {};
+
+    if(req.body.name) {
+        try {
+            if(!this.model.validateName(req.body.name)) {
+                throw new Error('Name is not valid')
+            }
+            eventData.name = req.body.name
+        } catch ({message}) {
+            validationError.addContext('name', message)
+        }
+    }
+
+    if(req.body.description) {
+        try {
+            if(!this.model.validateDescription(req.body.description)) {
+                throw new Error('Description is not valid')
+            }
+            eventData.description = req.body.description
+        } catch ({message}) {
+            validationError.addContext('description', message)
+        }
+    }
+
+    if(req.body.type) {
+        try {
+            if(!this.model.validateType(req.body.type)) {
+                throw new Error('Not a valid type')
+            }
+            eventData.type = req.body.type;
+            if(req.body.hasOwnProperty('online')) {
+                if(req.body.type === 'w' && !req.body.online) {
+                    throw new Error('Webinars cannot be in person')
+                }
+                eventData.online = !!req.body.online;
+            } else {
+                eventData.online = req.body.type !== 'c'; // by default conferences are not online
+            }
+        } catch ({message}) {
+            validationError.addContext('type', message)
+        }
+    }
+
+    if(req.body.url) {
+        try {
+            if(!this.model.validateUrl(url)) {
+                throw new Error('Not a valid url')
+            }
+        } catch ({message}) {
+            validationError.addContext('url', message)
+        }
+    }
+
+    if(req.body.community) {
+        try {
+            let community = await this.db.community.findByPk(req.body.community)
+            if(!community) {
+                throw new Error('This community does not exist')
+            }
+
+            if(!(await community.canCreateEvents(req.user.id))) {
+                throw new Error('You don\'t have the right permissions for this community')
+            }
+            eventData.communityId = community.id
+        } catch ({message}) {
+            validationError.addContext('community', message)
+        }
+    }
+
+    if(start) {
+        try {
+            if(!validateDate(start)) {
+                throw new Error('Start date must follow the yyyy-mm-dd format')
+            }
+            eventData.start = start;
+        } catch ({message}) {
+            validationError.addContext('start', message)
+        }
+    }
+
+    if(end) {
+        try {
+            if(!validateDate(end)) {
+                throw new Error('End date must follow the yyyy-mm-dd format')
+            }
+            eventData.end = end;
+        } catch ({message}) {
+            validationError.addContext('end', message)
+        }
+    }
+
+    if(req.body.promRate) {
+        eventData.promRate = req.body.promRate;
+    }
+
+    // booleans
+    if(req.body.hasOwnProperty('noCfp')){
+        eventData.noCfp = !!req.body.noCfp;
+    }
+
+    if(req.body.hasOwnProperty('isPrivate')) {
+        eventData.isPrivate = !!req.body.isPrivate;
+    }
+
+    if(req.body.hasOwnProperty('active')) {
+        eventData.active = !!req.body.active;
+    }
+
+    if(validationError.hasContext()) {
+		return res.send(validationError)
+    }
+
     try {
-
-        if(type==='w' && !online ){
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, webinars cannot be in person'
-            });
+        let updatePicture = false;
+        let previousImageName = null;
+        if(req.files && req.files.image) { // there's image
+            let image = new Archive('event', req.files.image); // let the handler do it
+            await image.upload() // save image
+            eventData.image = image.route;
+            if(!primaryColor || !secondaryColor) { // get main colors if not sent
+                let [primaryColor, secondaryColor] = await getColors(path.join(__dirname, '.' + image.route), { count: 2 })
+                eventData.primaryColor = primaryColor.hex()
+                eventData.secondaryColor = secondaryColor.hex()
+            }
+            updatePicture = true;
         }
 
-        if((type==='w' && no_cfp) || (type==='m' && no_cfp)){
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, this type of event requires us to use call for papers'
-            });
+        if(updatePicture) {
+            let r = await this.findByPk(req.user.id, { attributes: ['image'] })
+            previousImageName = r.image;
         }
 
-        let find_image = await this.db.event.findOne({
-            where: { id }
-        });
-        const fnd_image = find_image.image ? find_image.image : null;
-        const avatar = req.files ? req.files.image : undefined;
-        let image = avatar && verify_and_upload_image_put(avatar, "event", fnd_image);
-        if (req.body.image == 'not-image') image = null;
-        const archive = image ? image.split("_") : null;
+        const rows = await this.model.update({
+			id: req.params.id,
+			data: eventData
+		});
 
-        let result = await this.update(
-            {
-                id,
-                data:
-                {
-                    name,
-                    description,
-                    id_community,
-                    type,
-                    online,
-                    no_cfp,
-                    url_code,
-                    id_webside,
-                    is_private,
-                    start,
-                    end,
-                    active,
-                    //id_call_for_paper, 
-                    prom_rate,
-                    id_repository,
-                    id_state,
-                    image
-                },
-                return_data
-            });
-        if (result) {
-            if (fnd_image && image) delete_image(fnd_image);
-            if (req.body.image == 'not-image' && fnd_image) delete_image(fnd_image);
-            if (image) upload_images(avatar, archive[0], archive[1].split(".")[0]);
-            return this.response({
-                res,
-                statusCode: 200,
-                payload: return_data ? result : []
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'Could not update this element, possibly does not exist'
-            });
-        }
+		if(rows > 0 && eventData.hasOwnProperty('image') && updatePicture) {
+			Archive.fromString(previousImageName).remove();
+		}
+
+		return res.send([])
     } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
+        console.log(error.message);
+        const connectionError = new ResponseError(503, 'Try again later');
+        res.send(connectionError)
     }
 }
 
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
+
+    if(isNaN(id)) {
+        const validationError = new ResponseError(400, 'Event id is not valid')
+        return res.send(validationError);
+    }
+
     try {
-        let find_image = await this.db.event.findOne({
-            where: { id }
-        });
-        if (find_image.image) delete_image(find_image.image);
-        let deleterows = await this.delete({ id });
-        if (deleterows > 0) {
-            return this.response({
-                res,
-                success: true,
-                statusCode: 200
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'it was not possible to delete the item because it does not exist'
-            });
+        let event = await this.model.findByPk(id, { attributes: [ 'id', 'image' ]});
+        if(!event) {
+            const notFoundError = new ResponseError(404, 'This event does not exist')
+            return res.send(notFoundError);
         }
+
+        Archive.fromString(event.image).remove();
+        
+        let rows = await this.delete({ id });
+        return res.send(rows)
     } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
+        console.log(error.message)
+        const connectionError = new ResponseError(503, 'Try again later')
+        return res.send(connectionError)
     }
 }
 

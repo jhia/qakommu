@@ -9,14 +9,14 @@ router.use((req, res, next) => {
   next();
 });
 
-/* router.get('/',function(req, res){
-  //HTTP get route
-  userController.getFunc(req,res);
-});
- */
-router.get('/:id?',function(req, res){
+router.get('/',function(req, res){
   //HTTP get route
   userController.getFunc(req, new Response(res));
+});
+
+router.get('/:id',function(req, res){
+  //HTTP get route
+  userController.getOne(req, new Response(res));
 });
 
 router.post('/',(req, res) => {
@@ -24,12 +24,16 @@ router.post('/',(req, res) => {
   userController.postFunc(req, new Response(res));
 });
 
-router.put('/:id?',(req, res) => {
+router.put('/',(req, res) => {
   //HTTP put route
   userController.putFunc(req, new Response(res));
 });
 
-router.delete('/:id',(req, res) => {
+router.put('/credentials', (req, res) => {
+  userController.updatePassword(req, new Response(res));
+})
+
+router.delete('/',(req, res) => {
   //HTTP delete route
   userController.deleteFunc(req, new Response(res));
 });

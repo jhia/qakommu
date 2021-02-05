@@ -1,5 +1,7 @@
 'use strict'
 
+const { community:Community, eventTeam:EventTeam } = require('../../models')
+
 module.exports = (sequelize, DataTypes) => {
     const Event = sequelize.define('event', {
         id: {
@@ -20,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('c', 'w', 'm')
         },
         communityId: {
+            allowNull: false,
             type: DataTypes.INTEGER,
             field: 'id_community'
         },
@@ -83,6 +86,12 @@ module.exports = (sequelize, DataTypes) => {
             as: 'community'
         });
 
+        Event.belongsToMany(models.user, {
+			as: 'team',
+			through: "event_teams",
+			foreignKey: "id_event",
+		})
+
         //event to sponsor
         /*event.hasMany(models.sponsor, {
             foreignKey: 'id_event',
@@ -142,6 +151,27 @@ module.exports = (sequelize, DataTypes) => {
         let regex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 
         return regex.test(value)
+    }
+
+    Event.prototype.canEditEvent = async function(userId) {
+
+        const owner = await Community.findOne({
+            where: {
+                createdBy: userId
+            }
+        }, ['id']);
+
+        if(owner) return true;
+
+        const assistant = await EventTeam.findOne({
+            where: {
+                userId,
+                eventId: this.id,
+                active: true
+            }
+        })
+
+        return !!assistant;
     }
 
     return Event;

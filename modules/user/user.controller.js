@@ -436,20 +436,26 @@ controller.putFunc = async function (req, res) {
 	}
 
 	try {
+		let updatePicture = false;
+		let previousAvatarName = null;
 		if(req.files.avatar && req.body.avatar !== 'not-image') {
 			let avatar = Archive('profile_photo', req.files.avatar);
 			avatar.upload();
 			userData.profilePhoto = avatar.name;
+			updatePicture = true;
 		}
 
-		let { profilePhoto: previousAvatarName } = await this.findByPk(req.user.id, { attributes: ['profilePhoto'] });
+		if(updatePicture) {
+			let r = await this.findByPk(req.user.id, { attributes: ['profilePhoto'] });
+			previousAvatarName = r.profilePhoto;
+		}
 
 		const rows = await this.model.update({
 			id: req.user.id,
 			data: userData
 		});
 
-		if(rows > 0 && userData.hasOwnProperty('profilePhoto') && previousAvatarName) {
+		if(rows > 0 && userData.hasOwnProperty('profilePhoto') && updatePicture) {
 			Archive.fromString(previousAvatarName).remove();
 		}
 
@@ -461,6 +467,36 @@ controller.putFunc = async function (req, res) {
 	}
 }
 
+controller.updatePassword = async function (req, res) {
+	let userData = {}
+	const validationError = new ResponseError(400);
+	if(req.body.password) {
+		try {
+			if(!this.model.validatePassword(req.body.password)) {
+				throw new Error('Password is not valid')
+			}
+			userData.password = req.body.password;
+		} catch ({message}) {
+			validationError.addContext('password', message)
+		}
+	}
+
+	if(validationError.hasContext()) {
+		return res.send(validationError)
+	}
+	try {
+		let rows = await this.model.update({
+			id: req.user.id,
+			data: userData
+		})
+		return res.send(rows)
+	} catch(err) {
+		console.log(err.message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
+	}
+}
+
 controller.deleteFunc = async function (req, res) {
 	try {
 		const { profilePhoto } = await this.model.findByPk(req.user.id);
@@ -468,10 +504,10 @@ controller.deleteFunc = async function (req, res) {
 		if(rows > 0 && !!profilePhoto) {
 			Archive.fromString(profilePhoto).remove();
 		}
-		res.send([])
+		res.send([]);
 	} catch {
-		const err = new ResponseError(503, 'Try again later');
-		return res.send(err);
+		const connectionError = new ResponseError(503, 'Try again later');
+		return res.send(connectionError);
 	}
 }
 

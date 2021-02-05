@@ -1,5 +1,5 @@
 'use strict'
-const { Model, Deferrable } = require('sequelize')
+const { Deferrable } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
     const Language = require('../language/language.model')(sequelize, DataTypes)

@@ -72,23 +72,3 @@ describe('Country API', () => {
     expect(res.statusCode).toEqual(404)
   })
 })
-
-describe('register API', () => {
-  it('Should send error for missing inputs', async () => {
-
-  })
-
-  it('Should send error for email in use', async () => {
-
-  })
-
-  it('Should send error for no community provided', async () => {
-
-  })
-
-  it('Should send email for verification', async () => {
-
-  })
-
-  
-})

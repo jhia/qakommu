@@ -1,5 +1,6 @@
 'use strict';
-const { Model } = require('sequelize')
+
+const { userCommunity: UserCommunity } = require('../../models')
 
 module.exports = (sequelize, DataTypes) => {
 	const Community = sequelize.define('community', {
@@ -53,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
 
 		Community.hasMany(models.event, {
 	    foreignKey: 'id_community',
-	    as: 'community_event'
+	    as: 'events'
 		});
 
 		/*Community.hasMany(models.track, {
@@ -116,7 +117,26 @@ module.exports = (sequelize, DataTypes) => {
 					code
 				}
 		})
-}
+	}
+
+	Community.findByUser = async function (userId) {
+		let userCommunities = await UserCommunity.findAll({
+			where: {
+				userId: userId,
+				[sequelize.Op.or]: [
+					{ owner: true },
+					{ approved: true }
+				]
+			},
+			attributes: ['communityId']
+		})
+
+		let communities = await Community.findAll({
+			where: {
+				[sequelize.Op.or]: userCommunities.map(uc => ({ id: uc.communityId }))
+			}
+		})
+	}
 
 	return Community;
 };

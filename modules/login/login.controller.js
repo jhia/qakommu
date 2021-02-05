@@ -19,8 +19,7 @@ exports.signUpEmail = async function (req, res) {
         const user = await User.findOne({
             where: {
                 email,
-                active: true,
-                emailVerified: true
+                active: true
             },
             attributes: ['id', 'username', 'email', 'password']
         });
@@ -28,6 +27,11 @@ exports.signUpEmail = async function (req, res) {
         if(!user) {
             let emailError = new ResponseError(400, 'This email is not registered')
             return res.send(emailError)
+        }
+
+        if(!user.emailVerified) {
+            let verificationError = new ResponseError(401, 'Please verify your email address')
+            return res.send(verificationError)
         }
 
         if(!user.comparePasswords(password)) {

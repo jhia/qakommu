@@ -21,6 +21,7 @@ module.exports = {
         type: Sequelize.ENUM('c', 'w', 'm') // conference, webinar, meetup
       },
       id_community: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: {
