@@ -90,32 +90,35 @@ module.exports = (sequelize, DataTypes) => {
 
 	};
 
+	
 	Community.exists = async function (id) {
 		if(!id) {
 			throw new Error('Country ID is required')
 		}
 		const community = await this.findByPk(id, { attributes: ['id'] })
 		return !!community;
-	},
+	}
 
 	Community.validateCode = async function (code) {
 		if(!code) {
 			throw new Error('Community code is required')
 		}
 		const community = await this.findOne({
-			code
+			where: { code },
+			attributes: ['id']
 		})
 		return !!community;
-	},
+	}
 
-	Community.findByCode = function (code) {
+	Community.findByCode = function (code, options={}) {
 		if(!code) {
-				throw new Error('Invitation code is required')
+			throw new Error('Invitation code is required')
 		}
 		return this.findOne({
-				where: {
-					code
-				}
+			where: {
+				code
+			},
+			...options
 		})
 	}
 
@@ -136,6 +139,8 @@ module.exports = (sequelize, DataTypes) => {
 				[sequelize.Op.or]: userCommunities.map(uc => ({ id: uc.communityId }))
 			}
 		})
+
+		return communities
 	}
 
 	return Community;

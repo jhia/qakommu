@@ -7,8 +7,6 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('community');
 
-const db = require('../../models')
-
 const jwt = require('jsonwebtoken');
 const { ResponseError } = require('../../http');
 
@@ -38,7 +36,7 @@ controller.getMyCommunities = async function (req, res) {
 				},
 				limit,
 				offset,
-				include: [this.model.associations.community],
+				include: [this.db.userCommunity.associations.community],
 				attributes: ['userId', 'owner', 'communityId', 'community'],
 			})
 
@@ -51,7 +49,7 @@ controller.getMyCommunities = async function (req, res) {
 }
 
 controller.getPublicCommunities = async function(req, res) {
-	const q = req.query.q || '';
+//	const q = req.query.q || '';  TODO: search option
 	const { limit, offset } = req.query;
 
 	try {
@@ -60,6 +58,8 @@ controller.getPublicCommunities = async function(req, res) {
 				isPrivate: false,
 				active: true
 			},
+			limit,
+			offset,
 			attributes: ['code', 'name', 'description', 'prefix', 'memberVerification']
 		})
 	} catch (err) {
