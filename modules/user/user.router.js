@@ -11,10 +11,10 @@ router.use((req, res, next) => {
 
 router.get('/',function(req, res){
   //HTTP get route
-  userController.getFunc(req, new Response(res));
+  userController.getMyUser(req, new Response(res));
 });
 
-router.get('/:id',function(req, res){
+router.get('/:username',function(req, res){
   //HTTP get route
   userController.getOne(req, new Response(res));
 });

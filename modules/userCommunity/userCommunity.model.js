@@ -2,8 +2,7 @@
 const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-    const User = require('../user/user.model')(sequelize, DataTypes);
-    sequelize.define('user_communities', {
+    const UserCommunity = sequelize.define('user_communities', {
         userId: {
             field: 'id_user',
             type: DataTypes.INTEGER,
@@ -20,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 1
         },
         owner: {
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
         },
@@ -31,11 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         approvedBy: { //only for private communities
             field: 'id_approved_by',
             type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: User,
-                key: 'id'
-            }
+            allowNull: true
         }
     }, {
         tableName: 'user_communities'

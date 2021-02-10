@@ -13,22 +13,22 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         description: {
-            type: Sequelize.TEXT,
+            type: DataTypes.TEXT,
             allowNull: false
         },
         active: {
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             defaultValue: true
         },
         communityId: {
             field: 'id_community',
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
-        icon: Sequelize.STRING,
+        icon: DataTypes.STRING,
         hidden: {
             field: 'hidden',
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
         }
@@ -57,5 +57,5 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    return track;
+    return Track;
 }

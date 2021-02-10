@@ -45,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
 			as: 'members',
 			through: "user_communities",
 			foreignKey: "id_community",
+			otherKey: "id_user"
 		})
 
 		/*Community.hasMany(models.post, {

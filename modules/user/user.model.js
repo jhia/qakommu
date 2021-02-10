@@ -10,10 +10,6 @@ function encrypt_password(password) {
 const { validateDate, validateEmail } = require('../../helpers/validations')
 
 module.exports = (sequelize, DataTypes) => {
-
-	const Language = require('../language/language.model')(sequelize, DataTypes);
-	const Country = require('../country/country.model')(sequelize, DataTypes);
-
 	const User = sequelize.define('user', {
 		firstName: {
 			type: DataTypes.STRING,
@@ -43,10 +39,6 @@ module.exports = (sequelize, DataTypes) => {
 		countryId: {
 			field: 'id_country',
 			type: DataTypes.INTEGER,
-			references: {
-				model: Country,
-				key: 'id'
-			},
 			allowNull: false
 		},
 		city: {
@@ -67,10 +59,6 @@ module.exports = (sequelize, DataTypes) => {
 		languageId: {
 			field: 'id_language',
 			type: DataTypes.INTEGER,
-			references: {
-				model: Language,
-				key: 'id'
-			},
 			allowNull: false
 		},
 		birthdate: {
@@ -119,6 +107,17 @@ module.exports = (sequelize, DataTypes) => {
 			as: 'communities',
 			through: "user_communities",
 			foreignKey: "id_user",
+			otherKey: 'id_community'
+		})
+
+		User.belongsTo(models.language, {
+			as: 'language',
+			foreignKey: 'id_language'
+		})
+
+		User.belongsTo(models.country, {
+			as: 'country',
+			foreignKey: 'id_country'
 		})
 
 		/*User.hasMany(models.user_channel, {

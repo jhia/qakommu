@@ -3,33 +3,33 @@
 module.exports = (sequelize, DataTypes) => {
     const Room = sequelize.define('room', {
         name: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         description: {
             allowNull: false,
-            type: Sequelize.TEXT
+            type: DataTypes.TEXT
         },
         maxCapacity: {
             field: 'max_capacity',
             type: DataTypes.INTEGER
         },
         active: {
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true
         },
         isOnline: {
             field: 'is_online',
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             allowNull: false
         },
         urlClassroom: {
             field: 'url_classroom',
-            type: Sequelize.TEXT
+            type: DataTypes.TEXT
         },
         eventId: {
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             field: 'id_event'
         },
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     Room.associate = function (models) {
         //To create model associations
 
-        Event.belongsTo(models.event, {
+        Room.belongsTo(models.event, {
             foreignKey: 'id_event',
             as: 'event'
         })

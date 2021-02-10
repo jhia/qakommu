@@ -21,14 +21,14 @@ exports.signUpEmail = async function (req, res) {
                 email,
                 active: true
             },
-            attributes: ['id', 'username', 'email', 'password']
+            attributes: ['id', 'username', 'email', 'password', 'emailVerified']
         });
 
         if(!user) {
             let emailError = new ResponseError(400, 'This email is not registered')
             return res.send(emailError)
         }
-
+        
         if(!user.emailVerified) {
             let verificationError = new ResponseError(401, 'Please verify your email address')
             return res.send(verificationError)

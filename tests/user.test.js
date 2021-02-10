@@ -7,13 +7,34 @@ let headers = {};
 
 let editingUser = null;
 
+let server, agent;
+
+beforeEach((done) => {
+    server = app.listen(process.env.PORT || 9000, (err) => {
+      if (err) return done(err);
+
+       agent = request.agent(server); // since the application is already listening, it should use the allocated port
+       done();
+    });
+});
+
+afterEach((done) => {
+  return server && server.close(done);
+});
+
 beforeAll(async () => {
-  let { body: { payload } } = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
+  let res = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
     email: 'p_ellett87@kommu.com',
     password: '123'
   });
 
-  accessToken = payload.accessToken;
+  if(res.statusCode !== 200) {
+    console.log(res.body.message)
+    let err = new Error(res.body.message)
+    throw err;
+  }
+
+  accessToken = res.body.payload.accessToken;
 
   headers = {
     'Authorization': 'Bearer ' + accessToken
@@ -25,16 +46,16 @@ describe('User API', () => {
 
   describe('Get users', () => {
     it('should show my user information', async () => {
-      const res = await request(app).get('/api/user').set(headers)
+      const res = await agent.get('/api/user').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
-      expect(res.body.payload.firstName).toBe("Kommu")
-      expect(res.body.payload.username).toBe('kommu')
+      expect(res.body.payload.firstName).toBe("Patricia Chae")
+      expect(res.body.payload.username).toBe('p_ellett87')
     })
 
     it('should show user information from username', async () => {
-      const res = await request(app).get('/api/user/kommu').set(headers)
+      const res = await agent.get('/api/user/kommu').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
@@ -49,7 +70,7 @@ describe('User API', () => {
         firstName: 'Jane',
         lastName: 'Doe'
       }
-      const res = await request(app).post('/api/user').send(badUser)
+      const res = await agent.post('/api/user').send(badUser)
       expect(res.statusCode).toBe(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body).toHaveProperty('payload')
@@ -63,7 +84,7 @@ describe('User API', () => {
         firstName: 'Jane',
         email: 'p_ellett87@kommu.com'
       }
-      const res = await request(app).post('/api/user').send(badUser)
+      const res = await agent.post('/api/user').send(badUser)
       expect(res.statusCode).toBe(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body).toHaveProperty('payload')
@@ -76,30 +97,35 @@ describe('User API', () => {
         lastName: 'Doe',
         community: 'K-O-M-M-U'
       }
-      const res = await request(app).post('/api/user').send(badUser)
+      const res = await agent.post('/api/user').send(badUser)
       expect(res.statusCode).toBe(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body).toHaveProperty('payload')
-      expect(res.body.payload.community).toBe('Bad community provided')
+      expect(res.body.payload.community).toBe('Community invitation is not valid')
     })
   
     it('Should send email for verification', async () => {
       // TODO: implementation
     })
 
-    it('should create a new event', async () => {
+    it('should create a new user', async () => {
       const goodEvent = {
         firstName: 'Jane',
         lastName: 'Doe',
         birthdate: '1994-01-01',
         gender: 'F',
-        country: 240,
+        country: 'USA',
+        occupation: 'Homeless',
         email: 'janedoe@kommu.com',
-        userame: 'janedoe',
+        username: 'janedoe',
         password: 'password123'
       }
       
-      const res = await request(app).post('/api/user').set(headers).send(goodEvent)
+      const res = await agent.post('/api/user').set(headers).send(goodEvent)
+
+      if(res.statusCode !== 201) {
+        console.log(res.body.payload)
+      }
   
       expect(res.statusCode).toEqual(201)
       expect(res.body.successful).toEqual(true)
@@ -128,13 +154,13 @@ describe('User API', () => {
         gender: 'M'
       }
   
-      const res = await request(app).put('/api/user').set(headers).send(updateUser)
+      const res = await agent.put('/api/user').set(headers).send(updateUser)
   
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body.message).toBe('OK')
   
-      const res2 = await request(app).get('/api/user').set(headers)
+      const res2 = await agent.get('/api/user').set(headers)
   
       expect(res2.statusCode).toEqual(200)
       expect(res2.body.successful).toEqual(true)
@@ -146,7 +172,7 @@ describe('User API', () => {
     })
 
     it('should show error if trying to edit another user', async () => {
-      const res = await request(app).put('/api/user/2').set(headers)
+      const res = await agent.put('/api/user/2').set(headers)
       expect(res.statusCode).toEqual(401)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Unauthorized')
@@ -156,17 +182,17 @@ describe('User API', () => {
       const badUpdate = {
         password: 'mynewpassword1'
       }
-      const res = await request(app).put('/api/user/').set(headers).send(badUpdate)
+      const res = await agent.put('/api/user/').set(headers).send(badUpdate)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
 
-      let res = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
+      let res2 = await agent.post('/auth').set({ 'Content-Type': 'application/json' }).send({
         email: 'p_ellett87@kommu.com',
         password: badUpdate.password
       });
 
-      expect(res.statusCode).toEqual(401)
-      expect(res.body.successful).toEqual(false)
+      expect(res2.statusCode).toEqual(401)
+      expect(res2.body.successful).toEqual(false)
 
     })
 

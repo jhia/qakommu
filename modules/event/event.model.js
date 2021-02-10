@@ -90,22 +90,24 @@ module.exports = (sequelize, DataTypes) => {
       as: 'team',
       through: "event_team",
       foreignKey: "id_event",
+      otherKey: "id_user"
     })
 
-    Event.hasMany(models.track, {
+    Event.belongsToMany(models.track, {
       as: 'tracks',
       through: 'event_tracks',
-      foreignKey: 'id_event'
+      foreignKey: 'id_event',
+      otherKey: 'id_track'
     })
 
     //event to sponsor
-    event.hasMany(models.sponsor, {
+    Event.hasMany(models.sponsor, {
       foreignKey: 'id_event',
       as: 'sponsors'
     });
     
     //event to exhibitor
-    event.hasMany(models.exhibitor, {
+    Event.hasMany(models.exhibitor, {
       foreignKey: 'id_event',
       as: 'exhibitors'
     });

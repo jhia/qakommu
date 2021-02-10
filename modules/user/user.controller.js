@@ -5,7 +5,7 @@ const { ResponseError } = require('../../http')
 const controller = new Base('user');
 const Archive = require('../../helpers/archive');
 
-controller.getFunc = async function (req, res) {
+controller.getMyUser = async function (req, res) {
 	try {
 		let user = await this.model.findByPk(req.user.id, {
 			attributes: [
@@ -19,11 +19,55 @@ controller.getFunc = async function (req, res) {
 				'gender', // required
 				'organization',
 				'languageId', // by default is country language, should be browser headers
-			]
+			],
+			include: [this.model.associations.language]
 		});
 
-		let lang = await this.db.language.findByPk(user.languageId);
-		user.language = lang;
+		return res.send(user);
+	} catch({ message }) {
+		let err = new ResponseError(503, 'Try again later')
+		return res.send(err);
+	}
+}
+
+controller.getOne = async function (req, res) {
+	const { username } = req.params;
+
+	try {
+		if(!this.model.validateUsername(username)) {
+			throw new Error('Username is not valid')
+		}
+	} catch ({ message }) {
+		const validationError = new ResponseError(400, message)
+		return res.send(validationError)
+	}
+
+	try {
+		let user = await this.model.findOne({
+			where: {
+				username,
+				emailVerified: true,
+				active: true
+			},
+			attributes: [
+				'profilePhoto',
+				'firstName', // required
+				'lastName', // required
+				'birthdate', // required
+				'username', // required
+				'email', // required
+				'occupation', // required
+				'gender', // required
+				'organization',
+				'languageId', // by default is country language, should be browser headers
+			],
+			include: [this.model.associations.language]
+		});
+
+		if(!user) {
+			const notFoundError = new ResponseError(404, 'User not found')
+			return res.send(notFoundError)
+		}
 
 		return res.send(user);
 	} catch({ message }) {
@@ -51,7 +95,7 @@ controller.postFunc = async function (req, res) {
 		language, // by default is country language, should be browser headers
 		phoneCode, // by default is country code
 		phoneNumber,
-		communityCode, // by default is 1
+		community, // by default is 1
 	} = req.body;
 
 	// load required fields
@@ -144,9 +188,9 @@ controller.postFunc = async function (req, res) {
 		if(!countryInfo) {
 			validationError.addContext('country', 'Country is not valid')
 		} else {
-			userData.country = countryInfo
+			userData.countryId = countryInfo.id
 			if(!language) {
-				userData.language = userData.country.languageId;
+				userData.languageId = countryInfo.languageId;
 			}
 		}
 	} catch ({ message }) {
@@ -199,7 +243,7 @@ controller.postFunc = async function (req, res) {
 			if(!lang) {
 				validationError.addContext('language', 'Language is not valid')
 			} else {
-				userData.language = lang;
+				userData.languageId = lang.id;
 			}
 		} catch({ message }) {
 			validationError.addContext('language', message)
@@ -224,16 +268,16 @@ controller.postFunc = async function (req, res) {
 
 	let communities = [1]
 
-	if(communityCode) {
+	if(community) {
 		try {
-			const community = await this.db.community.findByCode(communityCode, { attributes: ['id'] })
-			if(!community) {
-				validationError.addContext('communityCode', 'Community invitation is not valid')
+			const communityInfo = await this.db.community.findByCode(community, { attributes: ['id'] })
+			if(!communityInfo) {
+				validationError.addContext('community', 'Community invitation is not valid')
 			} else {
-				communities.push(community.id);
+				communities.push(communityInfo.id);
 			}
 		} catch({ message }) {
-			validationError.addContext('communityCode', message)
+			validationError.addContext('community', message)
 		}
 	}
 
@@ -411,8 +455,6 @@ controller.putFunc = async function (req, res) {
 		} catch({ message }) {
 			validationError.addContext('language', message)
 		}
-	} else {
-		userData.language = userData.country.languageId;
 	}
 		
 	// phone number

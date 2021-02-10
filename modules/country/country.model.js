@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Country.exists = async function (id) {
-        if(!id) {
+        if (!id) {
             throw new Error('Country ID is required')
         }
         const country = await this.findByPk(id, { attributes: ['id'] })
@@ -42,14 +42,19 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     Country.findByCode = async function (code) {
-        if(!code) {
+        if (!code) {
             throw new Error('Country code is required')
         }
-        return await this.findOne({
-            where: {
-                alphaCode3: code
-            }
-        })
+        try {
+            return await this.findOne({
+                where: {
+                    alphaCode3: code
+                }
+            })
+        } catch (err) {
+            console.warn(err.message)
+            return null
+        }
     }
 
     return Country;
