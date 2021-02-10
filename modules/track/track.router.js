@@ -6,12 +6,12 @@ const { communityCodeVerification } = require('../../middleware/community')
 const { eventVerification } = require('../../middleware/event')
 const Response = require('../../http/response');
 
-router.get('/c/:communityCode', communityCodeVerification, (req, res) => {
+router.get('/community/:communityCode', communityCodeVerification, (req, res) => {
   //HTTP get route
   trackController.getTracksForCommunity(req, new Response(res));
 });
 
-router.get('/e/:eventId', eventVerification, (req, res) => {
+router.get('/event/:eventId', eventVerification, (req, res) => {
   trackController.getTracksForEvent(req, new Response(res));
 })
 

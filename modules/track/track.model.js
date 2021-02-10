@@ -33,22 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         }
     }, {
-        timestamps: false,
         tableName: 'tracks'
     });
 
     Track.associate = function (models) {
-        /*track.hasMany(models.track_post, {
-            foreignKey: 'id_track',
-            as: 'track_posts'
-        });
-
-        //track to session
-        track.hasMany(models.track_session, {
-            foreignKey: 'id_track',
-            as: 'track_track_session'
-        });*/
-
         // track to module
         Track.belongsTo(models.community, {
             foreignKey: 'id_community',

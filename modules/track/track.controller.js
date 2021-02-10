@@ -99,7 +99,7 @@ controller.postFunc = async function (req, res) {
 		let track = await this.insert({
 			name,
 			description,
-			active: !!active,
+			active,
 			icon,
 			communityId: community,
 			hidden: false
