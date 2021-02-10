@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: true
     }
+  }, {
+    tableName: 'event_team'
   })
 
   EventTeam.associate = function (models) {
