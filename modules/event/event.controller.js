@@ -185,9 +185,11 @@ controller.putFunc = async function (req, res) {
     const { id } = req.params;
 
     if(isNaN(id)) {
-        const validationError = new ResponseError(400, 'Event id is not valid')
-        return res.send(validationError);
+        const idError = new ResponseError(400, 'Event id is not valid')
+        return res.send(idError);
     }
+
+    const validationError = new ResponseError(400, 'Event id is not valid')
 
     let eventData = {};
 
@@ -317,7 +319,7 @@ controller.putFunc = async function (req, res) {
         }
 
         if(updatePicture) {
-            let r = await this.findByPk(req.user.id, { attributes: ['image'] })
+            let r = await this.findByPk(req.params.id, { attributes: ['image'] })
             previousImageName = r.image;
         }
 
@@ -364,8 +366,9 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
+/*
 
-/* ---------- special functions ---------- */
+// ---------- special functions ----------
 controller.getEventsByCommunity = async function (req, res) {
     const { id_community } = req.params;
     const { limit, offset, order } = req.body;
@@ -593,6 +596,6 @@ controller.getAttendeesByEvent = async function (req, res) {
         });
 
     }
-}
+}*/
 
 module.exports = controller;

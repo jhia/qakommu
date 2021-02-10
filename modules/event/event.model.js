@@ -1,6 +1,6 @@
 'use strict'
 
-const { community:Community, eventTeam:EventTeam } = require('../../models')
+const { userCommunity:UserCommunity, eventTeam:EventTeam } = require('../../models')
 
 module.exports = (sequelize, DataTypes) => {
   const Event = sequelize.define('event', {
@@ -88,28 +88,28 @@ module.exports = (sequelize, DataTypes) => {
 
     Event.belongsToMany(models.user, {
       as: 'team',
-      through: "event_teams",
+      through: "event_team",
       foreignKey: "id_event",
     })
 
-    Event.hasMany(models.tracks, {
+    Event.hasMany(models.track, {
       as: 'tracks',
       through: 'event_tracks',
       foreignKey: 'id_event'
     })
 
     //event to sponsor
-    /*event.hasMany(models.sponsor, {
+    event.hasMany(models.sponsor, {
       foreignKey: 'id_event',
-      as: 'event_sponsor'
+      as: 'sponsors'
     });
     
     //event to exhibitor
     event.hasMany(models.exhibitor, {
       foreignKey: 'id_event',
-      as: 'event_exhibitor'
+      as: 'exhibitors'
     });
-
+/*
     //event to ticket
     event.hasMany(models.ticket, {
       foreignKey: 'id_event',
