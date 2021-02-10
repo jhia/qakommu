@@ -10,12 +10,16 @@ module.exports = {
         {
           id: 1,
           name: 'English',
-          code: 'en'
+          code: 'en',
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           id: 2,
           name: 'Español',
-          code: 'es'
+          code: 'es',
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ], { transaction, ignoreDuplicates: true })
 

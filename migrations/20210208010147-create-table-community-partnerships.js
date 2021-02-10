@@ -2,33 +2,29 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('event_tracks', {
+    return queryInterface.createTable('community_partnerships', {
       id: {
-        type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
-      trackId: {
-        field: 'id_track',
-        type: Sequelize.INTEGER,
+      communityId: {
+        field: 'id_community',
         allowNull: false,
+        type: Sequelize.INTEGER,
         references: {
-          model: {
-            tableName: 'tracks'
-          },
+          model: { tableName: 'communities' },
           key: 'id'
-        },
+        }
       },
-      eventId: {
-        field: 'id_event',
-        type: Sequelize.INTEGER,
+      partnershipId: {
+        field: 'id_partnership',
         allowNull: false,
+        type: Sequelize.INTEGER,
         references: {
-          model: {
-            tableName: 'events'
-          },
+          model: { tableName: 'partnerships' },
           key: 'id'
-        },
+        }
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -42,6 +38,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('event_tracks');
+    return queryInterface.dropTable('community_partnerships');
   }
 };

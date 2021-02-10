@@ -11,7 +11,9 @@ function getCountries() {
           name: c.name,
           alpha_code_3: c.alpha3Code,
           phone_code: c.callingCodes[0],
-          id_language: c.languages[0].iso639_1 === 'es' ? 2 : 1
+          id_language: c.languages[0].iso639_1 === 'es' ? 2 : 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }))
 
         resolve(countries)

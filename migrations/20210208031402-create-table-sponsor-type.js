@@ -2,42 +2,39 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tracks', {
+    return queryInterface.createTable('sponsor_types', {
       id: {
-        type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      contributionValue: {
+        allowNull: false,
+        type: Sequelize.DOUBLE,
+        field: 'contribution_value'
       },
       active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
       },
-      communityId: {
-        field: 'id_community',
+      displayNumber: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: {
-            tableName: 'communities'
-          },
-          key: 'id'
-        },
+        field: 'display_number'
       },
-      icon: Sequelize.STRING,
-      hidden: {
-        field: 'hidden',
-        type: Sequelize.BOOLEAN,
+      communityId: {
         allowNull: false,
-        defaultValue: false
+        type: Sequelize.INTEGER,
+        field: 'id_community'
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -47,10 +44,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.DataTypes.NOW
       }
-    })
+    });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tracks')
+    return queryInterface.dropTable('sponsor_types');
   }
 };

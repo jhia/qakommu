@@ -24,6 +24,14 @@ module.exports = {
           key: 'id'
         },
         allowNull: false
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.DataTypes.NOW
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.DataTypes.NOW
       }
     })
   },

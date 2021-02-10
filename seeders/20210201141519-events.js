@@ -23,6 +23,8 @@ module.exports = {
           "active": true,
           "prom_rate": 89.8,
           "image": "event_DY72EI.png",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 2,
@@ -38,7 +40,9 @@ module.exports = {
           "end": "2020-09-24",
           "active": true,
           "prom_rate": 89.8,
-          "image": "event_3H0945.png"
+          "image": "event_3H0945.png",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 3,
@@ -54,7 +58,9 @@ module.exports = {
           "end": "2020-09-24",
           "active": true,
           "prom_rate": 89.8,
-          "image": "event_IOZC8S.png"
+          "image": "event_IOZC8S.png",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 4,
@@ -70,7 +76,9 @@ module.exports = {
           "end": "2020-09-25",
           "active": true,
           "prom_rate": 89.8,
-          "image": "event_H1RN6X.png"
+          "image": "event_H1RN6X.png",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
       ], { transaction, ignoreDuplicates: true });
 

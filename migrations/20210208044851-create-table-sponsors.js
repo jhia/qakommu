@@ -2,29 +2,42 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('event_team', {
+    return queryInterface.createTable('sponsors', {
       id: {
-        type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      image: {
+        type: Sequelize.TEXT
       },
       eventId: {
-        field: 'id_event',
+        allowNull: false,
         type: Sequelize.INTEGER,
+        field: 'id_event',
         references: {
-          model: {
-            tableName: 'events'
-          },
+          model: { tableName: 'events' },
           key: 'id'
         }
       },
-      userId: {
-        field: 'id_user',
+      partnershipId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
+        field: 'id_partnership',
         references: {
-          model: {
-            tableName: 'users'
-          },
+          model: { tableName: 'partnerships' },
+          key: 'id'
+        }
+      },
+      sponsorTypeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        field: 'id_sponsor_type',
+        references: {
+          model: { tableName: 'sponsor_types' },
           key: 'id'
         }
       },
@@ -41,10 +54,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.DataTypes.NOW
       }
-    })
+    });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('event_team');
+    return queryInterface.dropTable('sponsors');
   }
 };

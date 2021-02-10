@@ -2,11 +2,11 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tracks', {
+    return queryInterface.createTable('booth_types', {
       id: {
-        type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
       name: {
         type: Sequelize.STRING,
@@ -16,28 +16,33 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false
       },
+      cost: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+      },
+      sizeWidth: {
+        field: 'size_width',
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      sizeHeight: {
+        field: 'size_height',
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      communityId: {
+        field: 'id_community',
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: { tableName: 'communities' },
+          key: 'id'
+        }
+      },
       active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
-      },
-      communityId: {
-        field: 'id_community',
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: 'communities'
-          },
-          key: 'id'
-        },
-      },
-      icon: Sequelize.STRING,
-      hidden: {
-        field: 'hidden',
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -47,10 +52,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.DataTypes.NOW
       }
-    })
+    });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tracks')
+    return queryInterface.dropTable('booth_types');
   }
 };

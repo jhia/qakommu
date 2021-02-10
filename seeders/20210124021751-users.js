@@ -38,7 +38,9 @@ module.exports = {
           "occupation": "Owner",
           "email_verified": true,
           "profile_photo": "profile_photo_MOCI9U.png",
-          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
+          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 2,
@@ -58,7 +60,9 @@ module.exports = {
           "occupation": "owner",
           "email_verified": true,
           "profile_photo": "profile_photo_MOK123.png",
-          "password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO"
+          "password": "$2b$10$NHvW.5.urfgH7VNxXeqMU.moDYWCNDcYbdRamzpSmde4r0PmOgwbO",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 3,
@@ -78,7 +82,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_MG9KDD.png",
-          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W"
+          "password": "$2b$10$X/ehV/7OFbwpQTeWoJ7Iz.N/J.MCRyNZjYxm622RpMo9ewPtin29W",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 4,
@@ -98,7 +104,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_FTF2N2.png",
-          "password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK"
+          "password": "$2b$10$0/bE0s7kQEoLQDjlf2znWettz/JIcYP7o7VIgo4n1PBCF33LanGIK",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 5,
@@ -118,7 +126,9 @@ module.exports = {
           "occupation": "other",
           "profile_photo": "profile_photo_X7C02N.png",
           "email_verified": true,
-          "password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy"
+          "password": "$2b$10$emgYeeQ5/JTpYYw3qDcwR.PBW04INCP1rtejWF/xf9tRtUHPpiyuy",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 6,
@@ -138,7 +148,9 @@ module.exports = {
           "occupation": "other",
           "profile_photo": "profile_photo_S9PPF1.png",
           "email_verified": true,
-          "password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS"
+          "password": "$2b$10$u/trrHc/mX9LzKnNgrdKhOb4yXrMfqK5nhEXywQAPLWcD9/6T.VmS",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 7,
@@ -158,7 +170,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_P3PO45.png",
-          "password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu"
+          "password": "$2b$10$2bHJH316ymyNqPQgxOyBK.i6fLfxuSdkLw2wUQ72fNNYGfGffb.iu",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 8,
@@ -178,7 +192,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_RTR44U.png",
-          "password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi"
+          "password": "$2b$10$Yd9d7B/S1reanRcQMSclzuRgU4H8rUkUAMHqDpYkVq6bfpt0Po6Vi",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 9,
@@ -198,7 +214,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_B23J1J.png",
-          "password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe"
+          "password": "$2b$10$vpiAwaRK/h/J5qIfyIFwa.Sok9l7EPTsPS8EAXRLW4FCYd3D78Hwe",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 10,
@@ -218,7 +236,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_Z543MM.png",
-          "password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu"
+          "password": "$2b$10$lJxXj0MfE/NxtiHvvSITquyzHEWFId34/b11A4HzapRkzA/YtNQgu",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 11,
@@ -238,7 +258,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_OOG2PP.png",
-          "password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci"
+          "password": "$2b$10$82tnjVGfGBHlGHmYQnAfquUmIX2N8EGmuMK8rrbMydzozmOycIDci",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           "id": 12,
@@ -258,7 +280,9 @@ module.exports = {
           "occupation": "other",
           "email_verified": true,
           "profile_photo": "profile_photo_F7F7II.png",
-          "password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm"
+          "password": "$2b$10$AcE.6lc58qhIfPTZhwUUouyvIMq3Ajz.XDEPQBc08c26yCXszGhTm",
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ], { transaction, ignoreDuplicates: true })
 

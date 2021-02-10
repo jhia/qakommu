@@ -15,8 +15,11 @@ module.exports = {
           prefix: 'my-kommu',
           // member needs verification
           member_verification: false,
-          code: 'KOMMU',
+          code: 'KOMMMU',
           is_private: false,
+          active: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           id: 2,
@@ -25,7 +28,10 @@ module.exports = {
           prefix: "python",
           member_verification: true,
           code: "0JWCT2",
-          is_private: false
+          is_private: false,
+          active: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           id: 3,
@@ -34,7 +40,10 @@ module.exports = {
           prefix: "node",
           member_verification: true,
           code: "8OTUHR",
-          is_private: false
+          is_private: false,
+          active: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ], { transaction, ignoreDuplicates: true })
 

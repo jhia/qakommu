@@ -20,6 +20,14 @@ module.exports = {
             allowNull: false,
             unique: true
           },
+          createdAt: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.DataTypes.NOW
+          },
+          updatedAt: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.DataTypes.NOW
+          }
         }, { transaction: t }),
         queryInterface.createTable('countries', {
           id: {
@@ -52,6 +60,14 @@ module.exports = {
               key: 'id'
             },
             defaultValue: 1 // must be ENG
+          },
+          createdAt: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.DataTypes.NOW
+          },
+          updatedAt: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.DataTypes.NOW
           }
         }, { transaction: t })
       ]);
