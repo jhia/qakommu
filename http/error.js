@@ -50,7 +50,10 @@ class ResponseError extends Error {
     delete(this.payload[name]);
   }
 
-  hasContext() {
+  hasContext(key=null) {
+    if(key) {
+      return this.payload.hasOwnProperty('key') && Boolean(this.payload['key']);
+    }
     return Object.keys(this.payload).length > 0;
   }
 
