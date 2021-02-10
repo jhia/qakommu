@@ -30,8 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     }, {
-        tableName: 'countries',
-        timestamps: false
+        tableName: 'countries'
     })
 
     Country.exists = async function (id) {

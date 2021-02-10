@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     }
   }, {
-    timestamps: false,
     tableName: 'languages',
   })
 
