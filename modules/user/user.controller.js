@@ -5,23 +5,27 @@ const { ResponseError } = require('../../http')
 const controller = new Base('user');
 const Archive = require('../../helpers/archive');
 
+const validAttributes = [
+	'profilePhoto',
+	'firstName', // required
+	'lastName', // required
+	'birthdate', // required
+	'username', // required
+	'email', // required
+	'occupation', // required
+	'gender', // required
+	'organization',
+	'languageId', // by default is country language, should be browser headers
+];
+
 controller.getMyUser = async function (req, res) {
 	try {
 		let user = await this.model.findByPk(req.user.id, {
-			attributes: [
-				'profilePhoto',
-				'firstName', // required
-				'lastName', // required
-				'birthdate', // required
-				'username', // required
-				'email', // required
-				'occupation', // required
-				'gender', // required
-				'organization',
-				'languageId', // by default is country language, should be browser headers
-			],
+			attributes: validAttributes,
 			include: [this.model.associations.language]
 		});
+
+		user.profilePhoto = await Archive.route(user.profilePhoto);
 
 		return res.send(user);
 	} catch({ message }) {
@@ -49,18 +53,7 @@ controller.getOne = async function (req, res) {
 				emailVerified: true,
 				active: true
 			},
-			attributes: [
-				'profilePhoto',
-				'firstName', // required
-				'lastName', // required
-				'birthdate', // required
-				'username', // required
-				'email', // required
-				'occupation', // required
-				'gender', // required
-				'organization',
-				'languageId', // by default is country language, should be browser headers
-			],
+			attributes: validAttributes,
 			include: [this.model.associations.language]
 		});
 
@@ -68,6 +61,8 @@ controller.getOne = async function (req, res) {
 			const notFoundError = new ResponseError(404, 'User not found')
 			return res.send(notFoundError)
 		}
+
+		user.profilePhoto = await Archive.route(user.profilePhoto);
 
 		return res.send(user);
 	} catch({ message }) {
@@ -286,12 +281,18 @@ controller.postFunc = async function (req, res) {
 	}
 
 	try {
-		let user = new User(userData)
-		await user.save();
+		if(req.files && req.files.avatar && req.files.avatar !== 'not-image') {
+			let avatar = new Archive('profile_photo', req.files.avatar);
+			await avatar.upload();
+			userData.profilePhoto = avatar.id;
+		}
+
+		let user = await this.insert(userData)
 
 		await this.db.userCommunity.bulkCreate(communities.map(c => ({
 			userId: user.id,
-			communityId: c
+			communityId: c,
+			owner: false
 		})))
 
 		res.statusCode = 201
@@ -301,7 +302,7 @@ controller.postFunc = async function (req, res) {
 		})
 
 	} catch (err) {
-		process.stdout.write(err.message)
+		console.log(err.message)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}
@@ -480,32 +481,35 @@ controller.putFunc = async function (req, res) {
 	try {
 		let updatePicture = false;
 		let previousAvatarName = null;
-		if(req.files.avatar && req.body.avatar !== 'not-image') {
-			let avatar = Archive('profile_photo', req.files.avatar);
-			avatar.upload();
-			userData.profilePhoto = avatar.name;
+		if(req.files.avatar && req.files.avatar !== 'not-image') {
+			let avatar = new Archive('profile_photo', req.files.avatar);
+			await avatar.upload();
+			userData.profilePhoto = avatar.id;
 			updatePicture = true;
 		}
 
 		if(updatePicture) {
-			let r = await this.findByPk(req.user.id, { attributes: ['profilePhoto'] });
+			let r = await this.model.findByPk(req.user.id, { attributes: ['profilePhoto'] });
 			previousAvatarName = r.profilePhoto;
 		}
 
-		const rows = await this.model.update({
+		const rows = await this.update({
 			id: req.user.id,
 			data: userData
 		});
 
 		if(rows > 0 && userData.hasOwnProperty('profilePhoto') && updatePicture) {
-			Archive.fromString(previousAvatarName).remove();
+			console.log('AVATAR', previousAvatarName);
+			let prev = await Archive.fromString(previousAvatarName);
+			await prev.remove();
 		}
 
 		return res.send([])
-	} catch {
+	} catch (err) {
 		// connection error
-		let err = new ResponseError(503, 'Try again later');
-		return res.send(err);
+		console.log(err.message)
+		let connectionError = new ResponseError(503, 'Try again later');
+		return res.send(connectionError);
 	}
 }
 
@@ -544,7 +548,8 @@ controller.deleteFunc = async function (req, res) {
 		const { profilePhoto } = await this.model.findByPk(req.user.id);
 		const rows = await this.delete(req.user.id);
 		if(rows > 0 && !!profilePhoto) {
-			Archive.fromString(profilePhoto).remove();
+			let prev = await Archive.fromString(profilePhoto)
+			await prev.remove();
 		}
 		res.send([]);
 	} catch {

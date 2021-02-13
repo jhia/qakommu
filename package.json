@@ -11,7 +11,7 @@
     "pretest": "NODE_ENV=test npm run db:reset",
     "docs": "rimraf docs && esdoc -c .esdoc.json",
     "db:init": "sequelize-cli db:migrate && sequelize-cli db:seed:all",
-    "db:reset": "NODE_ENV=test sequelize-cli db:migrate:undo:all && npm run db:init"
+    "db:reset": "sequelize-cli db:migrate:undo:all && npm run db:init"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

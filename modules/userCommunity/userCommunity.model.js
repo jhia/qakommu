@@ -1,8 +1,7 @@
 'use strict'
-const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-    const UserCommunity = sequelize.define('user_communities', {
+    const UserCommunity = sequelize.define('userCommunity', {
         userId: {
             field: 'id_user',
             type: DataTypes.INTEGER,

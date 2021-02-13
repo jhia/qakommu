@@ -14,11 +14,10 @@ controller.getFunc = async function (req, res) {
   try {
     const languages = await this.model.findAll({});
     return res.send(languages);
-  } catch ({ message }) {
+  } catch {
     //connection error
-    process.stderr.write(message);
-    const langError = new ResponseError(503, "Try again later");
-    return res.send(langError);
+    const connectionError = new ResponseError(503, "Try again later");
+    return res.send(connectionError);
   }
 }
 

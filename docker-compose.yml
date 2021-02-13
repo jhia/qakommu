@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: kommu
     networks: [kommu]
     volumes:
-      - db-data
+      - "$HOME/.kommu-data:/var/lib/postgresql/data"
     ports:
       - 5432:5432
   # test database
@@ -23,7 +23,7 @@ services:
       POSTGRES_USER: kommu_test
     networks: [kommu]
     volumes:
-      - db-test
+      - "$HOME/.kommu-test-data:/var/lib/postgresql/data"
     ports:
       - 5435:5432
 
@@ -40,6 +40,7 @@ services:
       PORT: 8000
       DEBUG_PORT: 9228
       KOMMU_DB_PORT: 5432
+      CLOUDINARY_URL: "${CLOUDINARY_URL}"
     container_name: kommu
     build:
       context: .
@@ -67,6 +68,7 @@ services:
       NODE_ENV: test
       PORT: 9000
       KOMMU_DB_PORT: 5435
+      CLOUDINARY_URL: "${CLOUDINARY_URL}"
     container_name: test
     build:
       context: .
@@ -85,12 +87,3 @@ networks:
   kommu:
     name: kommu
     driver: bridge
-volumes:
-  db-data:
-    driver_opts:
-      type: "nfs"
-      device: "$HOME/.kommu-data:/var/lib/postgresql/data"
-  db-test:
-    driver_opts:
-      type: "nfs"
-      device: "$HOME/.kommu-test-data:/var/lib/postgresql/data"

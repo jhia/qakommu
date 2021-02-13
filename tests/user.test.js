@@ -131,17 +131,11 @@ describe('User API', () => {
       expect(res.body.successful).toEqual(true)
       expect(res.body.message).toBe('Created')
       expect(res.body).toHaveProperty('payload')
-      delete(goodEvent.password)
-      expect({
-        firstName: res.body.payload.firstName,
-        lastName: res.body.payload.lastName,
-        birthdate: res.body.payload.birthdate,
-        gender: res.body.payload.gender,
-        country: res.body.payload.country,
-        email: res.body.payload.email,
-        username: res.body.payload.username
-      }).toEqual(goodEvent)
       expect(res.body.payload).not().toHaveProperty('password')
+      const expectedResponse = {
+        username: 'janedoe'
+      }
+      expect(res.body.payload).toEqual(expectedResponse)
       editingUser = res.body.payload;
     })
   })
@@ -178,7 +172,7 @@ describe('User API', () => {
       expect(res.body.message).toBe('Unauthorized')
     })
 
-    it('should nout update password if trying to edit with the /api/user post', async () => {
+    it('should not update password if trying to edit with the /api/user post', async () => {
       const badUpdate = {
         password: 'mynewpassword1'
       }

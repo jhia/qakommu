@@ -4,7 +4,6 @@ const Base = require('../../helpers/base.controller');
 const getColors = require('get-image-colors');
 const controller = new Base('event');
 const { validateDate } = require('../../helpers/validations');
-const { verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities');
 const { ResponseError } = require('../../http');
 const Archive = require('../../helpers/archive');
 
@@ -160,10 +159,10 @@ controller.postFunc = async function (req, res) {
     try {
         if(req.files && req.files.image) { // there's image
             let image = new Archive('event', req.files.image); // let the handler do it
-            await image.upload() // save image
-            eventData.image = image.route;
+            await image.upload(); // save image
+            eventData.image = image.id;
             if(!primaryColor || !secondaryColor) { // get main colors if not set
-                let [primaryColor, secondaryColor] = await getColors(path.join(__dirname, '.' + image.route), { count: 2 })
+                let [primaryColor, secondaryColor] = await getColors(image.route, { count: 2 })
                 eventData.primaryColor = primaryColor.hex()
                 eventData.secondaryColor = secondaryColor.hex()
             }
@@ -260,23 +259,23 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-    if(start) {
+    if(req.body.start) {
         try {
-            if(!validateDate(start)) {
+            if(!validateDate(req.body.start)) {
                 throw new Error('Start date must follow the yyyy-mm-dd format')
             }
-            eventData.start = start;
+            eventData.start = req.body.start;
         } catch ({message}) {
             validationError.addContext('start', message)
         }
     }
 
-    if(end) {
+    if(req.body.end) {
         try {
-            if(!validateDate(end)) {
+            if(!validateDate(req.body.end)) {
                 throw new Error('End date must follow the yyyy-mm-dd format')
             }
-            eventData.end = end;
+            eventData.end = req.body.end;
         } catch ({message}) {
             validationError.addContext('end', message)
         }
@@ -309,9 +308,9 @@ controller.putFunc = async function (req, res) {
         if(req.files && req.files.image) { // there's image
             let image = new Archive('event', req.files.image); // let the handler do it
             await image.upload() // save image
-            eventData.image = image.route;
+            eventData.image = image.id;
             if(!primaryColor || !secondaryColor) { // get main colors if not sent
-                let [primaryColor, secondaryColor] = await getColors(path.join(__dirname, '.' + image.route), { count: 2 })
+                let [primaryColor, secondaryColor] = await getColors(image.route, { count: 2 })
                 eventData.primaryColor = primaryColor.hex()
                 eventData.secondaryColor = secondaryColor.hex()
             }
@@ -329,7 +328,7 @@ controller.putFunc = async function (req, res) {
 		});
 
 		if(rows > 0 && eventData.hasOwnProperty('image') && updatePicture) {
-			Archive.fromString(previousImageName).remove();
+			await Archive.fromString(previousImageName).remove();
 		}
 
 		return res.send([])
@@ -355,12 +354,12 @@ controller.deleteFunc = async function (req, res) {
             return res.send(notFoundError);
         }
 
-        Archive.fromString(event.image).remove();
+        await Archive.fromString(event.image).remove();
         
         let rows = await this.delete({ id });
         return res.send(rows)
     } catch (error) {
-        console.log(error.message)
+        console.warn(error.message)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }
