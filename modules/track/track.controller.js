@@ -116,13 +116,6 @@ controller.postFunc = async function (req, res) {
 
 controller.putFunc = async function (req, res) {
 	const { id } = req.params;
-	const {
-		name,
-		description,
-		active,
-		icon,
-		community
-	} = req.body;
 
 	const validationError = new ResponseError(400)
 
@@ -168,10 +161,10 @@ controller.putFunc = async function (req, res) {
 	// TODO review this validation, it should not move between communities
 	if(req.body.community) {
 		try {
-			if(!(await this.db.community.exists(community))) {
+			if(!(await this.db.community.exists(req.body.community))) {
 				throw new Error('Community is not valid')
 			}
-			trackData.communityId = community;
+			trackData.communityId = req.body.community;
 		} catch ({message}) {
 			validationError.addContext('community', message)
 		}

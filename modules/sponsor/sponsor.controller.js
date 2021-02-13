@@ -114,7 +114,7 @@ controller.postFunc = async function (req, res) {
 		if (req.files && req.files.image) {
 			let image = new Archive('sponsor', req.files.image)
 			await image.upload()
-			data.image = image.route
+			data.image = image.id;
 		}
 
 		let newdate = await this.insert(data);
@@ -185,7 +185,7 @@ controller.putFunc = async function (req, res) {
 		if (req.files && req.files.image) { // there's image
 			let image = new Archive('sponsor', req.files.image); // let the handler do it
 			await image.upload() // save image
-			eventData.image = image.route;
+			eventData.image = image.id;
 			updatePicture = true;
 		}
 
@@ -200,7 +200,7 @@ controller.putFunc = async function (req, res) {
 		});
 
 		if (rows > 0 && data.hasOwnProperty('image') && updatePicture) {
-			Archive.fromString(previousImageName).remove();
+			await Archive.fromString(previousImageName).remove();
 		}
 
 		return res.send([])

@@ -4,7 +4,6 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const controller = new Base('partnership');
-const { verify_and_upload_image_post, verify_and_upload_image_put, delete_image, upload_images } = require('../../helpers/utilities');
 const { ResponseError } = require('../../http');
 const Archive = require('../../helpers/archive');
 
@@ -122,7 +121,7 @@ controller.postFunc = async function (req, res) {
         if(req.files && req.files.logo) { // there's image
             let logo = new Archive('partnership', req.files.logo); // let the handler do it
             await logo.upload() // save image
-            data.logo = logo.route;
+            data.logo = logo.id;
         }
         
         let result = await this.insert(eventData);
@@ -195,7 +194,7 @@ controller.putFunc = async function (req, res) {
         if(req.files && req.files.logo) { // there's image
             let image = new Archive('partnership', req.files.logo); // let the handler do it
             await image.upload() // save image
-            data.logo = image.route;
+            data.logo = image.id;
             updatePicture = true;
         }
 
@@ -210,7 +209,7 @@ controller.putFunc = async function (req, res) {
 		});
 
 		if(rows > 0 && data.hasOwnProperty('logo') && updatePicture) {
-			Archive.fromString(previousImageName).remove();
+			await Archive.fromString(previousImageName).remove();
 		}
 
 		return res.send([])

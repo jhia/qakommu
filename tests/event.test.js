@@ -165,7 +165,7 @@ describe('Events API', () => {
     })
 
     it('should show error if the id does not exists', async () => {
-      const res = await request(app).delete(`/api/event/${editinEvent.id + 10}`).set(headers)
+      const res = await request(app).delete(`/api/event/550001`).set(headers)
       expect(res.statusCode).toEqual(404)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('This event does not exists')

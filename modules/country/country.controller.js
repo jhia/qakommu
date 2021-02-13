@@ -13,9 +13,8 @@ controller.getFunc = async function (req, res) {
   try {
     const countries = await this.model.findAll({});
     return res.send(countries);
-  } catch ({ message }) {
+  } catch {
     //connection error
-    process.stderr.write(message);
     const err = new ResponseError(503, "Try again later");
     return res.send(err);
   }
