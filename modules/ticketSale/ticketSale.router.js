@@ -8,22 +8,16 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/',function(req, res){
+
+router.get('/ticket/:ticketId',function(req, res){
   //HTTP get route
-  ticket_saleController.getFunc(req,res);
+  ticket_saleController.getTicketSaleByTicket(req,res);
 });
 
 router.get('/:id',function(req, res){
   //HTTP get route
   ticket_saleController.getFunc(req,res);
 });
-
-
-router.get('/ticket/:id_ticket',function(req, res){
-  //HTTP get route
-  ticket_saleController.getTicketSaleByTicket(req,res);
-});
-
 
 
 router.post('/',(req, res) => {
