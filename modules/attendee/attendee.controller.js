@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('attendee');
-const { validateEmail } = require('../../helpers/utilities');
+//const { validateEmail } = require('../../helpers/utilities');
 const { ResponseError } = require('../../http');
 
 
@@ -16,16 +16,22 @@ const { ResponseError } = require('../../http');
 
 controller.getFunc = async function (req, res) {
 
-    const { limit, offset } = req.body;
+    const { limit, offset, event } = req.query;
+    
+    if (isNaN(event)) {
+        const validationError = new ResponseError(400, 'event is not valid')
+        return res.send(validationError);
+    }
+
     try {
-        let attendees = await this.getData({
+        let attendees = await this.model.findAll({
             limit,
-            offset
+            offset,
+            attributes: ['id','firstName', 'lastName', 'email', 'userId', 'isPresent', 'eventId'],
+            where: {eventId : event }
         });
 
-        res.statusCode = 200;
-        res.send(attendees);
-        
+        res.send(attendees);        
 
     } catch ({ message }) {
         console.log(message)
@@ -45,7 +51,9 @@ controller.getOne = async function (req, res) {
     }
 
     try {
-        const attendee = await this.model.findByPk(id);
+        const attendee = await this.model.findByPk(id, {
+            attributes: ['id','firstName', 'lastName', 'email', 'eventId', 'isPresent'],
+        });
         return res.send(attendee);
     } catch {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -73,121 +81,119 @@ controller.postFunc = async function (req, res) {
         firstName,
         lastName,
         email,
-        userId,
+        userId: user,
         isPresent,
         eventId : event,
     }
 
+    //first name
     try{    
-        if(firstName){
-
+        if(!this.model.validateFirstName(firstName)){
+            throw new Error('First Name is not valid')
         }
-
     }catch({message}){
-        validationError.addContext('name', message)
+        validationError.addContext('firstName', message)
     }
 
+    //last name
+    try{    
+        if(!this.model.validateLastName(lastName)){
+            throw new Error('Last Name is not valid')
+        }
+    }catch({message}){
+        validationError.addContext('lastName', message)
+    }
+
+    // email
+	try {
+		if (!this.model.validateEmail(email)) {
+			validationError.addContext('email', 'Email is not valid')
+		}
+	} catch ({ message }) {
+		validationError.addContext('email', message)
+	}
+
+    //event exists
     try {
-        if (id_event < 1 || id_state < 1 || id_ticket_sale_detail < 1 || name.length < 1 || email.length < 1) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, verify the data sent!',
-            });
+        if(!(await this.db.event.exists(event))) {
+            throw new Error('This event does not exists')
         }
-        if (!validateEmail(email)) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, el formato del email no es valido',
-            });
-        }
-        let newdate = await this.insert({
-            id_user,
-            name,
-            email: email.toLowerCase(),
-            is_present,
-            id_ticket_sale_detail,
-            rate,
-            id_state,
-            id_event
-        });
-        if (newdate) {
-            return this.response({
-                res,
-                statusCode: 201,
-                payload: [newdate]
-            });
-        }
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
+    } catch ({message}) {
+        validationError.addContext('event', message)
+    }
+
+    //insert
+    try {
+       
+        let result = await this.insert(attendeeData);
+        res.statusCode = 201;
+        res.send(result);
+        
+    } catch (err) {
+        console.error(err);
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
     }
 }
 
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
-    const { id_user, name, email, is_present, id_ticket_sale_detail, rate, id_state, id_event, return_data } = req.body;
+
+    if(isNaN(id)) {
+        const idError = new ResponseError(400, 'Attendee id is not valid')
+        return res.send(idError);
+    }
+
+    const validationError = new ResponseError(400, 'Attendee id is not valid')
+
+    let attendeeData = {};
+
+    if(req.body.firstName){
+        try{
+            if(!this.model.validateFirstName(req.body.name)){
+                throw new Error('First Name is not valid');
+            }
+            attendeeData.firstName = req.body.firstName
+        }catch({message}){
+            validationError.addContext('firstName', message);
+        }
+    }
+
+    if(req.body.lastName){
+        try{
+            if(!this.model.validateLastName(req.body.name)){
+                throw new Error('Last Name is not valid');
+            }
+            attendeeData.lastName = req.body.lastName
+        }catch({message}){
+            validationError.addContext('lastName', message);
+        }
+    }
+
+
+    if(req.body.email){
+        try{
+            if(!this.model.validateLastName(req.body.name)){
+                throw new Error('Last Name is not valid');
+            }
+            attendeeData.lastName = req.body.lastName
+        }catch({message}){
+            validationError.addContext('lastName', message);
+        }
+    }
 
     try {
-        if (id_event < 1 || id_state < 1 || id_ticket_sale_detail < 1 || name.length < 1 || email.length < 1) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, verify the data sent!',
-            });
-        }
-        if (!validateEmail(email)) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, el formato del email no es valido',
-            });
-        }
-        let result = await this.update(
-            {
-                id,
-                data: {
-                    id_user,
-                    name,
-                    email,
-                    is_present,
-                    id_ticket_sale_detail,
-                    rate,
-                    id_state,
-                    id_event
-                },
-                return_data
-            });
-        if (result) {
-            return this.response({
-                res,
-                statusCode: 200,
-                payload: return_data ? result : []
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'Could not update this element, possibly does not exist'
-            });
-        }
+        
+        const rows = await this.model.update({
+			id: req.params.id,
+            data: attendeeData,
+            return_data: true
+		});
+
     } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
+        console.log(error.message);
+        const connectionError = new ResponseError(503, 'Try again later');
+        res.send(connectionError);
     }
 }
 

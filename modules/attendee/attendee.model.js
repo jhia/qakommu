@@ -1,6 +1,7 @@
 'use strict'
 
-//const { sequelize } = require("../../models");
+
+const { sequelize } = require("../../models");
 const { validateEmail } = require('../../helpers/validations')
 
 module.exports = (sequelize, DataTypes) => {
@@ -18,15 +19,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         lastName: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: false,
+            field: 'last_name'
         },
         email: {
             allowNull: false,
             type: DataTypes.TEXT,
+            field: 'email'
         },
-        UserId: {
+        userId: {
             allowNull: true,
             type: DataTypes.INTEGER,
+            field: 'id_user',
             references: {
                 model: {
                     tableName: 'users'
@@ -37,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         eventId: {
             allowNull: false,
             type: DataTypes.INTEGER,
+            field: 'id_event',
             references: {
                 model: {
                     tableName: 'events'
@@ -46,11 +51,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         isPresent: {
             type: DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
+            field: 'is_present'
         },/*
         ticketSaleDetailId:{
             allowNull: false,
             type: DataTypes.INTEGER,
+            field: 'is_ticket_sale_detail',
             references:{
                 model:{
                     tableName: 'id_ticket_sale_details'
@@ -91,6 +98,7 @@ module.exports = (sequelize, DataTypes) => {
         });*/
     }
 
+  
     Attendee.validateFirstName = function (value) {
 		if(!value) {
 			throw new Error('First name is required')
