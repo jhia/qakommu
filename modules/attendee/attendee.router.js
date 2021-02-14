@@ -23,20 +23,21 @@ router.get('/:id/sessions/all',function(req, res){
   //HTTP get route
   attendeeController.getSessionsByAttendee(req,res);
 });
-
+*/
 router.post('/',(req, res) => {
   ///HTTP post route
-  attendeeController.postFunc(req,res);
+  attendeeController.postFunc(req, new Response(res));
 });
 
 router.put('/:id',(req, res) => {
   //HTTP put route
-  attendeeController.putFunc(req,res);
+  attendeeController.putFunc(req,new Response(res));
 });
 
+/*
 router.delete('/:id',(req, res) => {
   //HTTP delete route
-  attendeeController.deleteFunc(req,res);
+  attendeeController.deleteFunc(req,new Response(res));
 });
 */
 
