@@ -22,7 +22,9 @@ module.exports = {
           "limit_sale": true,
           "max_ticket_sale": 5,
           "start": "2020-05-05",
-          "end": "2020-05-15"
+          "end": "2020-05-15",
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           id: 2,
@@ -65,7 +67,9 @@ module.exports = {
           "since4": "2020-11-21",
           "until4": "2020-12-1",
           "percentage4": 5,
-          "is_discount4": false
+          "is_discount4": false,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ], { transaction, ignoreDuplicates: true });
 
