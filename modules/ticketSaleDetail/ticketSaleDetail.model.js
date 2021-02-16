@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-    const ticket_sale_detail = sequelize.define('ticket_sale_detail', {
+    const TicketSaleDetail = sequelize.define('ticketSaleDetail', {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -14,30 +14,33 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             
         },
-        id_ticket_sale: {
+        ticketSaleId: {
             allowNull: false,
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            field: 'id_ticket_sale'
         },
         deactivated: {
             allowNull: false,
             defaultValue: false,
             type: DataTypes.BOOLEAN
         }
+    }, {
+        tableName: 'ticket_sale_details'
     });
 
-    ticket_sale_detail.associate = function (models) {
+    TicketSaleDetail.associate = function (models) {
         //To create model associations
 
-        ticket_sale_detail.belongsTo(models.ticket_sale, {
+        TicketSaleDetail.belongsTo(models.ticketSale, {
             foreignKey: 'id_ticket_sale',
-            as: 'ticket_sale'
+            as: 'ticketSale'
         });
 
-        ticket_sale_detail.hasOne(models.attendee, {
+        TicketSaleDetail.hasOne(models.attendee, {
             foreignKey: 'id_ticket_sale_detail',
-            as: 'ticket_sale_detail_attendee'
+            as: 'attendee'
         });
     }
 
-    return ticket_sale_detail;
+    return TicketSaleDetail;
 }

@@ -35,7 +35,7 @@ exports.communityCodeVerification = async function(req, res, next) {
   
   try {
     const community = await Community.findByCode(communityCode, {
-      attributes: ['id']
+      attributes: ['id', 'code']
     });
     if(!community) {
       return Response.from(res).send(notFoundError)
