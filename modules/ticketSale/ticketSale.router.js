@@ -1,7 +1,9 @@
 'use strict'
 
 const router = require('express').Router();
-const ticket_saleController = require('./ticket_sale.controller');
+const controller = require('./ticketSale.controller');
+const Response = require('../../http/response');
+const { ticketVerification, ticketSaleVerification } = require('../../middleware/ticket')
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
@@ -9,35 +11,35 @@ router.use((req, res, next) => {
 });
 
 
-router.get('/ticket/:ticketId',function(req, res){
+router.get('/ticket/:ticketId', ticketVerification, function(req, res){
   //HTTP get route
-  ticket_saleController.getTicketSaleByTicket(req,res);
+  controller.getTicketSaleByTicket(req, new Response(res));
 });
 
-router.get('/:id',function(req, res){
+router.get('/:ticketSaleId', ticketSaleVerification, function(req, res){
   //HTTP get route
-  ticket_saleController.getFunc(req,res);
+  controller.getOne(req, new Response(res));
 });
 
 
-router.post('/',(req, res) => {
+router.post('/ticket/:ticketId', ticketVerification, (req, res) => {
   ///HTTP post route
  // if(req.count < 1 || req.count == null ){
     //console.log(req);
  // }else{
-    ticket_saleController.postFunc(req,res);
+    controller.postFunc(req, new Response(res));
   //}
   
 });
 
-router.put('/:id',(req, res) => {
+router.put('/:ticketSaleId', ticketSaleVerification, (req, res) => {
   //HTTP put route
-  ticket_saleController.putFunc(req,res);
+  controller.putFunc(req, new Response(res));
 });
 
-router.delete('/:id',(req, res) => {
+router.delete('/:ticketSaleId', ticketSaleVerification, (req, res) => {
   //HTTP delete route
-  ticket_saleController.deleteFunc(req,res);
+  controller.deleteFunc(req, new Response(res));
 });
 
 module.exports = router;

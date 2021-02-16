@@ -1,8 +1,8 @@
-const { ticket:Ticket } = require('../models')
+const { ticket:Ticket, ticketSale:TicketSale } = require('../models')
 const { Response, ResponseError } = require('../http')
 
-exports.eventVerification = async function(req, res, next) {
-  const notFoundError = new ResponseError(404, 'Event does not exist')
+exports.ticketVerification = async function(req, res, next) {
+  const notFoundError = new ResponseError(404, 'Ticket does not exist')
   const { ticketId } = req.params;
 
   if(isNaN(ticketId)) {
@@ -11,15 +11,36 @@ exports.eventVerification = async function(req, res, next) {
   }
   
   try {
-    const ticket = await Ticket.findByPk(ticketId, {
-      attributes: ['id']
-    })
+    const ticket = await Ticket.findByPk(ticketId)
     if(!ticket) {
       return Response.from(res).send(notFoundError)
     }
     req.ticket = ticket;
-    return next();
-  } catch {
+    next();
+  } catch(err) {
+    return Response.from(res).send(notFoundError)
+  }
+}
+
+exports.ticketSaleVerification = async function(req, res, next) {
+  const notFoundError = new ResponseError(404, 'Ticket sale does not exist')
+  const { ticketSaleId } = req.params;
+
+  if(isNaN(ticketSaleId)) {
+    const validationError = new ResponseError(400, 'Ticket sale id is not valid')
+    return Response.from(res).send(validationError)
+  }
+  
+  try {
+    const sale = await TicketSale.findByPk(ticketSaleId, {
+      attributes: ['id']
+    })
+    if(!sale) {
+      return Response.from(res).send(notFoundError)
+    }
+    req.ticketSale = sale;
+    next();
+  } catch(err) {
     return Response.from(res).send(notFoundError)
   }
 }

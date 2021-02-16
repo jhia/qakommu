@@ -4,37 +4,39 @@ module.exports = (sequelize, DataTypes) => {
     const TicketSale = sequelize.define('ticketSale', {
         ticketId: {
             allowNull: false,
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'id_ticket'
         },
         userId: {
             allowNull: false,
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'id_user'
         },
         count: {
             allowNull: false,
-            type: Sequelize.INTEGER
+            type: DataTypes.INTEGER
         },
         unitAmount: {
             allowNull: false,
-            type: Sequelize.DOUBLE,
+            type: DataTypes.DOUBLE,
             field: 'unit_amount'
         },
         totalAmount: {
             allowNull: false,
-            type: Sequelize.DOUBLE,
+            type: DataTypes.DOUBLE,
             field: 'total_amount'
         },
         totalAmountPaid: {
             allowNull: false,
-            type: Sequelize.DOUBLE,
+            type: DataTypes.DOUBLE,
             field: 'total_amount_paid'
         },
         priceType: {
-            type: Sequelize.TEXT,
+            type: DataTypes.TEXT,
             field: 'price_type'
         }
+    }, {
+        tableName: 'ticket_sales'
     });
 
     TicketSale.associate = function (models) {
@@ -58,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
 
         TicketSale.belongsTo(models.user, {
             foreignKey: 'id_user',
-            as: 'seller'
+            as: 'user'
         });
 
     }

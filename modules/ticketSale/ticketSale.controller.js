@@ -1,9 +1,10 @@
 'use strict'
 
-const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const { calculateDiscountPercentage } = require('../../helpers/utilities');
-const controller = new Base('ticket_sale');
+const ResponseError = require('../../http/error');
+const { sequelize } = require('../../models');
+const controller = new Base('ticketSale');
 
 /*
 *Extend or overwrite the base functions
@@ -12,365 +13,17 @@ const controller = new Base('ticket_sale');
 *this.model -> Current module model
 */
 
-
-controller.getFunc = async function (req, res) {
-    const { id } = req.params;
-    const { limit, offset, order, attributes } = req.body;
-    try {
-        const data = await this.getData({
-            id,
-            limit,
-            offset,
-            attributes,
-            order
-        });
-        this.response({
-            res,
-            payload: [data]
-        });
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-    }
-
-}
-
-controller.postFunc = async function (req, res) {
-    const { id_ticket, id_user, count, paying_name, paying_address, dni_payer, name_ticket, id_coupon } = req.body;
-    try {
-        if (count < 1 || count === null || count == null || id_ticket < 1 || paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0 || name_ticket.length <= 0) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, verify the data sent!',
-            });
-        } else {
-            //in this step we are going to verify the actual data of the ticket
-            const requestedticket = await this.db.ticket.findOne({
-                where: { id: id_ticket }
-            });
-        
-            if (!requestedticket) {
-                return this.response({
-                    res,
-                    success: false,
-                    statusCode: 500,
-                    message: 'something went wrong, the selected ticket is not available',
-                });
-            } else {
-                //in this part we are going to check availability according to the number of tickets
-                if (requestedticket.reserved_current == 0 || id_coupon == null || id_coupon === null) {
-                    if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
-                        return this.response({
-                            res,
-                            success: false,
-                            statusCode: 500,
-                            message: 'the amount of ticket you want to buy exceeds stock or are you exceeding the amount allowed to buy',
-                        });
-                    }
-                }
-
-                //start calculate price to ticket
-                let price_current, price_type_current, today = new Date();
-
-                if (requestedticket.use_multiple_price1 == true && (requestedticket.since1 <= today && requestedticket.until1 >= today)) {
-                    price_current = requestedticket.price1;
-                    price_type_current = "P1";
-                } else {
-                    if (requestedticket.use_multiple_price2 == true && (requestedticket.since2 <= today && requestedticket.until2 >= today)) {
-                        price_current = requestedticket.price2;
-                        price_type_current = "P2";
-                    } else {
-                        if (requestedticket.use_multiple_price3 == true && (requestedticket.since3 <= today && requestedticket.until3 >= today)) {
-                            price_current = requestedticket.price3;
-                            price_type_current = "P3";
-                        } else {
-                            if (requestedticket.use_multiple_price4 == true && (requestedticket.since4 <= today && requestedticket.until4 >= today)) {
-                                price_current = requestedticket.price4;
-                                price_type_current = "P4";
-                            } else {
-                                price_current = requestedticket.base_price;
-                                price_type_current = "PB";
-                            }
-                        }
-                    }
-                }
-
-                //end calculate price to ticket
-
-                let ticket_total_amount = count * price_current
-                let ticket_total_amount_paid = ticket_total_amount;
-                let ticketsalecoupon, newcouponlimit = 0, flagcouponlimit = false, flag_reserved_discount = false, quantity_reserved_discount;
-                //in this part we are going to verify and calculate the coupon  
-                if (id_coupon > 0) {
-                    const { Op } = require("sequelize");
-                    ticketsalecoupon = await this.db.coupon.findOne({
-                        where: {
-                            id: id_coupon,
-                            [Op.and]: [
-                                {
-                                    since: {
-                                        [Op.lte]: today
-                                    }
-                                }, {
-                                    until: {
-                                        [Op.gte]: today
-                                    }
-                                }]
-
-                        }
-                    });
-                    if (!ticketsalecoupon) {
-                        return this.response({
-                            res,
-                            success: false,
-                            statusCode: 500,
-                            message: 'something went wrong, the coupon is not available',
-                        });
-                    } else {
-
-                        //coupon limit verification
-                        if (ticketsalecoupon.limit <= 0 && ticketsalecoupon.unlimited === false) {
-                            return this.response({
-                                res,
-                                success: false,
-                                statusCode: 500,
-                                message: 'something went wrong, this coupon cannot be used if the limit has been reached',
-                            });
-                        }
-                        if (ticketsalecoupon.is_reserved) {
-                            if (ticketsalecoupon.is_reserved == true && count <= ticketsalecoupon.limit && count <= requestedticket.reserved_current) {
-                                //flag
-                                flag_reserved_discount = true;
-                                quantity_reserved_discount = requestedticket.reserved_current - count;
-                            } else {
-                                return this.response({
-                                    res,
-                                    success: false,
-                                    statusCode: 500,
-                                    message: 'something went wrong, you are exceeding the number of tickets reserved',
-                                });
-                            }
-                        }
-
-                        //coupon calculator
-                        if (ticket_total_amount > 0 && ticketsalecoupon.percentage > 0 && ticketsalecoupon.percentage <= 100) {
-
-                            ticket_total_amount_paid = calculateDiscountPercentage(ticketsalecoupon.percentage, ticket_total_amount);
-                            if (!ticketsalecoupon.unlimited) {
-                                newcouponlimit = ticketsalecoupon.limit - 1;
-                                flagcouponlimit = true;
-                            }
-                        } else {
-                            return this.response({
-                                res,
-                                success: false,
-                                statusCode: 500,
-                                message: 'something went wrong',
-                            });
-                        }
-                    }
-                }
-
-                if(flag_reserved_discount == false){
-                    if (count > requestedticket.quantity_current || count > requestedticket.max_ticket_sell) {
-                        return this.response({
-                            res,
-                            success: false,
-                            statusCode: 500,
-                            message: 'the amount of ticket you want to buy exceeds stock or are you exceeding the amount allowed to buy',
-                        });
-                    }
-                }
-
-                let newdate = await this.insert({
-                    id_ticket,
-                    id_user,
-                    count,
-                    unit_amount: price_current,
-                    total_amount: ticket_total_amount,
-                    total_amount_paid: ticket_total_amount_paid,
-                    paying_name,
-                    paying_address,
-                    dni_payer,
-                    name_ticket: requestedticket.name,
-                    price_type: price_type_current,
-                    id_coupon
-                });
-
-                if (newdate.id > 0) {
-                    let i;
-                    let uuid;
-                    let id_ticket_sale = newdate.id;
-                    let deactivated = false;
-                    for (i = 0; i < count; i++) {
-                        await this.db.ticket_sale_detail.create({
-                            uuid, id_ticket_sale, deactivated
-                        });
-                    }
-
-                    //discount the number of tickets destined for reservations
-                    if (flag_reserved_discount) {
-                        await this.db.ticket.update({
-                            reserved_current: quantity_reserved_discount
-                        }, {
-                            where: {
-                                id: requestedticket.id
-                            }
-                        });
-                    } else {
-
-                        //we subtract the amount purchased with the availability of tickets
-                        let resultofcurrent = requestedticket.quantity_current - count
-                        //in this part we update the current amount of ticket
-                        if (resultofcurrent == 0) { //in this part  status change to Sold Out (id=2)
-                            await this.db.ticket.update({ quantity_current: resultofcurrent, id_state: 2 }, {
-                                where: {
-                                    id: requestedticket.id
-                                }
-                            });
-                        } else {
-                            await this.db.ticket.update({ quantity_current: resultofcurrent }, {
-                                where: {
-                                    id: requestedticket.id
-                                }
-                            });
-                        }
-                    }
-
-                    if (flagcouponlimit) {
-                        await this.db.coupon.update({ limit: newcouponlimit }, {
-                            where: {
-                                id: ticketsalecoupon.id
-                            }
-                        });
-                    }
-                    
-                } else {
-
-                    return this.response({
-                        res,
-                        success: false,
-                        statusCode: 500,
-                        message: 'something went wrong',
-                    });
-                }
-
-                return this.response({
-                    res,
-                    statusCode: 201,
-                    payload: [newdate]
-                });
-            }
-        }
-
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-    }
-}
-
-
-controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-    const { id_user, paying_name, paying_address, dni_payer, return_data } = req.body;
-    try {
-        if (paying_name.length <= 0 || paying_address.length <= 0 || dni_payer.length <= 0) {
-            return this.response({
-                res,
-                success: false,
-                statusCode: 500,
-                message: 'something went wrong, verify the data sent!',
-            });
-        } else {
-
-        }
-        let result = await this.update(
-            {
-                id,
-                data: {
-                    id_user,
-                    paying_name,
-                    paying_address,
-                    dni_payer
-                },
-                return_data
-            });
-        if (result) {
-            return this.response({
-                res,
-                statusCode: 200,
-                payload: return_data ? result : []
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'Could not update this element, possibly does not exist'
-            });
-        }
-    } catch (error) {
-        
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
-    }
-}
-
-controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-    try {
-        let deleterows = await this.delete({ id });
-        if (deleterows > 0) {
-            return this.response({
-                res,
-                success: true,
-                statusCode: 200
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'it was not possible to delete the item because it does not exist'
-            });
-        }
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
-    }
-}
-
-
+const validAttributes = ['id', 'ticketId', 'userId', 'count', 'unitAmount', 'totalAmount', 'totalAmountPaid', 'priceType'];
 
 controller.getTicketSaleByTicket = async function (req, res) {
-    const { id_ticket } = req.params;
-    const { limit, offset, order } = req.body;
+    const { limit, offset } = req.query;
     try {
-        const data = await this.db.ticket_sale.findAll({
+        const data = await this.model.findAll({
             limit,
             offset,
-            attributes: ['id','count','unit_amount','total_amount','total_amount_paid','paying_name','paying_address','dni_payer','price_type'],
-            order,
+            attributes: validAttributes,
             where: {
-                id_ticket
+                ticketId: req.ticket.id
             },
             include: [
                 {
@@ -379,52 +32,241 @@ controller.getTicketSaleByTicket = async function (req, res) {
                     as: 'ticket',
                 },
                 {
-                    attributes: ['name', 'last_name', 'username', 'profile_photo', 'address', 'email', 'phone'],
+                    attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+                    model: this.db.user,
+                    as: 'user'
+                },
+            ]
+        });
+
+        return res.send(data);
+    } catch (error) {
+        console.log(error)
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
+}
+
+
+
+controller.getOne = async function (req, res) {
+    const { ticketSaleId } = req.params;
+    try {
+        const data = await this.model.findByPk(ticketSaleId, {
+            attributes: validAttributes,
+            include: [
+                {
+                    attributes: ['id','name','description'],
+                    model: this.db.ticket,
+                    as: 'ticket',
+                },
+                {
+                    attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
                     model: this.db.user,
                     as: 'user'
                 },
                 {
                     attributes: ['uuid', 'deactivated'],
-                    model: this.db.ticket_sale_detail,
-                    as: 'ticket_sale_detail',
-                    include: [
-                        {
-                            attributes: ['id','name','dni','email','is_present'],
-                            model: this.db.attendee,
-                            as: 'ticket_sale_detail_attendee',
-                        }
-                    ]
+                    model: this.db.ticketSaleDetail,
+                    as: 'details'
                 },
-                {
-                    attributes: ['id', 'name','description','percentage','is_reserved'],
-                    model: this.db.coupon,
-                    as: 'coupon',/*
-                    include: [
-                        {
-                            attributes: ['name_ticket'],
-                            model: this.db.ticket_sale,
-                            as: 'ticket_sale',
-                        }
-                    ]*/
-                }
             ]
-        });
+        })
+        return res.send(data)
+    } catch (error) {
+        console.log(error)
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError)
+    }
 
-        this.response({
-            res,
-            payload: [data]
+}
+
+controller.postFunc = async function (req, res) {
+    const { ticketId } = req.params;
+    const {
+        count,
+        totalAmountPaid,
+        username // if no user id, then is the auth user
+    } = req.body;
+
+    const data = {
+        count,
+        totalAmountPaid,
+        ticketId,
+        userId: req.user.id
+    };
+
+    const validationError = new ResponseError(400)
+
+    if(isNaN(count) || count < 1) {
+        validationError.addContext('count', 'Count is not a valid number')
+    }
+
+    if(count > req.ticket.quantityCurrent) {
+        validationError.addContext('count', 'Number of tickets exceeds available')
+    }
+
+    if(isNaN(totalAmountPaid) || totalAmountPaid < 0) {
+        validationError.addContext('totalAmountPaid', 'Amount is not valid')
+    }
+
+    if(username) {
+        try {
+            let user = await this.db.user.findByUsername(username, { attributes: ['id'] })
+            if(!user) {
+                throw new Error('User does not exist')
+            }
+
+            data.userId = user.id
+        } catch({ message }) {
+            validationError.addContext('username', message)
+        }
+    }
+
+    if(validationError.hasContext()) {
+        return res.send(validationError)
+    }
+
+    let price = req.ticket.getCurrentPrice();
+    data.unitAmount = price.amount;
+    data.totalAmount = price.amount * count;
+    data.priceType = price.name;
+    
+    if(totalAmountPaid > data.totalAmount) {
+        validationError.addContext('totalAmountPaid', 'This number exceeds the total amount price')
+        return res.send(validationError)
+    }
+
+    let transaction = null;
+    let connectionError = new ResponseError(503, 'Try again later')
+
+    //generate transaction
+    try {
+        transaction = await sequelize.transaction();
+    } catch (err) {
+        return res.send(connectionError)
+    }
+
+    // start db queries with transaction
+    try {
+        let ticketSale = await this.model.create(data, {
+            returning: true,
+            transaction
         });
+        if(!ticketSale) {
+            throw new Error('Could not create sale')
+        }
+
+        let promises = []
+        for(let i = 0; i < count; i++) {
+            promises.push(this.db.ticketSaleDetail.create({
+                deactivated: false,
+                ticketSaleId: ticketSale.id
+            }, { transaction }))
+        }
+
+        await Promise.all(promises)
+
+        await req.ticket.decrement(['quantityCurrent'], { by: count, transaction })
+
+        await transaction.commit()
+        
+        res.statusCode = 201
+        return res.send(ticketSale)
 
     } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-
+        console.log(error)
+        await transaction.rollback();
+        return res.send(connectionError)
     }
 }
+
+
+// YOU CAN ONLY UPDATE USER ID
+controller.putFunc = async function (req, res) {
+    const { ticketSaleId } = req.params;
+
+    const { username } = req.body;
+
+    const validationError = new ResponseError(400)
+   
+    let data = {};
+
+    try {
+        let user = await this.db.user.findByUsername(username, { attributes: ['id'] })
+        if(!user) {
+            throw new Error('User does not exist')
+        }
+
+        data.userId = user.id
+    } catch({ message }) {
+        validationError.addContext('username', message)
+    }
+    
+    if(validationError.hasContext()) {
+        return res.send(validationError)
+    }
+
+    try {
+        let result = await this.update({
+            id: ticketSaleId,
+            data
+        })
+
+        return res.send(result)
+    } catch(err) {
+        const connectionError = new ResponseError(503, 'Try again later')
+        return res.send(connectionError)
+    }
+}
+
+controller.deleteFunc = async function (req, res) {
+    const { ticketSaleId } = req.params;
+
+    let transaction = null;
+    let connectionError = new ResponseError(503, 'Try again later')
+
+    //generate transaction
+    try {
+        transaction = await sequelize.transaction();
+    } catch (err) {
+        return res.send(connectionError)
+    }
+
+    // start db queries with transaction
+    try {
+        let details = await this.db.ticketSaleDetail.findAll({
+            where: {
+                ticketSaleId
+            },
+            attributes: ['id'],
+            transaction
+        })
+
+        await this.db.ticketSaleDetail.destroy({
+            where: {
+                id: details.map(d => d.id)
+            },
+            transaction
+        })
+
+        let rows = await this.model.destroy({
+            where: {
+                id: ticketSaleId
+            },
+            transaction
+        })
+
+        await transaction.commit();
+
+        return res.send(rows);
+    } catch (err) {
+        await transaction.rollback();
+        return res.send(connectionError)
+    }
+
+}
+
 
 
 module.exports = controller;

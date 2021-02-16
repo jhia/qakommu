@@ -171,14 +171,15 @@ module.exports = (sequelize, DataTypes) => {
  		});*/
 	};
 
-	User.findByUsername = function (username) {
+	User.findByUsername = function (username, options={}) {
 		if(!username) {
 			throw new Error('Username is required')
 		}
 		return this.findOne({
 			where: {
 				username
-			}
+			},
+			...options
 		})
 	}
 	
@@ -186,16 +187,14 @@ module.exports = (sequelize, DataTypes) => {
 		if(!value) {
 			throw new Error('First name is required')
 		}
-		return typeof value === typeof '' &&
-			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+		return typeof value === typeof '' && !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
 	}
 
 	User.validateLastName = function (value) {
 		if(!value) {
 			throw new Error('Last name is required')
 		}
-		return typeof value === typeof '' &&
-			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
+		return typeof value === typeof '' && !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
 	}
 
 	User.validateBirthdate = function (value) {

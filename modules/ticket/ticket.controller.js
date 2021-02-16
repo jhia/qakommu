@@ -4,574 +4,436 @@ const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 
 const { calculateDiscountPercentage, calculatePercentageIncrease } = require('../../helpers/utilities');
+const { ResponseError } = require('../../http');
+const { validateDate } = require('../../helpers/validations');
 
 const controller = new Base('ticket');
 
-/*
-*Extend or overwrite the base functions
-*All the controllers already have implicit the models by:
-*this.db -> All models
-*this.model -> Current module model
-*/
+const validAttributes = [
+	'id', 'name', 'description', 'isDraft', 'basePrice',
+	'quantityTotal', 'quantityCurrent', 'reserved', 'reservedCurrent',
+	'start', 'end', 'limitSale', 'maxTicketSale', 'eventId',
+	'useMultiprice1', 'title1', 'since1', 'until1', 'isDiscount1', 'percentage1', 'price1',
+	'useMultiprice2', 'title2', 'since2', 'until2', 'isDiscount2', 'percentage2', 'price2',
+	'useMultiprice3', 'title3', 'since3', 'until3', 'isDiscount3', 'percentage3', 'price3',
+	'useMultiprice4', 'title4', 'since4', 'until4', 'isDiscount4', 'percentage4', 'price4'
+]
 
+const multipriceKeys = [
+	'useMultiprice1', 'title1', 'since1', 'until1', 'isDiscount1', 'percentage1', 'price1',
+	'useMultiprice2', 'title2', 'since2', 'until2', 'isDiscount2', 'percentage2', 'price2',
+	'useMultiprice3', 'title3', 'since3', 'until3', 'isDiscount3', 'percentage3', 'price3',
+	'useMultiprice4', 'title4', 'since4', 'until4', 'isDiscount4', 'percentage4', 'price4'
+]
 
 controller.getFunc = async function (req, res) {
-
-	const { id } = req.params;
-	const { limit, offset, order, attributes } = req.body;
+	const { limit, offset } = req.query;
+	const { eventId } = req.params;
 	try {
-		const data = await this.getData({
-			id,
+		const data = await this.model.findAll({
+			where: {
+				eventId
+			},
 			limit,
 			offset,
-			attributes,
-			order
+			attributes: validAttributes
 		});
-		this.response({
-			res,
-			payload: [data]
+
+		let tickets = data.map(d => {
+			let t = {...d.dataValues}
+			
+			multipriceKeys.forEach(key => delete(t[key]))
+			t.prices = d.getPrices()
+			return t;
 		});
+		
+		return res.send(tickets)
 	} catch (error) {
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong',
+		console.log(error.message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
+	}
+}
+
+controller.getOne = async function (req, res) {
+	const { ticketId } = req.params;
+	try {
+		const data = await this.model.findByPk(ticketId, {
+			attributes: validAttributes
 		});
+		let t = data.dataValues
+		multipriceKeys.forEach(key => delete(t[key]))
+		t.prices = data.getPrices()
+
+		return res.send(t)
+	} catch (error) {
+		console.log(error.message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 
 
 controller.postFunc = async function (req, res) {
+	const { eventId } = req.params;
 
-	const { name, description, id_state, id_event, base_price, quantity_total,
-		quantity_current, reserved,  limit_sale, max_ticket_sell, start, end,
-		use_multiple_price1, title1, since1, until1, percentage1, is_discount1,
-		use_multiple_price2, title2, since2, until2, percentage2, is_discount2,
-		use_multiple_price3, title3, since3, until3, percentage3, is_discount3,
-		use_multiple_price4, title4, since4, until4, percentage4, is_discount4
+	const {
+		name,
+		description,
+		basePrice,
+		quantityTotal,
+		reserved,
+		limitSale,
+		maxTicketSale, // required if limitSale is true
+		start, //optional
+		end, //optional
+		price1, // undefined | { active:bool, title:string, since:date, until:date, percentage:float, isDiscount:bool }
+		price2, // ...
+		price3, // ...
+		price4 // ...
 	} = req.body;
+
+	const validationError = new ResponseError(400);
+
+	const data = {
+		name,
+		description,
+		basePrice,
+		reserved,
+		quantityTotal,
+		quantityCurrent: quantityTotal,
+		limitSale: !!limitSale,
+		eventId,
+		quantityCurrent: 0
+	}
+
 	try {
-		if (base_price < 1 || base_price === null || base_price == null || quantity_total < 1 || start == null || end == null) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, verify the data sent!',
-			});
+		if(!(this.model.validateName(name))) {
+			throw new Error('Name is not valid')
 		}
-		if (max_ticket_sell <= 0 && limit_sale == true) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, the maximum amount cannot be 0',
-			});
-		}
+	} catch({ message }) {
+		validationError.addContext('name', message)
+	}
 
-		if (max_ticket_sell > 0 && limit_sale == false) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, verify the data sent as they do not meet the requirements to be processed.',
-			});
+	try {
+		if(!(this.model.validateDescription(description))) {
+			throw new Error('Description is not valid')
 		}
+	} catch({ message }) {
+		validationError.addContext('description', message)
+	}
 
-		let result1, result2, result3, result4, date_start = new Date(start), date_end = new Date(end), flagformatnull1, flagformatnull2, flagformatnull3, flagformatnull4;
-		if (date_end < date_start) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, the end date cannot be less than the start date',
-			});
+	try {
+		if(!(this.model.validateBasePrice(basePrice))) {
+			throw new Error('Base price is not valid')
 		}
-		//multiple price condition 1
-		if (use_multiple_price1 && title1 != null && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
-			let date_since1 = new Date(since1), date_until1 = new Date(until1);
-			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
-				if (is_discount1) {
-					result1 = calculateDiscountPercentage(percentage1, base_price);
-				} else {
-					result1 = calculatePercentageIncrease(percentage1, base_price)
-				}
+	} catch({ message }) {
+		validationError.addContext('basePrice', message)
+	}
 
-				//multiple price condition 2
-				if (use_multiple_price2 && title2 != null && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
-					let date_since2 = new Date(since2), date_until2 = new Date(until2);
-					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
-						if (is_discount2) {
-							result2 = calculateDiscountPercentage(percentage2, base_price);
-						} else {
-							result2 = calculatePercentageIncrease(percentage2, base_price)
+	try {
+		if(!this.model.validateQuantityTotal(quantityTotal)) {
+			throw new Error('Quantity total is not valid')
+		}
+	} catch ({ message }) {
+		validationError.addContext('quantityTotal', message)
+	}
+
+	if(reserved) {
+		try {
+			if(!this.model.validateReserved(reserved)) {
+				throw new Error('Reserved is not valid');
+			}
+		} catch({ message }) {
+			validationError.addContext('reserved', message)
+		}
+	}
+
+	if(limitSale) {
+		try {
+			if(!this.model.validateMaxTicketSale(maxTicketSale)) {
+				throw new Error('Max ticket sale is not valid')
+			}
+			data.maxTicketSale = maxTicketSale;
+		} catch ({ message }) {
+			validationError.addContext('maxTicketSale', message)
+		}
+	}
+
+	if(start) {
+		try {
+			if(!validateDate(start)) {
+				throw new Error('Start date must be in yyyy-mm-ddTHH:MM:SSZ format')
+			}
+			data.start = new Date(start);
+		} catch ({ message }) {
+			validationError.addContext('start', message)
+		}
+	} else {
+		data.start = new Date()
+	}
+
+	if(end) {
+		try {
+			if(!validateDate(end)) {
+				throw new Error('Start date must be in yyyy-mm-ddTHH:MM:SSZ format')
+			}
+			if(data.start && (new Date(end)).getTime() < data.start.getTime()) {
+				throw new Error('End date cannot be less than start date')
+			}
+			data.end = new Date(end);
+		} catch ({ message }) {
+			validationError.addContext('end', message)
+		}
+	}
+
+	// first, make sure is a valid base price
+	if(validationError.hasContext()){
+		return res.send(validationError)
+	}
+
+	let multiprices = [price1, price2, price3, price4];
+
+	for(let i = 0; i < multiprices.length; i++) {
+		if(multiprices[i]) {
+			if(i === 0 || multiprices[i - 1].active) {
+				data[`useMultiprice${i + 1}`] = multiprices[i].active;
+				if(multiprices[i].active) {
+					let priceErrors = {};
+					data[`title${i + 1}`] = multiprices[i].title;
+					try {
+						if(!validateDate(multiprices[i].since)) {
+							throw new Error('Since date is not valid')
 						}
+						data[`since${i + 1}`] = multiprices[i].since;
+					} catch ({ message }) {
+						priceErrors.since = message;
+					}
 
-						//multiple price condition 3
-						if (use_multiple_price3 && title3 != null && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
-							let date_since3 = new Date(since3), date_until3 = new Date(until3);
-							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
-								if (is_discount3) {
-									result3 = calculateDiscountPercentage(percentage3, base_price);
-								} else {
-									result3 = calculateDiscountPercentage(percentage3, base_price)
-								}
-
-
-								//multiple price condition 4
-								if (use_multiple_price4 && title4 != null && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
-
-									let date_since4 = new Date(since4), date_until4 = new Date(until4);
-									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
-										if (is_discount4) {
-											result4 = calculateDiscountPercentage(percentage4, base_price);
-										} else {
-											result4 = calculatePercentageIncrease(percentage4, base_price)
-										}
-									} else {
-										return this.response({
-											res,
-											success: false,
-											statusCode: 500,
-											message: 'something went wrong, the dates provided are invalid (4)',
-										});
-									} 
-
-								} else {
-									if (use_multiple_price4 && (title4 == null || since4 == null ||  until4 == null || percentage4 == null || is_discount4 == null)) {
-										return this.response({
-											res,
-											success: false,
-											statusCode: 500,
-											message: 'something went wrong, the multiple price option does not meet the required data (4)',
-										});
-									}
-								}
-
-							} else {
-								return this.response({
-									res,
-									success: false,
-									statusCode: 500,
-									message: 'something went wrong, the dates provided are invalid (3)',
-								});
-							}
-
-						} else {
-							if (use_multiple_price3 && ( title3 == null || since3 == null || until3 == null || percentage3 == null || is_discount3 == null)) {
-								return this.response({
-									res,
-									success: false,
-									statusCode: 500,
-									message: 'something went wrong, the multiple price option does not meet the required data (3)',
-								});
-							}
-
+					try {
+						if(!validateDate(multiprices[i].until)) {
+							throw new Error('Until date is not valid')
 						}
+						if(!priceErrors.hasOwnProperty('since') &&
+							(new Date(multiprices[i].since)).getTime() > (new Date(multiprices[i].until)).getTime()) {
+							throw new Error('Until date cannot be less than since date')
+						}
+						data[`until${i + 1}`] = multiprices[i].until;
+					} catch ({ message }) {
+						priceErrors.until = message;
+					}
+
+					data[`percentage${i + 1}`] = multiprices[i].percentage;
+
+					if(Object.keys(priceErrors).length > 0) {
+						validationError.addContext(`price${i + 1}`, priceErrors)
 					} else {
-						return this.response({
-							res,
-							success: false,
-							statusCode: 500,
-							message: 'something went wrong, the dates provided are invalid (2)',
-						});
+						data[`price${i + 1}`] = multiprices[i].isDiscount ?
+							calculateDiscountPercentage(multiprices[i].percentage, basePrice) :
+							calculatePercentageIncrease(multiprices[i].percentage, basePrice);
 					}
-
-				} else {
-					if (use_multiple_price2 && (title2 == null || since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
-						return this.response({
-							res,
-							success: false,
-							statusCode: 500,
-							message: 'something went wrong, the multiple price option does not meet the required data (2)',
-						});
-					}
-
 				}
-
-			} else {
-				return this.response({
-					res,
-					success: false,
-					statusCode: 500,
-					message: 'something went wrong, the dates provided are invalid (1)',
-				});
+			} else { // activate only if the previous one is active
+				multiprices[i].active = false
 			}
-
 		} else {
-			if (use_multiple_price1 && (title1 == null || since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
-				return this.response({
-					res,
-					success: false,
-					statusCode: 500,
-					message: 'something went wrong, the multiple price option does not meet the required data (1)',
-				});
-			}
+			multiprices[i] = { active: false }
 		}
+	}
 
+	// then, make sure it has valid multiprice data
+	if(validationError.hasContext()){
+		return res.send(validationError)
+	}
 
-		if (!use_multiple_price1 && result1 == null || use_multiple_price1 && result1 == null) {
-			flagformatnull1 = true;
-		}
-		if (!use_multiple_price2 && result2 == null || use_multiple_price2 && result2 == null) {
-			flagformatnull2 = true;
-		}
-		if (!use_multiple_price3 && result3 == null || use_multiple_price3 && result3 == null) {
-			flagformatnull3 = true;
-		}
-		if (!use_multiple_price4 && result4 == null || use_multiple_price4 && result4 == null) {
-			flagformatnull4 = true;
-		}
-		let newdate = await this.insert({
-			name,
-			description,
-			id_state,
-			id_event,
-			base_price,
-			quantity_total,
-			quantity_current,
-			reserved,
-			reserved_current: reserved,
-			limit_sale,
-			max_ticket_sell,
-			start,
-			end,
-			//1
-			use_multiple_price1: flagformatnull1 ? false : use_multiple_price1,
-			title1: flagformatnull1 ? null : title1,
-			price1: result1 ? result1 : null,
-			since1: flagformatnull1 ? null : since1,
-			until1: flagformatnull1 ? null : until1,
-			percentage1: flagformatnull1 ? null : percentage1,
-			is_discount1: flagformatnull1 ? null : is_discount1,
-			//2
-			use_multiple_price2: flagformatnull2 ? false : use_multiple_price2,
-			title2: flagformatnull2 ? null : title2,
-			price2: result2 ? result2 : null,
-			since2: flagformatnull2 ? null : since2,
-			until2: flagformatnull2 ? null : until2,
-			percentage2: flagformatnull2 ? null : percentage2,
-			is_discount2: flagformatnull2 ? null : is_discount2,
-			//3
-			use_multiple_price3: flagformatnull3 ? false : use_multiple_price3,
-			title3: flagformatnull3 ? null : title3,
-			price3: result3 ? result3 : null,
-			since3: flagformatnull3 ? null : since3,
-			until3: flagformatnull3 ? null : until3,
-			percentage3: flagformatnull3 ? null : percentage3,
-			is_discount3: flagformatnull3 ? null : is_discount3,
-			//4
-			use_multiple_price4: flagformatnull4 ? false : use_multiple_price4,
-			title4: flagformatnull4 ? null : title4,
-			price4: result4 ? result4 : null,
-			since4: flagformatnull4 ? null : since4,
-			until4: flagformatnull4 ? null : until4,
-			percentage4: flagformatnull4 ? null : percentage4,
-			is_discount4: flagformatnull4 ? null : is_discount4,
-		});
-		if (newdate) {
-			return this.response({
-				res,
-				statusCode: 201,
-				payload: [newdate]
-			});
-		}
-	} catch (error) {
-		
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong',
-		});
+	try {
+		let result = await this.insert(data)
+		return res.send(result)
+	} catch (err) {
+		console.log(err.message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 
 
 controller.putFunc = async function (req, res) {
-	const { id } = req.params;
-	const { name, description, id_state, id_event, base_price, quantity_total,
-		quantity_current, reserved, limit_sale, max_ticket_sell, start, end, return_data,
-		use_multiple_price1, title1, since1, until1, percentage1, is_discount1,
-		use_multiple_price2, title2, since2, until2, percentage2, is_discount2,
-		use_multiple_price3, title3,since3, until3, percentage3, is_discount3,
-		use_multiple_price4, title4, since4, until4, percentage4, is_discount4
-	} = req.body;
+
+	let data = {};
+
+	const validationError = new ResponseError(400)
+
+	if(req.body.name) {
+		try {
+			if(!(this.model.validateName(req.body.name))) {
+				throw new Error('Name is not valid')
+			}
+			data.name = req.body.name;
+		} catch({ message }) {
+			validationError.addContext('name', message)
+		}
+	}
+
+	if(req.body.description) {
+		try {
+			if(!(this.model.validateDescription(req.body.description))) {
+				throw new Error('Description is not valid')
+			}
+			data.description = req.body.description;
+		} catch({ message }) {
+			validationError.addContext('description', message)
+		}
+	}
+
+	if(req.body.basePrice) {
+		try {
+			if(!(this.model.validateBasePrice(req.body.basePrice))) {
+				throw new Error('Base price is not valid')
+			}
+			data.basePrice = req.body.basePrice
+		} catch({ message }) {
+			validationError.addContext('name', message)
+		}
+	}
+
+	if(req.body.quantityTotal) {
+		try {
+			if(!this.model.validateQuantityTotal(req.body.quantityTotal)) {
+				throw new Error('Quantity total is not valid')
+			}
+			data.quantityTotal = req.body.quantityTotal
+		} catch ({ message }) {
+			validationError.addContext('quantityTotal', message)
+		}
+	}
+
+	if(req.body.hasOwnProperty('limitSale')) {
+		data.limitSale = !!req.body.limitSale;
+	}
+
+	if(req.body.maxTicketSale) {
+		try {
+			if(!this.model.validateMaxTicketSale(req.body.maxTicketSale)) {
+				throw new Error('Max ticket sale is not valid')
+			}
+			data.maxTicketSale = req.body.maxTicketSale;
+		} catch ({ message }) {
+			validationError.addContext('maxTicketSale', message)
+		}
+	}
+
+	if(req.body.start) {
+		try {
+			if(!validateDate(req.body.start)) {
+				throw new Error('Start date must be in yyyy-mm-ddTHH:MM:SSZ format')
+			}
+			data.start = new Date(req.body.start);
+		} catch ({ message }) {
+			validationError.addContext('start', message)
+		}
+	}
+
+	if(req.body.end) {
+		try {
+			if(!validateDate(req.body.end)) {
+				throw new Error('Start date must be in yyyy-mm-ddTHH:MM:SSZ format')
+			}
+			if(data.start && (new Date(req.body.end)).getTime() < data.start.getTime()) {
+				throw new Error('End date cannot be less than start date')
+			}
+			data.end = new Date(req.body.end);
+		} catch ({ message }) {
+			validationError.addContext('end', message)
+		}
+	}
+
+	// first, make sure is a valid base price
+	if(validationError.hasContext()){
+		return res.send(validationError)
+	}
+
+	if(req.body.prices) {
+
+		let { price1, price2, price3, price4} = req.body.prices;
+
+		let multiprices = [price1, price2, price3, price4];
+
+		for(let i = 0; i < multiprices.length; i++) {
+			if(i === 0 || multiprices[i - 1].active) {
+				data[`useMultiprice${i + 1}`] = multiprices[i].active;
+				if(multiprices[i].active) {
+					let priceErrors = {};
+					data[`title${i + 1}`] = multiprices[i].title;
+					try {
+						if(!validateDate(multiprices[i].since)) {
+							throw new Error('Since date is not valid')
+						}
+						data[`since${i + 1}`] = multiprices[i].since;
+					} catch ({ message }) {
+						priceErrors.since = message;
+					}
+
+					try {
+						if(!validateDate(multiprices[i].until)) {
+							throw new Error('Until date is not valid')
+						}
+						if(!priceErrors.hasOwnProperty('since') &&
+							(new Date(multiprices[i].since)).getTime() > (new Date(multiprices[i].until)).getTime()) {
+							throw new Error('Until date cannot be less than since date')
+						}
+						data[`until${i + 1}`] = multiprices[i].until;
+					} catch ({ message }) {
+						priceErrors.until = message;
+					}
+
+					data[`percentage${i + 1}`] = multiprices[i].percentage;
+
+					if(Object.keys(priceErrors).length > 0) {
+						validationError.addContext(`price${i + 1}`, priceErrors)
+					} else {
+						data[`price${i + 1}`] = multiprices[i].isDiscount ?
+							calculateDiscountPercentage(multiprices[i].percentage, req.ticket.basePrice) :
+							calculatePercentageIncrease(multiprices[i].percentage, req.ticket.basePrice);
+					}
+				}
+			} else { // activate only if the previous one is active
+				multiprices[i].active = false
+			}
+		}
+	}
+	// then, make sure it has valid multiprice data
+	if(validationError.hasContext()){
+		return res.send(validationError)
+	}
+
+	if(Object.keys(data).length === 0) {
+		// no data to process
+		res.statusCode = 202
+		return res.send()
+	}
 
 	try {
-
-		if (base_price < 1 || base_price === null || base_price == null || quantity_total < 1 || start == null || end == null) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, verify the data sent!',
-			});
-		}
-		if (max_ticket_sell <= 0 && limit_sale == true) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, the maximum amount cannot be 0',
-			});
-		}
-		
-		if (max_ticket_sell > 0 && limit_sale == false) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, verify the data sent as they do not meet the requirements to be processed.',
-			});
-		}
-
-		let result1, result2, result3, result4, date_start = new Date(start), date_end = new Date(end), flagformatnull1, flagformatnull2, flagformatnull3, flagformatnull4;
-		if (date_end < date_start) {
-			return this.response({
-				res,
-				success: false,
-				statusCode: 500,
-				message: 'something went wrong, the end date cannot be less than the start date',
-			});
-		}
-		//multiple price condition 1
-		if (use_multiple_price1 && title1 != null && since1 != null && until1 != null && percentage1 != null && is_discount1 != null) {
-			let date_since1 = new Date(since1), date_until1 = new Date(until1);
-			if ((date_start <= date_since1 && date_end >= date_until1) && (date_since1 <= date_end && date_until1 >= date_start) && (date_until1 > date_since1)) {
-				if (is_discount1) {
-					result1 = calculateDiscountPercentage(percentage1, base_price);
-				} else {
-					result1 = calculateDiscountPercentage(percentage1, base_price)
-				}
-
-				//multiple price condition 2
-				if (use_multiple_price2 && title2 != null && since2 != null && until2 != null && percentage2 != null && is_discount2 != null) {
-					let date_since2 = new Date(since2), date_until2 = new Date(until2);
-					if ((date_start <= date_since2 && date_end >= date_until2) && (date_since2 <= date_end && date_until2 >= date_start) && (date_since2 > date_until1) && (date_until2 > date_since2)) {
-						if (is_discount2) {
-							result2 = calculateDiscountPercentage(percentage2, base_price);
-						} else {
-							result2 = calculateDiscountPercentage(percentage2, base_price)
-						}
-
-						//multiple price condition 3
-						if (use_multiple_price3 && title3 != null && since3 != null && until3 != null && percentage3 != null && is_discount3 != null) {
-							let date_since3 = new Date(since3), date_until3 = new Date(until3);
-							if ((date_start <= date_since3 && date_end >= date_until3) && (date_since3 <= date_end && date_until3 >= date_start) && (date_since3 > date_until2) && (date_until3 > date_since3)) {
-								if (is_discount3) {
-									result3 = calculateDiscountPercentage(percentage3, base_price);
-								} else {
-									result3 = calculateDiscountPercentage(percentage3, base_price)
-								}
-
-
-								//multiple price condition 4
-								if (use_multiple_price4 && title4 != null && since4 != null && until4 != null && percentage4 != null && is_discount4 != null) {
-									let date_since4 = new Date(since4), date_until4 = new Date(until4);
-									if ((date_start <= date_since4 && date_end >= date_until4) && (date_since4 <= date_end && date_until4 >= date_start) && (date_since4 > date_until3) && (date_until4 > date_since4)) {
-										if (is_discount4) {
-											result4 = calculateDiscountPercentage(percentage4, base_price);
-										} else {
-											result4 = calculateDiscountPercentage(percentage4, base_price)
-										}
-									} else {
-										return this.response({
-											res,
-											success: false,
-											statusCode: 500,
-											message: 'something went wrong, the dates provided are invalid (4)',
-										});
-									}
-
-								} else {
-									if (use_multiple_price4 && (title4 == null || since4 == null ||  until4 == null || percentage4 == null || is_discount4 == null)) {
-										return this.response({
-											res,
-											success: false,
-											statusCode: 500,
-											message: 'something went wrong, the multiple price option does not meet the required data (4)',
-										});
-									}
-								}
-
-							} else {
-								return this.response({
-									res,
-									success: false,
-									statusCode: 500,
-									message: 'something went wrong, the dates provided are invalid (3)',
-								});
-							}
-
-						} else {
-							if (use_multiple_price3 && (title3 == null || since3 == null ||  until3 == null || percentage3 == null || is_discount3 == null)) {
-								return this.response({
-									res,
-									success: false,
-									statusCode: 500,
-									message: 'something went wrong, the multiple price option does not meet the required data (3)',
-								});
-							}
-
-						}
-					} else {
-						return this.response({
-							res,
-							success: false,
-							statusCode: 500,
-							message: 'something went wrong, the dates provided are invalid (2)',
-						});
-					}
-
-				} else {
-					if (use_multiple_price2 && ( title2 == null || since2 == null || until2 == null || percentage2 == null || is_discount2 == null)) {
-						return this.response({
-							res,
-							success: false,
-							statusCode: 500,
-							message: 'something went wrong, the multiple price option does not meet the required data (2)',
-						});
-					}
-
-				}
-
-			} else {
-				return this.response({
-					res,
-					success: false,
-					statusCode: 500,
-					message: 'something went wrong, the dates provided are invalid (1)',
-				});
-			}
-
-		} else {
-			if (use_multiple_price1 && ( title1 == null || since1 == null || until1 == null || percentage1 == null || is_discount1 == null)) {
-				return this.response({
-					res,
-					success: false,
-					statusCode: 500,
-					message: 'something went wrong, the multiple price option does not meet the required data (1)',
-				});
-			}
-		}
-
-
-		if (!use_multiple_price1 && result1 == null || use_multiple_price1 && result1 == null) {
-			flagformatnull1 = true;
-		}
-		if (!use_multiple_price2 && result2 == null || use_multiple_price2 && result2 == null) {
-			flagformatnull2 = true;
-		}
-		if (!use_multiple_price3 && result3 == null || use_multiple_price3 && result3 == null) {
-			flagformatnull3 = true;
-		}
-		if (!use_multiple_price4 && result4 == null || use_multiple_price4 && result4 == null) {
-			flagformatnull4 = true;
-		}
-		let result = await this.update(
-			{
-				id,
-				data: {
-					name,
-					description,
-					id_state,
-					id_event,
-					base_price,
-					quantity_total,
-					quantity_current,
-					reserved,
-					reserved_current: reserved,
-					limit_sale,
-					max_ticket_sell,
-					start,
-					end,
-					//1
-					use_multiple_price1: flagformatnull1 ? false : use_multiple_price1,
-					title1: flagformatnull1 ? null : title1,
-					price1: result1 ? result1 : null,
-					since1: flagformatnull1 ? null : since1,
-					until1: flagformatnull1 ? null : until1,
-					percentage1: flagformatnull1 ? null : percentage1,
-					is_discount1: flagformatnull1 ? null : is_discount1,
-					//2
-					use_multiple_price2: flagformatnull2 ? false : use_multiple_price2,
-					title2: flagformatnull2 ? null : title2,
-					price2: result2 ? result2 : null,
-					since2: flagformatnull2 ? null : since2,
-					until2: flagformatnull2 ? null : until2,
-					percentage2: flagformatnull2 ? null : percentage2,
-					is_discount2: flagformatnull2 ? null : is_discount2,
-					//3
-					use_multiple_price3: flagformatnull3 ? false : use_multiple_price3,
-					title3: flagformatnull3 ? null : title3,
-					price3: result3 ? result3 : null,
-					since3: flagformatnull3 ? null : since3,
-					until3: flagformatnull3 ? null : until3,
-					percentage3: flagformatnull3 ? null : percentage3,
-					is_discount3: flagformatnull3 ? null : is_discount3,
-					//4
-					use_multiple_price4: flagformatnull4 ? false : use_multiple_price4,
-					title4: flagformatnull4 ? null : title4,
-					price4: result4 ? result4 : null,
-					since4: flagformatnull4 ? null : since4,
-					until4: flagformatnull4 ? null : until4,
-					percentage4: flagformatnull4 ? null : percentage4,
-					is_discount4: flagformatnull4 ? null : is_discount4,
-
-				},
-				return_data
-			});
-		if (result) {
-			return this.response({
-				res,
-				statusCode: 200,
-				payload: return_data ? result : []
-			});
-		} else {
-			this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'Could not update this element, possibly does not exist'
-			});
-		}
-	} catch (error) {
-		
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
+		let result = await this.update({
+			id: req.ticket.id,
+			data
 		});
+		return res.send(result)
+	} catch(err) {
+		console.log(err)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
+	const { ticketId } = req.params;
 	try {
-		let deleterows = await this.delete({ id });
-		if (deleterows > 0) {
-			return this.response({
-				res,
-				success: true,
-				statusCode: 200
-			});
-		} else {
-			this.response({
-				res,
-				success: false,
-				statusCode: 202,
-				message: 'it was not possible to delete the item because it does not exist'
-			});
-		}
-	} catch (error) {
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+		let deleterows = await this.delete(ticketId);
+		return res.send(deleterows);
+	} catch (err) {
+		console.log(err)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 

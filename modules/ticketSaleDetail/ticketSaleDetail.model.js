@@ -42,5 +42,5 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    return ticket_sale_detail;
+    return TicketSaleDetail;
 }

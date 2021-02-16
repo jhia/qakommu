@@ -21,3 +21,11 @@ exports.validateDate = (value) => {
 	let regex = /^\d{4,4}-\d{2,2}-\d{2,2}$/;
 	return regex.test(value);
 }
+
+exports.validateName = (value) => {
+	return typeof value === typeof '' && value.length >= 3;
+}
+
+exports.validateDescription = (value) => {
+	return typeof value === typeof '';
+}

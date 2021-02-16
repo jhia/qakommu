@@ -1,5 +1,7 @@
 'use strict'
 
+const { validateName, validateDescription, validateDate } = require('../../helpers/validations');
+
 module.exports = (sequelize, DataTypes) => {
     const Ticket = sequelize.define('ticket', {
         name: {
@@ -17,22 +19,26 @@ module.exports = (sequelize, DataTypes) => {
         },
         basePrice: {
             type: DataTypes.FLOAT,
-            field: 'base_price'
+            field: 'base_price',
+            allowNull: false
         },
         quantityTotal: {
             type: DataTypes.INTEGER,
-            field: 'quantity_total'
+            field: 'quantity_total',
+            allowNull: false
         },
         quantityCurrent: {
             type: DataTypes.INTEGER,
-            field: 'quantity_current'
+            field: 'quantity_current',
+            allowNull: false,
+            defaultValue: 0
         },
         reserved: {
             allowNull: false,
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        currentReserved: {
+        reservedCurrent: {
             allowNull: false,
             type: DataTypes.INTEGER,
             defaultValue: 0,
@@ -41,16 +47,25 @@ module.exports = (sequelize, DataTypes) => {
         limitSale:{
             allowNull: false,
             type: DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
+            field: 'limit_sale'
         },
         maxTicketSale: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            field: 'max_ticket_sale',
+            defaultVale: 0
         },
         start: {
             type: DataTypes.DATE
         },
         end:{
             type: DataTypes.DATE
+        },
+        isDraft: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_draft'
         },
         //price1
         useMultiprice1: {
@@ -146,7 +161,7 @@ module.exports = (sequelize, DataTypes) => {
         isDiscount3:{
             allowNull: true,
             type: DataTypes.BOOLEAN,
-            field: 'isDiscount3'
+            field: 'is_discount3'
         },
         // price 4
         useMultiprice4: {
@@ -194,10 +209,10 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         //ticket to ticket_sale
-        /*Ticket.hasMany(models.ticket_sale, {
+        Ticket.hasMany(models.ticketSale, {
             foreignKey: 'id_ticket',
-            as: 'ticket_ticket_sale'
-        });*/
+            as: 'ticketSales'
+        });
 
         //ticket to coupon
         /*ticket.hasMany(models.coupon, {
@@ -205,6 +220,129 @@ module.exports = (sequelize, DataTypes) => {
             as: 'ticket_coupon'
         });*/
 
+    }
+
+    Ticket.exists = async function (id) {
+		if(!id) {
+			throw new Error('Ticket ID is required')
+		}
+        const ticketCount = await this.count({ id })
+        return ticketCount > 0;
+    }
+
+    Ticket.validateName = validateName
+    
+    Ticket.validateDescription = validateDescription
+
+    Ticket.validateBasePrice = function (value) {
+        if(!value) {
+            throw new Error('Base price is required')
+        }
+        return !isNaN(value) && value >= 0;
+    }
+
+    Ticket.validateQuantityTotal = function(value) {
+        if(!value) {
+            throw new Error('Total quantity is required')
+        }
+
+        return !isNaN(value) && value >= 1; // you can't have no tickets for a ticket
+    }
+
+    Ticket.validateReserved = function (value) {
+        if(!value) {
+            throw new Error('Reserved value is not valid')
+        }
+
+        return !isNaN(value) && value >= 0;
+    }
+
+    Ticket.validateMaxTicketSale = function(value) {
+        if(!value) {
+            throw new Error('Max ticket sale is required')
+        }
+
+        return !isNaN(value) && value >= 1; // you can't have no tickets for a ticket
+    }
+
+
+    Ticket.prototype.getPrices = function () {
+        let prices = {
+            price1: {
+                active: !!this.useMultiprice1,
+                title: this.title1,
+                since: this.since1,
+                until: this.until1,
+                price: this.price1,
+                percentage: this.percentage1,
+                isDiscount: this.isDiscount1
+            },
+            price2: {
+                active: !!this.useMultiprice2,
+                title: this.title2,
+                since: this.since2,
+                until: this.until2,
+                price: this.price2,
+                percentage: this.percentage2,
+                isDiscount: this.isDiscount2
+            },
+            price3: {
+                active: !!this.useMultiprice3,
+                title: this.title3,
+                since: this.since3,
+                until: this.until3,
+                price: this.price3,
+                percentage: this.percentage3,
+                isDiscount: this.isDiscount3
+            },
+            price4: {
+                active: !!this.useMultiprice4,
+                title: this.title4,
+                since: this.since4,
+                until: this.until4,
+                price: this.price4,
+                percentage: this.percentage4,
+                isDiscount: this.isDiscount4
+            }
+        };
+        return prices;
+    }
+
+    Ticket.prototype.getCurrentPrice = function() {
+        let today = Date.now();
+
+        if(!!this.useMultiprice1 && this.since1.getTime() >= today && this.until1.getTime() < today) {
+            return {
+                amount: this.price1,
+                name: 'P1'
+            }
+        }
+
+        if(!!this.useMultiprice2 && this.since2.getTime() >= today && this.until2.getTime() < today) {
+            return {
+                amount: this.price2,
+                name: 'P2'
+            }
+        }
+
+        if(!!this.useMultiprice3 && this.since3.getTime() >= today && this.until3.getTime() < today) {
+            return {
+                amount: this.price3,
+                name: 'P3'
+            }
+        }
+
+        if(!!this.useMultiprice4 && this.since4.getTime() >= today && this.until4.getTime() < today) {
+            return {
+                amount: this.price4,
+                name: 'P4'
+            }
+        }
+
+        return {
+            amount: this.basePrice,
+            name: 'P5'
+        }
     }
 
     return Ticket;
