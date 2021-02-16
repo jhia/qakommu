@@ -34,11 +34,10 @@ router.put('/:id',(req, res) => {
   attendeeController.putFunc(req,new Response(res));
 });
 
-/*
-router.delete('/:id',(req, res) => {
+router.delete('/',(req, res) => {
   //HTTP delete route
   attendeeController.deleteFunc(req,new Response(res));
 });
-*/
+
 
 module.exports = router;

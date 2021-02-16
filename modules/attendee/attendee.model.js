@@ -31,23 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.INTEGER,
             field: 'id_user',
-            references: {
-                model: {
-                    tableName: 'users'
-                },
-                key: 'id'
-            }
         },
         eventId: {
             allowNull: false,
             type: DataTypes.INTEGER,
             field: 'id_event',
-            references: {
-                model: {
-                    tableName: 'events'
-                },
-                key: 'id'
-            }
         },
         isPresent: {
             type: DataTypes.BOOLEAN,
@@ -58,12 +46,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.INTEGER,
             field: 'is_ticket_sale_detail',
-            references:{
-                model:{
-                    tableName: 'id_ticket_sale_details'
-                },
-                key: 'id'
-            }  
         } */
 
     },
@@ -98,32 +80,32 @@ module.exports = (sequelize, DataTypes) => {
         });*/
     }
 
-  
+
     Attendee.validateFirstName = function (value) {
-		if(!value) {
-			throw new Error('First name is required')
-		}
-		return typeof value === typeof '' &&
-			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
-	}
+        if (!value) {
+            throw new Error('First name is required')
+        }
+        return typeof value === typeof '' &&
+        !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
+    }
 
     Attendee.validateLastName = function (value) {
-		if(!value) {
-			throw new Error('Last name is required')
-		}
-		return typeof value === typeof '' &&
-			!/[.,-_\\/$*%&/=;:|@#½¬{}[]¡¿?]+\d]/.test(value);
-	}
+        if (!value) {
+            throw new Error('Last name is required')
+        }
+        return typeof value === typeof '' &&
+            !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
+    }
 
-    Attendee.validateEmail = async function (value) {
-		if(!value) {
-			throw new Error('Email is required')
-		}
-		if(!validateEmail(value)) {
-			throw new Error('Email has unvalid characters')
-		}
-		return typeof value === typeof '' && value.length > 5;
-	}
+    Attendee.validateEmail = function (value) {
+        if (!value) {
+            throw new Error('Email is required')
+        }
+        if (!validateEmail(value)) {
+            throw new Error('Email has unvalid characters')
+        }
+        return typeof value === typeof '' && value.length > 5;
+    }
 
     return Attendee;
 }

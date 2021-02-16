@@ -27,7 +27,7 @@ controller.getFunc = async function (req, res) {
         let attendees = await this.model.findAll({
             limit,
             offset,
-            attributes: ['id','firstName', 'lastName', 'email', 'userId', 'isPresent', 'eventId'],
+            //attributes: ['id','firstName', 'lastName', 'email', 'userId', 'isPresent', 'eventId'],
             where: {eventId : event }
         });
 
@@ -72,7 +72,7 @@ controller.postFunc = async function (req, res) {
         user, 
         isPresent,
         event, // required
-        //idTicketSaleDetail  // required
+        //ticketSaleDetailId  // required
     } = req.body;
 
     const validationError = new ResponseError(400);
@@ -122,6 +122,11 @@ controller.postFunc = async function (req, res) {
         validationError.addContext('event', message)
     }
 
+    // validate all
+    if(validationError.hasContext()){
+        return res.send(validationError)
+    }
+
     //insert
     try {
        
@@ -147,22 +152,22 @@ controller.putFunc = async function (req, res) {
     const validationError = new ResponseError(400, 'Attendee id is not valid')
 
     let attendeeData = {};
-
+    //first name
     if(req.body.firstName){
         try{
-            if(!this.model.validateFirstName(req.body.name)){
-                throw new Error('First Name is not valid');
+            if(!this.model.validateFirstName(req.body.firstName)){
+                throw new Error('First name is not valid');
             }
             attendeeData.firstName = req.body.firstName
         }catch({message}){
             validationError.addContext('firstName', message);
         }
     }
-
+    //last name
     if(req.body.lastName){
         try{
-            if(!this.model.validateLastName(req.body.name)){
-                throw new Error('Last Name is not valid');
+            if(!this.model.validateLastName(req.body.lastName)){
+                throw new Error('Last name is not valid');
             }
             attendeeData.lastName = req.body.lastName
         }catch({message}){
@@ -170,25 +175,33 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-
+    //email
     if(req.body.email){
-        try{
-            if(!this.model.validateLastName(req.body.name)){
-                throw new Error('Last Name is not valid');
+        try {
+            if (!this.model.validateEmail(req.body.email)) {
+                validationError.addContext('email', 'Email is not valid')
             }
-            attendeeData.lastName = req.body.lastName
-        }catch({message}){
-            validationError.addContext('lastName', message);
+            attendeeData.email = req.body.email
+        } catch ({ message }) {
+            validationError.addContext('email', message)
         }
     }
-
+    
+    
+    // validate all
+    if(validationError.hasContext()){
+        return res.send(validationError)
+    }
+    
+    //update
     try {
         
-        const rows = await this.model.update({
+        let result = await this.update({
 			id: req.params.id,
-            data: attendeeData,
-            return_data: true
-		});
+            data: attendeeData
+        });
+
+        return res.send([]);
 
     } catch (error) {
         console.log(error.message);
@@ -198,36 +211,32 @@ controller.putFunc = async function (req, res) {
 }
 
 controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-    try {
-        let deleterows = await this.delete({ id });
-        if (deleterows > 0) {
-            return this.response({
-                res,
-                success: true,
-                statusCode: 200
-            });
-        } else {
-            this.response({
-                res,
-                success: false,
-                statusCode: 202,
-                message: 'it was not possible to delete the item because it does not exist'
-            });
+    const { id } = req.body;
+    let length = id.length;
+
+    //validate 
+    for(let i = 0; i<length; i++){
+        if(isNaN(id[i])) {
+            const validationError = new ResponseError(400, 'Attendee id is not valid')
+            return res.send(validationError);
         }
+    }
+
+    //delete
+    try {
+
+        let rows = await this.model.destroy({ where: { id } })
+        return res.send(rows);
+
     } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong'
-        });
+        console.warn(error.message);
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
     }
 }
 
-
 //--------------------special functions--------------------
-
+/*
 controller.getSessionsByAttendee = async function (req, res) {
     const { id } = req.params;
     const { limit, offset, order } = req.body;
@@ -262,5 +271,5 @@ controller.getSessionsByAttendee = async function (req, res) {
         });
     }
 }
-
+*/
 module.exports = controller;
