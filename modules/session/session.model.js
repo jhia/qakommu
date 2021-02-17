@@ -44,6 +44,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'id_event',
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        speakerId: {
+            field: 'id_speaker',
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, {
         tableName: 'sessions'
@@ -61,11 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_room',
             as: 'room'
         });
-        
-        /*Session.hasMany(models.speaker, {
-            foreignKey: 'id_session',
-            as: 'session_speaker'
-        });*/
 
          //track to session
         Session.belongsToMany(models.track, {
@@ -74,11 +74,13 @@ module.exports = (sequelize, DataTypes) => {
             otherKey: 'id_track',
             as: 'tracks'
         });
-        
-        /*Session.hasMany(models.session_attendee, {
+
+        Session.belongsToMany(models.attendee, {
+            through: 'session_attendees',
             foreignKey: 'id_session',
-            as: 'session_session_attendee'
-        });*/
+            otherKey: 'id_attendee',
+            as: 'attendees'
+        })
     }
 
     return Session;

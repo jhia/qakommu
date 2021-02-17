@@ -40,8 +40,8 @@ module.exports = {
           "max_ticket_sale": 50,
           "start": "2020-05-01",
           "end": "2020-12-20",
+          
           "use_multiprice_1": true,
-
           'title1': "super early early bird",
           "since1": "2020-05-10",
           "until1": "2020-05-15",

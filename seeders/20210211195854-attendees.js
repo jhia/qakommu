@@ -52,6 +52,17 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date()
         },
+        {
+          "id": 5,
+          "first_name": "Alexander Levi",
+          "last_name": "Smith Brown",
+          "email": "a_Smith225@kommu.com",
+          "id_user": 7,
+          "id_event": 2,
+          "is_present": true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
       ], { transaction, ignoreDuplicates: true });
 
       // get max id

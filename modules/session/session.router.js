@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:eventId', eventVerification, function(req, res){
+router.get('/event/:eventId', eventVerification, function(req, res){
   //HTTP get route
   sessionController.getSessionsForEvent(req, new Response(res));
 });

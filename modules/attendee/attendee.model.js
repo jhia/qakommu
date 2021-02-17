@@ -80,6 +80,18 @@ module.exports = (sequelize, DataTypes) => {
         });*/
     }
 
+    Attendee.exists = async function (id) {
+		if(!id) {
+			throw new Error('Attendee ID is required')
+		}
+		const count = await this.count({
+            where: {
+                id
+            }
+        })
+		return count > 0;
+	}
+
 
     Attendee.validateFirstName = function (value) {
         if (!value) {

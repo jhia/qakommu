@@ -33,7 +33,7 @@ exports.ticketSaleVerification = async function(req, res, next) {
   
   try {
     const sale = await TicketSale.findByPk(ticketSaleId, {
-      attributes: ['id']
+      attributes: ['id', 'count']
     })
     if(!sale) {
       return Response.from(res).send(notFoundError)

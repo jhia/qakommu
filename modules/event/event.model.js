@@ -135,8 +135,10 @@ module.exports = (sequelize, DataTypes) => {
 		if(!id) {
 			throw new Error('Event ID is required')
 		}
-		const event = await this.findByPk(id, { attributes: ['id'] })
-		return !!event;
+		const count = await this.count({
+      where: {id}
+    })
+		return count > 0;
 	}
 
   Event.validateName = function(value) {

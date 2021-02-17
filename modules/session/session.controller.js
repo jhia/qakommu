@@ -5,12 +5,8 @@ const { ResponseError } = require('../../http');
 
 const controller = new Base('session');
 
-/*
-*Extend or overwrite the base functions
-*All the controllers already have implicit the models by:
-*this.db -> All models
-*this.model -> Current module model
-*/
+const validAttributes = [ 'name', 'description', 'roomId', 'order',
+  'start', 'end', 'questionTime', 'hasBreak', 'eventId', 'speakerId'];
 
 controller.getSessionsForEvent = async function (req, res) {
     const { limit, offset } = req.query;
@@ -21,7 +17,20 @@ controller.getSessionsForEvent = async function (req, res) {
                 eventId: req.event.id
             },
             limit,
-            offset
+            offset,
+            attributes: validAttributes,
+            include: [
+                {
+                    attributes: ['id','name','description'],
+                    model: this.db.room,
+                    as: 'room',
+                },
+                {
+                    attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+                    model: this.db.user,
+                    as: 'speaker'
+                },
+            ]
         })
 
         return res.send(sessions)
@@ -40,7 +49,25 @@ controller.getOne = async function (req, res) {
     }
 
     try {
-        const data = await this.findByPk(id);
+        const data = await this.findByPk(id, {
+            attributes: validAttributes,
+            include: [
+                {
+                    attributes: ['id','name','description'],
+                    model: this.db.room,
+                    as: 'room',
+                },
+                {
+                    attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+                    model: this.db.user,
+                    as: 'speaker'
+                },
+                {
+                    model: this.db.track,
+                    as: 'tracks'
+                }
+            ]
+        });
         return res.send(data);
     } catch (error) {
         const connectionError = new ResponseError(503, 'Try again later')

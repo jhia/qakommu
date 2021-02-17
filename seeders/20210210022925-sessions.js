@@ -21,6 +21,22 @@ module.exports = {
           end: endDate,
           has_break: false,
           question_time: 10,
+          id_speaker: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 2,
+          name: "dev game backend",
+          description: "this conference is aimed at all video game developers",
+          id_room: 1,
+          id_event: 1,
+          order: 1,
+          start: startDate,
+          end: endDate,
+          has_break: false,
+          question_time: 10,
+          id_speaker: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         }

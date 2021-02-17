@@ -257,6 +257,10 @@ controller.deleteFunc = async function (req, res) {
             transaction
         })
 
+        await req.ticket.increment(['quantityCurrent'], { by: req.ticketSale.count, transaction })
+
+        
+
         await transaction.commit();
 
         return res.send(rows);
