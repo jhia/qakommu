@@ -15,7 +15,7 @@ router.get('/',function(req, res){
   attendeeController.getFunc(req, new Response(res));
 });
 
-router.get('/count/event/:eventId/', eventVerification, function(req, res){
+router.get('/event/:eventId/count', eventVerification, function(req, res){
   //HTTP get route
   attendeeController.getCountFromAttendees(req, new Response(res));
 });
