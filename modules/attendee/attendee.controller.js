@@ -42,6 +42,22 @@ controller.getFunc = async function (req, res) {
 }
 
 
+controller.getCountFromAttendees = async function (req, res) {
+    
+    try {
+        const count = await this.model.count({
+            where: {
+                eventId : req.event.id
+            }
+        })
+        return res.send({ count });
+    } catch (err) {
+        console.log(err.message);
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
+}
+
 controller.getOne = async function (req, res) {
     const { id } = req.params;
 
