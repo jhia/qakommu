@@ -3,6 +3,7 @@
 const router = require('express').Router();
 const attendeeController = require('./attendee.controller');
 const Response = require('../../http/response')
+const { eventVerification } = require('../../middleware/event');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
@@ -13,6 +14,14 @@ router.get('/',function(req, res){
   //HTTP get route
   attendeeController.getFunc(req, new Response(res));
 });
+
+router.get('/event/:eventId/count', eventVerification, function(req, res){
+  //HTTP get route
+  attendeeController.getCountFromAttendees(req, new Response(res));
+});
+
+
+
 
 router.get('/:id',function(req, res){
   //HTTP get route
