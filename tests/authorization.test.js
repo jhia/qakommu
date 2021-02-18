@@ -1,6 +1,8 @@
 const request = require('supertest');
 const app = require('../app');
 
+let refreshToken;
+
 describe('Authorization Flow', () => {
 
   it('Should let the user login and return a refresh token', async () => {
@@ -8,15 +10,12 @@ describe('Authorization Flow', () => {
       email: 'p_ellett87@kommu.com',
       password: '123'
     });
-    let { payload: { refreshToken } } = body;
-    expect(typeof refreshToken).toBe(typeof '')
+    expect(typeof body.payload.refreshToken).toBe(typeof '')
+
+    refreshToken = body.payload.refreshToken;
   });
 
   it('User requests an access token using their refresh token', async () => {
-    let { body: { payload: { refreshToken } } } = await request(app).post('/auth').send({
-      email: 'p_ellett87@kommu.com',
-      password: '123'
-    });
     let res = await request(app).post('/authorize').set({
       'Authentication': refreshToken
     })
@@ -31,10 +30,6 @@ describe('Authorization Flow', () => {
   });
 
   it('User cannot access to API with their refresh token', async () => {
-    let { body: { payload: { refreshToken } } } = await request(app).post('/auth').send({
-      email: 'p_ellett87@kommu.com',
-      password: '123'
-    });
     let res = await request(app).get('/api/user').set({ 'Authorization': `Bearer ${refreshToken}`})
 
     expect(res.statusCode).toBe(401)
