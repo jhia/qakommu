@@ -3,8 +3,9 @@
 const Base = require('../../helpers/base.controller');
 const { ResponseError } = require('../../http');
 
-const controller = new Base('type_booth');
+const controller = new Base('typeBooth');
 
+const validAttributes = ['id', 'name', 'description', 'cost', 'sizeWidth', 'sizeHeight', 'active'];
 
 controller.getTypesFromCommunity = async function (req, res) {
     const { limit, offset } = req.query;
@@ -15,7 +16,7 @@ controller.getTypesFromCommunity = async function (req, res) {
             },
             limit,
             offset,
-            attributes: ['id', 'name', 'description', 'cost', 'sizeWidth', 'sizeHeight', 'active'],
+            attributes: validAttributes,
             order: [['id', 'DESC']]
         })
 
@@ -28,16 +29,13 @@ controller.getTypesFromCommunity = async function (req, res) {
 }
 
 controller.getCountTypesFromCommunity = async function (req, res) {
-    const { limit, offset } = req.query;
     try {
         const count = await this.model.count({
             where: {
                 communityId: req.community.id
-            },
-            limit,
-            offset
+            }
         })
-        return res.send({ count });
+        return res.send(count);
     } catch (err) {
         console.log(err.message);
         const connectionError = new ResponseError(503, 'Try again later');
@@ -47,17 +45,9 @@ controller.getCountTypesFromCommunity = async function (req, res) {
 
 
 controller.getOne = async function (req, res) {
-
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const validationError = new ResponseError(400, 'Booth type id is not valid');
-        return res.send(validationError);
-    }
-
     try {
-        const data = await this.model.findByPk(id, {
-            attributes: ['id', 'name', 'description', 'cost', 'sizeWidth', 'sizeHeight', 'active']
+        const data = await this.model.findByPk(req.boothType.id, {
+            attributes: validAttributes
         });
         return res.send(data);
     } catch (err) {
@@ -65,7 +55,6 @@ controller.getOne = async function (req, res) {
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError);
     }
-
 }
 
 controller.postFunc = async function (req, res) {
@@ -76,8 +65,7 @@ controller.postFunc = async function (req, res) {
         cost,
         width,
         height,
-        active,
-        community
+        active
     } = req.body;
 
     const validationError = new ResponseError(400);
@@ -88,7 +76,8 @@ controller.postFunc = async function (req, res) {
         width,
         height,
         active,
-        communityId: community
+        cost,
+        communityId: req.community.id
     }
 
     // name
@@ -111,7 +100,7 @@ controller.postFunc = async function (req, res) {
     
     // cost
 	try {
-		if (!this.model.validateCost(name)) {
+		if (!this.model.validateCost(cost)) {
 			throw new Error('Cost is not valid')
 		}
 	} catch ({ message }) {
@@ -156,7 +145,7 @@ controller.postFunc = async function (req, res) {
     } catch (err) {
         console.log(err.message)
         const connectionError = new ResponseError(503, 'Try again later')
-        return res.send(newType)
+        return res.send(connectionError)
     }
 }
 

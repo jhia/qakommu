@@ -1,18 +1,37 @@
 const request = require('supertest')
-const app = require('../app')
-
+const app = require('../app');
+const { requires } = require('grunt');
 let accessToken = '';
 let headers = {};
 
-let editingEvent = null;
+let editing = null;
+
+let server, agent;
+
+beforeEach((done) => {
+    server = app.listen(process.env.PORT || 9000, (err) => {
+      if (err) return done(err);
+
+       agent = request.agent(server); // since the application is already listening, it should use the allocated port
+       done();
+    });
+});
+
+afterEach((done) => {
+  return server && server.close(done);
+});
 
 beforeAll(async () => {
-  let { body: { payload } } = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
-    email: 'p_ellett87@kommu.com',
-    password: '123'
-  });
+  let token = '2hKy3LWUVZjjcI2ig1Tp3Qc1WMBYJrURyCPsKBlBIQsQlJWPs5HMrTYMS4ZR2Yl9Za4KdvZrq84bBrGc7upHDKt1Uh3jWbd8fpyCXIfOSSDUuYBWXljESey5KFcHFxKgazRzFTgTRBq9rwl9qhN4RBY43vWDnhNGEgOhONbm4D2DfsRVkyKMlYdfsCIDnyTHx7elYnpJb4aL6a1lAHLF3vYcobhRdUs0gXiW5ffldjRAxLXm3fdt9kB2cHaOW3X8';
+  let res = await request(app).post('/authorize').set({ 'Authentication': token }).send({});
 
-  accessToken = payload.accessToken;
+  if(res.statusCode !== 200) {
+    console.log(res.body.message)
+    let err = new Error(res.body.message)
+    throw err;
+  }
+
+  accessToken = res.body.payload.accessToken;
 
   headers = {
     'Authorization': 'Bearer ' + accessToken
@@ -22,32 +41,32 @@ beforeAll(async () => {
 
 describe('Booth Type API', () => {
 
-  describe('Get booth types from community', () => {
-    it('should show all available booths', async () => {
-      const res = await request(app).get('/api/boothType/1').set(headers)
+  describe('Get booth types', () => {
+    it('/api/boothType/community/{id} Should show all available booths', async () => {
+      const res = await agent.get('/api/boothType/community/KOMMMU').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
       expect(res.body.payload.length).toBeGreaterThanOrEqual(1)
     })
   
-    it('should show one booth', async () => {
-      const res = await request(app).get('/api/boothType/1').set(headers)
+    it('/api/boothType/{id} should show one booth', async () => {
+      const res = await agent.get('/api/boothType/1').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
       expect(res.body.payload.name).toBe('general')
     })
 
-    it('should show error if the id is not valid', async () => {
-      const res = await request(app).get('/api/boothType/test').set(headers)
+    it('/api/boothType/{id} should show error if the id is not valid', async () => {
+      const res = await agent.get('/api/boothType/test').set(headers)
       expect(res.statusCode).toEqual(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Booth type id is not valid')
     })
   })
 
-  describe('Create booth type', () => {
+  /*describe('Create booth type', () => {
     it('should create a new booth', async () => {
       const goodEvent = {
         name: 'My new booth',
@@ -57,7 +76,7 @@ describe('Booth Type API', () => {
         community: 1
       }
       
-      const res = await request(app).post('/api/boothType').set(headers).send(goodEvent)
+      const res = await agent.post('/api/boothType').set(headers).send(goodEvent)
   
       expect(res.statusCode).toEqual(201)
       expect(res.body.successful).toEqual(true)
@@ -82,7 +101,7 @@ describe('Booth Type API', () => {
       const badEvent = {
         description: 'my new booth without name and size'
       }
-      const res = await request(app).post('/api/boothType').set(headers).send(badEvent)
+      const res = await agent.post('/api/boothType').set(headers).send(badEvent)
       expect(res.statusCode).toEqual(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Bad Request')
@@ -101,13 +120,13 @@ describe('Booth Type API', () => {
         active: false
       }
   
-      const res = await request(app).put(`/api/boothType/${editingEvent.id}`).set(headers).send(updateEvent)
+      const res = await agent.put(`/api/boothType/${editingEvent.id}`).set(headers).send(updateEvent)
   
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body.message).toBe('OK')
   
-      const res2 = await request(app).get(`/api/boothType/${editingEvent.id}`).set(headers)
+      const res2 = await agent.get(`/api/boothType/${editingEvent.id}`).set(headers)
   
       expect(res2.statusCode).toEqual(200)
       expect(res2.body.successful).toEqual(true)
@@ -119,14 +138,14 @@ describe('Booth Type API', () => {
     })
 
     it('should show error if the id is not valid', async () => {
-      const res = await request(app).put('/api/boothType/my-testing-event').set(headers)
+      const res = await agent.put('/api/boothType/my-testing-event').set(headers)
       expect(res.statusCode).toEqual(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Booth type id is not valid')
     })
 
     it('should show error if the id does not exists', async () => {
-      const res = await request(app).delete('/api/boothType/200051').set(headers)
+      const res = await agent.delete('/api/boothType/200051').set(headers)
       expect(res.statusCode).toEqual(404)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Booth type does not exists')
@@ -136,13 +155,13 @@ describe('Booth Type API', () => {
 
   describe('Delete booth type', () => {
     it('should delete booths', async () => {
-      const res = await request(app).delete(`/api/boothType/${editingEvent.id}`).set(headers)
+      const res = await agent.delete(`/api/boothType/${editingEvent.id}`).set(headers)
       
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body.message).toBe('OK')
   
-      const res2 = await request(app).get(`/api/boothType/${editingEvent.id}`).set(headers)
+      const res2 = await agent.get(`/api/boothType/${editingEvent.id}`).set(headers)
   
       expect(res2.statusCode).toBe(404)
       expect(res2.body.successful).toEqual(false)
@@ -150,17 +169,17 @@ describe('Booth Type API', () => {
     })
 
     it('should show error if the id is not valid', async () => {
-      const res = await request(app).delete('/api/boothType/my-testing-event').set(headers)
+      const res = await agent.delete('/api/boothType/my-testing-event').set(headers)
       expect(res.statusCode).toEqual(400)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Event id is not valid')
     })
 
     it('should show error if the id does not exists', async () => {
-      const res = await request(app).delete('/api/boothType/200051').set(headers)
+      const res = await agent.delete('/api/boothType/200051').set(headers)
       expect(res.statusCode).toEqual(404)
       expect(res.body.successful).toEqual(false)
       expect(res.body.message).toBe('Booth type does not exists')
     })
-  })
+  })*/
 })
