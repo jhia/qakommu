@@ -1,4 +1,4 @@
-const { ticket:Ticket, ticketSale:TicketSale } = require('../models')
+const { ticket:Ticket, ticketSale:TicketSale, ticketSaleDetail:TicketSaleDetail } = require('../models')
 const { Response, ResponseError } = require('../http')
 
 exports.ticketVerification = async function(req, res, next) {
@@ -41,6 +41,29 @@ exports.ticketSaleVerification = async function(req, res, next) {
     req.ticketSale = sale;
     next();
   } catch(err) {
+    return Response.from(res).send(notFoundError)
+  }
+}
+
+exports.ticketSaleDetailUUIDVerification = async function(req, res, next) {
+  const notFoundError = new ResponseError(404, 'Ticket does not exist')
+  const { ticketSaleDetailUUID } = req.params;
+
+  if(!ticketSaleDetailUUID || typeof ticketSaleDetailUUID !== typeof '' || ticketSaleDetailUUID.length < 36) {
+    const validationError = new ResponseError(400, 'Ticket uuid is not valid')
+    return Response.from(res).send(validationError)
+  }
+  
+  try {
+    const tsd = await TicketSaleDetail.findByUUID(ticketSaleDetailUUID, {
+      attributes: ['id', 'deactivated']
+    });
+    if(!tsd) {
+      return Response.from(res).send(notFoundError)
+    }
+    req.ticketSaleDetail = tsd;
+    return next();
+  } catch {
     return Response.from(res).send(notFoundError)
   }
 }

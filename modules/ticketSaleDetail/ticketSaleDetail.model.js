@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            
+            unique: true
         },
         ticketSaleId: {
             allowNull: false,
@@ -41,6 +41,18 @@ module.exports = (sequelize, DataTypes) => {
             as: 'attendee'
         });
     }
+
+    TicketSaleDetail.findByUUID = function (uuid, options={}) {
+		if(!uuid) {
+			throw new Error('Invitation code is required')
+		}
+		return this.findOne({
+			where: {
+				uuid
+			},
+			...options
+		})
+	}
 
     return TicketSaleDetail;
 }

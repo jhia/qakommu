@@ -16,6 +16,7 @@ module.exports = {
           "id_user": 3,
           "id_event": 1,
           "is_present": true,
+          "id_ticket_sale_detail": 2,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -27,6 +28,7 @@ module.exports = {
           "id_user": 12,
           "id_event": 1,
           "is_present": true,
+          "id_ticket_sale_detail": 3,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -38,6 +40,7 @@ module.exports = {
           "id_user": 6,
           "id_event": 1,
           "is_present": true,
+          "id_ticket_sale_detail": 4,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -49,6 +52,7 @@ module.exports = {
           "id_user": 7,
           "id_event": 1,
           "is_present": true,
+          "id_ticket_sale_detail": 5,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -60,6 +64,7 @@ module.exports = {
           "id_user": 7,
           "id_event": 2,
           "is_present": true,
+          "id_ticket_sale_detail": 6,
           createdAt: new Date(),
           updatedAt: new Date()
         },

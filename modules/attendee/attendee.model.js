@@ -41,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             field: 'is_present'
-        },/*
+        },
         ticketSaleDetailId:{
             allowNull: false,
             type: DataTypes.INTEGER,
-            field: 'is_ticket_sale_detail',
-        } */
+            field: 'id_ticket_sale_detail',
+        }
 
     },
         {
@@ -56,12 +56,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Attendee.associate = function (models) {
         //To create model associations
-        /*
-        Attendee.belongsTo(models.ticket_sale_detail, {
+        
+        Attendee.belongsTo(models.ticketSaleDetail, {
             foreignKey: 'id_ticket_sale_detail',
-            as: 'ticket_sale_detail'
+            as: 'ticket'
         });
-        */
+        
 
         Attendee.belongsTo(models.event, {
             foreignKey: 'id_event',
@@ -73,11 +73,12 @@ module.exports = (sequelize, DataTypes) => {
             as: 'user'
         });
 
-        /*
-        Attendee.hasMany(models.session_attendee, {
+        Attendee.belongsToMany(models.session, {
+            through: 'session_attendees',
             foreignKey: 'id_attendee',
-            as: 'attendee_session_attendee'
-        });*/
+            otherKey: 'id_session',
+            as: 'sessions'
+        });
     }
 
     Attendee.exists = async function (id) {
@@ -90,7 +91,20 @@ module.exports = (sequelize, DataTypes) => {
             }
         })
 		return count > 0;
-	}
+    }
+    
+    Attendee.ticketAlreadyUsed = async function(value) {
+        if(!value) {
+            throw new Error('Ticket id is required')
+        }
+
+        const count = await this.count({
+            where: {
+                ticketSaleDetailId: value
+            }
+        })
+        return count > 0;
+    }
 
 
     Attendee.validateFirstName = function (value) {

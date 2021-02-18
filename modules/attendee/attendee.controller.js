@@ -5,6 +5,7 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('attendee');
 //const { validateEmail } = require('../../helpers/utilities');
 const { ResponseError } = require('../../http');
+const Archive = require('../../helpers/archive')
 
 
 /*
@@ -14,21 +15,18 @@ const { ResponseError } = require('../../http');
 *this.model -> Current module model
 */
 
+const validAttributes = ['id','firstName', 'lastName', 'email', 'eventId', 'isPresent']
+
 controller.getFunc = async function (req, res) {
 
-    const { limit, offset, event } = req.query;
-    
-    if (isNaN(event)) {
-        const validationError = new ResponseError(400, 'event is not valid')
-        return res.send(validationError);
-    }
+    const { limit, offset } = req.query;
 
     try {
         let attendees = await this.model.findAll({
             limit,
             offset,
-            //attributes: ['id','firstName', 'lastName', 'email', 'userId', 'isPresent', 'eventId'],
-            where: {eventId : event }
+            attributes: validAttributes,
+            where: { eventId : req.event.id }
         });
 
         res.send(attendees);        
@@ -58,24 +56,50 @@ controller.getCountFromAttendees = async function (req, res) {
     }
 }
 
-controller.getOne = async function (req, res) {
-    const { id } = req.params;
-
-    if (isNaN(id)) {
-        const validationError = new ResponseError(400, 'Attendee id is not valid')
-        return res.send(validationError);
-    }
-
+controller.getOneFromTicket = async function (req, res) {
     try {
-        const attendee = await this.model.findByPk(id, {
-            attributes: ['id','firstName', 'lastName', 'email', 'eventId', 'isPresent'],
-        });
+        const attendee = this.model.findOne({
+            where: {
+                ticketSaleDetailId: req.ticketSaleDetail.id
+            },
+            attributes: validAttributes,
+            include: [{
+                model: this.db.user,
+                attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+                as: 'user'
+            }]
+        })
+        if(attendee.hasOwnProperty('user') && attendee.user.profilePhoto) {
+            attendee.user.profilePhoto = await Archive.route(attendee.user.profilePhoto)
+        }
         return res.send(attendee);
-    } catch {
+    } catch(err) {
         const connectionError = new ResponseError(503, 'Try again later');
         return res.send(connectionError);
     }
+}
 
+controller.getOne = async function (req, res) {
+    const { attendeeId } = req.params;
+
+    try {
+        const attendee = await this.model.findByPk(attendeeId, {
+            attributes: validAttributes,
+            include: [{
+                model: this.db.user,
+                attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+                as: 'user'
+            }],
+        });
+
+        if(attendee.hasOwnProperty('user') && attendee.user.profilePhoto) {
+            attendee.user.profilePhoto = await Archive.route(attendee.user.profilePhoto)
+        }
+        return res.send(attendee);
+    } catch(err) {
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
 }
 
 
@@ -85,57 +109,86 @@ controller.postFunc = async function (req, res) {
         firstName, // required
         lastName, // required
         email, // required
-        user, 
         isPresent,
-        event, // required
-        //ticketSaleDetailId  // required
+        ticket  // required ticket sale detail uuid
     } = req.body;
 
     const validationError = new ResponseError(400);
+    const connectionError = new ResponseError(503, 'Try again later');
 
     let attendeeData = {
-        firstName,
-        lastName,
-        email,
-        userId: user,
         isPresent,
-        eventId : event,
+        eventId: req.event.id,
+        email
     }
 
-    //first name
-    try{    
-        if(!this.model.validateFirstName(firstName)){
-            throw new Error('First Name is not valid')
-        }
-    }catch({message}){
-        validationError.addContext('firstName', message)
-    }
-
-    //last name
-    try{    
-        if(!this.model.validateLastName(lastName)){
-            throw new Error('Last Name is not valid')
-        }
-    }catch({message}){
-        validationError.addContext('lastName', message)
-    }
-
-    // email
-	try {
-		if (!this.model.validateEmail(email)) {
-			validationError.addContext('email', 'Email is not valid')
-		}
-	} catch ({ message }) {
-		validationError.addContext('email', message)
-	}
-
-    //event exists
     try {
-        if(!(await this.db.event.exists(event))) {
-            throw new Error('This event does not exists')
+        let t = await this.db.ticketSaleDetail.findByUUID(ticket, {
+            attributes: ['id']
+        })
+        if(!t) {
+            validationError.addContext('ticket', 'Ticket does not exist')
+            return res.send(validationError) // no more queries
         }
-    } catch ({message}) {
-        validationError.addContext('event', message)
+        if(await this.model.ticketAlreadyUsed(t.id)) {
+            const alreadyInUseError = new ResponseError(400, 'Ticket already used')
+            return res.send(alreadyInUseError)
+        }
+        attendeeData.ticketSaleDetailId = t.id
+    } catch (ticketErr) {
+        console.log(ticketErr);
+        return res.send(connectionError)
+    }
+
+    let user;
+    try {
+        user = await this.db.user.findOne({ where:{ email }});
+    } catch(userErr) {
+        console.error(userEcoderr);
+        return res.send(connectionError)
+    }
+
+    if(user) {
+        attendeeData.userId = user.id;
+        attendeeData.firstName = user.firstName;
+        attendeeData.lastName = user.lastName;
+    } else {
+        //first name
+        try{    
+            if(!this.model.validateFirstName(firstName)){
+                throw new Error('First Name is not valid')
+            }
+            attendeeData.firstName = firstName
+        }catch({message}){
+            validationError.addContext('firstName', message)
+        }
+
+        //last name
+        try{    
+            if(!this.model.validateLastName(lastName)){
+                throw new Error('Last Name is not valid')
+            }
+            attendeeData.lastName = lastName
+        }catch({message}){
+            validationError.addContext('lastName', message)
+        }
+
+        // email
+        try {
+            if (!this.model.validateEmail(email)) {
+                throw new Error('Email is not valid')
+            }
+            if((await this.model.count({
+                where: {
+                    email: attendeeData.email,
+                    eventId: attendeeData.eventId
+                }
+            })) > 0) {
+                throw new Error('Attendee already created')
+            }
+        } catch ({ message }) {
+            validationError.addContext('email', message)
+        }
     }
 
     // validate all
@@ -145,26 +198,141 @@ controller.postFunc = async function (req, res) {
 
     //insert
     try {
-       
         let result = await this.insert(attendeeData);
         res.statusCode = 201;
         res.send(result);
         
     } catch (err) {
         console.error(err);
-        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
+}
+
+controller.postFromTicket = async function (req, res) {
+    const { 
+        firstName, // required
+        lastName, // required
+        email, // required
+        isPresent,
+    } = req.body;
+
+
+    const validationError = new ResponseError(400);
+    const connectionError = new ResponseError(503, 'Try again later');
+
+    let attendeeData = {
+        isPresent,
+        ticketSaleDetailId: req.ticketSaleDetail.id,
+        email
+    }
+
+    try {
+        if(await this.model.ticketAlreadyUsed(req.ticketSaleDetail.id)) {
+            const alreadyInUseError = new ResponseError(400, 'Ticket already used')
+            return res.send(alreadyInUseError)
+        }
+    } catch {
+        return res.send(connectionError)
+    }
+
+    try {
+        let detail = await this.db.ticketSaleDetail.findByPk(req.ticketSaleDetail.id, {
+            include: [
+                {
+                    model: this.db.ticketSale,
+                    as: 'ticketSale',
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: this.db.ticket,
+                            attributes: ['id'],
+                            as: 'ticket',
+                            include: [
+                                {
+                                    model: this.db.event,
+                                    attributes: ['id'],
+                                    as: 'event'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        })
+
+        attendeeData.eventId = detail.ticketSale.ticket.event.id;
+    } catch {
+        return res.send(connectionError)
+    }
+
+    let user;
+    try {
+        user = await this.db.user.findOne({ where:{ email }});
+    } catch({ message }) {
+        return res.send(connectionError)
+    }
+
+    if(user) {
+        attendeeData.userId = user.id;
+        attendeeData.firstName = user.firstName;
+        attendeeData.lastName = user.lastName;
+    } else {
+        //first name
+        try{    
+            if(!this.model.validateFirstName(firstName)){
+                throw new Error('First Name is not valid')
+            }
+            attendeeData.firstName = firstName
+        }catch({message}){
+            validationError.addContext('firstName', message)
+        }
+
+        //last name
+        try{    
+            if(!this.model.validateLastName(lastName)){
+                throw new Error('Last Name is not valid')
+            }
+            attendeeData.lastName = lastName
+        }catch({message}){
+            validationError.addContext('lastName', message)
+        }
+
+        // email
+        try {
+            if (!this.model.validateEmail(email)) {
+                throw new Error('Email is not valid')
+            }
+            if((await this.model.count({
+                where: {
+                    email: attendeeData.email,
+                    eventId: attendeeData.eventId
+                }
+            })) > 0) {
+                throw new Error('Attendee already created')
+            }
+        } catch ({ message }) {
+            validationError.addContext('email', message)
+        }
+    }
+
+    // validate all
+    if(validationError.hasContext()){
+        return res.send(validationError)
+    }
+
+    //insert
+    try {
+        let result = await this.insert(attendeeData);
+        res.statusCode = 201;
+        res.send(result);
+        
+    } catch (err) {
+        console.error(err);
         return res.send(connectionError);
     }
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Attendee id is not valid')
-        return res.send(idError);
-    }
-
     const validationError = new ResponseError(400, 'Attendee id is not valid')
 
     let attendeeData = {};
@@ -213,7 +381,7 @@ controller.putFunc = async function (req, res) {
     try {
         
         let result = await this.update({
-			id: req.params.id,
+			id: req.params.attendeeId,
             data: attendeeData
         });
 
@@ -251,41 +419,4 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
-//--------------------special functions--------------------
-/*
-controller.getSessionsByAttendee = async function (req, res) {
-    const { id } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.session_attendee.findAll({
-            limit,
-            offset,
-            attributes: ['id'],
-            order,
-            where: { id_attendee: id },
-            include: [{
-                attributes: ['name', 'description', 'order', 'start', 'end', 'is_break'],
-                model: this.db.session,
-                as: 'session',
-                include: [{
-                    attributes: ['name', 'description'],
-                    model: this.db.room,
-                    as: 'room'
-                }]
-            }]
-        });
-        this.response({
-            res,
-            payload: [data]
-        });
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-    }
-}
-*/
 module.exports = controller;
