@@ -1,13 +1,13 @@
 'use strict'
 
-const { userCommunity:UserCommunity, eventTeam:EventTeam } = require('../../models')
+const { userCommunity: UserCommunity, eventTeam: EventTeam } = require('../../models')
 
 module.exports = (sequelize, DataTypes) => {
   const Event = sequelize.define('event', {
     id: {
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
     name: {
       allowNull: false,
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    noCfp:{
+    noCfp: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       field: 'no_cfp'
@@ -73,17 +73,17 @@ module.exports = (sequelize, DataTypes) => {
       field: 'secondary_color',
       type: DataTypes.STRING,
     }
-    }, {
-      tableName: 'events'
+  }, {
+    tableName: 'events'
   });
 
-  Event.associate = function(models){
+  Event.associate = function (models) {
     //To create model associations
 
     //event to community
     Event.belongsTo(models.community, {
-        foreignKey: 'id_community',
-        as: 'community'
+      foreignKey: 'id_community',
+      as: 'community'
     });
 
     Event.belongsToMany(models.user, {
@@ -105,65 +105,65 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_event',
       as: 'sponsors'
     });
-    
+
     //event to exhibitor
     Event.hasMany(models.exhibitor, {
       foreignKey: 'id_event',
       as: 'exhibitors'
     });
-/*
-    //event to ticket
-    event.hasMany(models.ticket, {
-      foreignKey: 'id_event',
-      as: 'event_ticket'
-    });
-
-    //event to speaker
-    event.hasMany(models.coupon, {
-      foreignKey: 'id_event',
-      as: 'event_coupon'
-    });
-
-    //event to speaker
-    event.hasMany(models.speaker, {
-      foreignKey: 'id_event',
-      as: 'event_speaker'
-    });*/
+    /*
+        //event to ticket
+        event.hasMany(models.ticket, {
+          foreignKey: 'id_event',
+          as: 'event_ticket'
+        });
+    
+        //event to speaker
+        event.hasMany(models.coupon, {
+          foreignKey: 'id_event',
+          as: 'event_coupon'
+        });
+    
+        //event to speaker
+        event.hasMany(models.speaker, {
+          foreignKey: 'id_event',
+          as: 'event_speaker'
+        });*/
   }
 
   Event.exists = async function (id) {
-		if(!id) {
-			throw new Error('Event ID is required')
-		}
-		const count = await this.count({
-      where: {id}
+    if (!id) {
+      throw new Error('Event ID is required')
+    }
+    const count = await this.count({
+      where: { id }
     })
-		return count > 0;
-	}
+    return count > 0;
+  }
 
-  Event.validateName = function(value) {
-    if(!value) {
+  Event.validateName = function (value) {
+    if (!value) {
       throw new Error('Name is required')
     }
     return typeof value === typeof '' && value.length >= 3;
   }
 
   Event.validateDescription = function (value) {
-    if(!value) {
+    if (!value) {
       throw new Error('Decription is required')
     }
     return typeof value === typeof '' && value.length > 3;
   }
 
   Event.validateType = function (value) {
-    if(!value) {
+    if (!value) {
       throw new Error('Type is required')
     }
     return ['c', 'w', 'm'].includes(value);
   }
 
-  Event.validateUrl = function(value) {
-    if(!value) {
+  Event.validateUrl = function (value) {
+    if (!value) {
       throw new Error('URL is required');
     }
     let regex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
@@ -171,7 +171,7 @@ module.exports = (sequelize, DataTypes) => {
     return regex.test(value)
   }
 
-  Event.prototype.canEditEvent = async function(userId) {
+  Event.prototype.canEditEvent = async function (userId) {
     const owner = await UserCommunity.findOne({
       where: {
         userId,
@@ -180,7 +180,7 @@ module.exports = (sequelize, DataTypes) => {
       attributes: ['id']
     });
 
-    if(owner) return true;
+    if (owner) return true;
 
     const assistant = await EventTeam.findOne({
       where: {
@@ -194,5 +194,5 @@ module.exports = (sequelize, DataTypes) => {
     return !!assistant;
   }
 
-    return Event;
+  return Event;
 }

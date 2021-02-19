@@ -8,12 +8,12 @@ exports.communityOwner = async function (req, res, next) {
     let permission = await UserCommunity.findOne({
       where: {
         userId: req.user.id,
-        communityId: req.params.id,
+        communityId: req.community.id,
         owner: true
       }
     })
 
-    if(!!permission) {
+    if(permission) {
       req.userCommunity = permission;
       return next();
     }
