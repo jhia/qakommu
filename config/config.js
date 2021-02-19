@@ -18,12 +18,11 @@ module.exports = {
   production: {
     use_env_variable: "DATABASE_URL",
     dialect: 'postgres',
-    dialectOptions: {
-      ssl: {
-        key: cKey,
-        cert: cCert,
-        ca: cCa
-      }
+    ssl: {
+      rejectUnauthorized: false,
+      key: cKey,
+      cert: cCert,
+      ca: cCa
     }
   },
   test: {
