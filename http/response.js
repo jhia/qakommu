@@ -51,8 +51,8 @@ class Response {
   send(data = null) {
     if(!data) { // no data, relies on status code
       return this._res
-      .statusCode(this.statusCode)
-      .end({
+      .status(this.statusCode)
+      .json({
         successful: this.successful,
         message: STATUS[this.statusCode]
       });

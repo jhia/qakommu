@@ -1,3 +1,4 @@
+const http = require('http')
 const request = require('supertest')
 const app = require('../app');
 const { requires } = require('grunt');
@@ -9,7 +10,7 @@ let editing = null;
 let server, agent;
 
 beforeEach((done) => {
-    server = app.listen(process.env.PORT || 9000, (err) => {
+    server = http.createServer(app).listen((err) => {
       if (err) return done(err);
 
        agent = request.agent(server); // since the application is already listening, it should use the allocated port
@@ -22,8 +23,8 @@ afterEach((done) => {
 });
 
 beforeAll(async () => {
-  let token = '2hKy3LWUVZjjcI2ig1Tp3Qc1WMBYJrURyCPsKBlBIQsQlJWPs5HMrTYMS4ZR2Yl9Za4KdvZrq84bBrGc7upHDKt1Uh3jWbd8fpyCXIfOSSDUuYBWXljESey5KFcHFxKgazRzFTgTRBq9rwl9qhN4RBY43vWDnhNGEgOhONbm4D2DfsRVkyKMlYdfsCIDnyTHx7elYnpJb4aL6a1lAHLF3vYcobhRdUs0gXiW5ffldjRAxLXm3fdt9kB2cHaOW3X8';
-  let res = await request(app).post('/authorize').set({ 'Authentication': token }).send({});
+  let token = 'Authentication=2hKy3LWUVZjjcI2ig1Tp3Qc1WMBYJrURyCPsKBlBIQsQlJWPs5HMrTYMS4ZR2Yl9Za4KdvZrq84bBrGc7upHDKt1Uh3jWbd8fpyCXIfOSSDUuYBWXljESey5KFcHFxKgazRzFTgTRBq9rwl9qhN4RBY43vWDnhNGEgOhONbm4D2DfsRVkyKMlYdfsCIDnyTHx7elYnpJb4aL6a1lAHLF3vYcobhRdUs0gXiW5ffldjRAxLXm3fdt9kB2cHaOW3X8; Path=/';
+  let res = await request(app).post('/authorize').set('Cookie', token).send({});
 
   if(res.statusCode !== 200) {
     console.log(res.body.message)

@@ -39,24 +39,28 @@ beforeAll(async () => {
 })
 
 
-describe('Rooms API', () => {
+describe('Partnerships API', () => {
 
-  describe('Get Rooms', () => {
-    it('/api/room/event/{id} should show all available rooms', async () => {
-      const res = await agent.get('/api/room/event/2').set(headers)
+  describe('Get Partners', () => {
+    it('/api/partnership/ should show all available partnerships', async () => {
+      const res = await agent.get('/api/partnership2').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
       expect(res.body.payload.length).toBeGreaterThanOrEqual(1)
     })
   
-    it('/api/room/{id} should show one room', async () => {
-      const res = await agent.get('/api/room/1').set(headers)
+    it('/api/partnership/{id} should show one partner', async () => {
+      const res = await agent.get('/api/partnership/1').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
       const expectedResponse = {
         id: 1,
+        name: "Google company",
+        description: "test description",
+        web: "www.google.com",
+        active: true,
         name: "Pedro Laguna auditory",
         description: "esta ubicada en coro",
         maxCapacity: 550,

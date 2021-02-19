@@ -1,19 +1,31 @@
+const http = require('http')
 const request = require('supertest')
-const app = require('../app');
-
-
+const app = require('../app')
 let accessToken = '';
 let headers = {};
 
 let editing = null;
 
-beforeAll(async () => {
-  let res = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
-    email: 'p_ellett87@kommu.com',
-    password: '123'
-  });
+let server, agent;
 
-  if (res.statusCode !== 200) {
+beforeEach((done) => {
+    server = http.createServer(app).listen((err) => {
+      if (err) return done(err);
+
+       agent = request.agent(server); // since the application is already listening, it should use the allocated port
+       done();
+    });
+});
+
+afterEach((done) => {
+  return server && server.close(done);
+});
+
+beforeAll(async () => {
+  let token = 'Authentication=2hKy3LWUVZjjcI2ig1Tp3Qc1WMBYJrURyCPsKBlBIQsQlJWPs5HMrTYMS4ZR2Yl9Za4KdvZrq84bBrGc7upHDKt1Uh3jWbd8fpyCXIfOSSDUuYBWXljESey5KFcHFxKgazRzFTgTRBq9rwl9qhN4RBY43vWDnhNGEgOhONbm4D2DfsRVkyKMlYdfsCIDnyTHx7elYnpJb4aL6a1lAHLF3vYcobhRdUs0gXiW5ffldjRAxLXm3fdt9kB2cHaOW3X8; Path=/';
+  let res = await request(app).post('/authorize').set('Cookie', token).send({});
+
+  if(res.statusCode !== 200) {
     console.log(res.body.message)
     let err = new Error(res.body.message)
     throw err;
@@ -31,14 +43,14 @@ beforeAll(async () => {
 describe('Ticket API', () => {
   describe('Get tickets sales', () => {
     it('/api/ticketSale/ticket/{id} Should get all tickets sales for a ticket', async () => {
-      let res = await request(app).get('/api/ticketSale/ticket/1').set(headers)
+      let res = await agent.get('/api/ticketSale/ticket/1').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
       expect(res.body.payload.length).toBeGreaterThanOrEqual(1)
     })
     it('/api/ticketSale/{id} Should get one ticket sale information', async () => {
-      let res = await request(app).get('/api/ticketSale/1').set(headers)
+      let res = await agent.get('/api/ticketSale/1').set(headers)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
       expect(res.body).toHaveProperty('payload')
@@ -70,14 +82,14 @@ describe('Ticket API', () => {
       expect(res.body.payload).toEqual(expectedResponse)
     })
     it('/api/ticketSale Should not show tickets', async () => {
-      let res = await request(app).get('/api/ticketSale').set(headers)
+      let res = await agent.get('/api/ticketSale').set(headers)
       expect(res.statusCode).toBe(404)
     })
   })
 
   describe('Create sale', () => {
     it('/api/ticketSale/ticket/{id} Should create ticket sale', async () => {
-      let res0 = await request(app).get('/api/ticket/1').set(headers)
+      let res0 = await agent.get('/api/ticket/1').set(headers)
       expect(res0.statusCode).toEqual(200)
 
       let availableTickets = res0.body.payload.quantityCurrent
@@ -86,7 +98,7 @@ describe('Ticket API', () => {
         totalAmountPaid: 240
       };
 
-      let res = await request(app).post('/api/ticketSale/ticket/1').set(headers)
+      let res = await agent.post('/api/ticketSale/ticket/1').set(headers)
         .send(goodTicket)
 
       expect(res.statusCode).toEqual(201)
@@ -101,7 +113,7 @@ describe('Ticket API', () => {
         ...res.body.payload
       };
 
-      let res2 = await request(app).get('/api/ticket/1').set(headers)
+      let res2 = await agent.get('/api/ticket/1').set(headers)
       expect(res2.statusCode).toEqual(200)
       expect(res2.body.payload.quantityCurrent).toBe(availableTickets - goodTicket.count)
 
@@ -111,7 +123,7 @@ describe('Ticket API', () => {
         count: -20,
       }
 
-      let res = await request(app).post('/api/ticketSale/ticket/1').set(headers)
+      let res = await agent.post('/api/ticketSale/ticket/1').set(headers)
         .send(badTicket)
       expect(res.statusCode).toEqual(400)
       expect(res.body.successful).toEqual(false)
@@ -127,12 +139,12 @@ describe('Ticket API', () => {
         username: 'kommu'
       }
 
-      let res = await request(app).put('/api/ticketSale/' + editing.id).set(headers)
+      let res = await agent.put('/api/ticketSale/' + editing.id).set(headers)
         .send(update)
       expect(res.statusCode).toEqual(200)
       expect(res.body.successful).toEqual(true)
 
-      const res2 = await request(app).get(`/api/ticketSale/${editing.id}`).set(headers)
+      const res2 = await agent.get(`/api/ticketSale/${editing.id}`).set(headers)
       expect(res2.statusCode).toEqual(200)
       expect(res2.body.successful).toEqual(true)
       expect(res2.body).toHaveProperty('payload')
@@ -143,11 +155,11 @@ describe('Ticket API', () => {
 
   describe('Delete ticket', () => {
     it('/api/ticket/{id} Should delete ticket', async () => {
-      let res = await request(app).delete('/api/ticketSale/' + editing.id).set(headers).send({})
+      let res = await agent.delete('/api/ticketSale/' + editing.id).set(headers).send({})
       expect(res.statusCode).toBe(200)
       expect(res.body.successful).toBe(true)
 
-      let res2 = await request(app).get('/api/ticketSale/' + editing.id).set(headers)
+      let res2 = await agent.get('/api/ticketSale/' + editing.id).set(headers)
 
       expect(res2.statusCode).toBe(404)
       expect(res2.body.successful).toBe(false)
