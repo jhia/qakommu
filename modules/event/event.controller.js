@@ -7,38 +7,64 @@ const { validateDate } = require('../../helpers/validations');
 const { ResponseError } = require('../../http');
 const Archive = require('../../helpers/archive');
 
+const validAttributes = [
+    'id', 'name', 'description', 'type', 'communityId', 'online',
+    'noCfp', 'url', 'isPrivate', 'start', 'end', 'active',
+    'promRate', 'image', 'primaryColor', 'secondaryColor'
+];
 
 controller.getFunc = async function (req, res) {
 
-    const { limit, offset } = req.body;
+    const { limit, offset } = req.query;
     try {
-        let events = await this.getData({
+        let events = await this.model.findAll({
+            where: {
+                isPrivate: false
+            },
+            attributes: validAttributes,
             limit,
             offset
         });
 
+        await Promise.all(events.map((e, i) => Archive.route(e.image)
+            .then((route) => { events[i].image = route })))
         res.send(events);
-
     } catch({ message }) {
-        console.log(message)
         const connectionError = new ResponseError(503, 'Try again later');
         return res.send(connectionError);
     }
+}
 
+controller.getEventsByCommunity = async function (req, res) {
+
+    const { limit, offset } = req.query;
+    try {
+        let events = await this.model.findAll({
+            where: {
+                communityId: req.community.id
+            },
+            attributes: validAttributes,
+            limit,
+            offset
+        });
+
+        await Promise.all(events.map((e, i) => Archive.route(e.image)
+            .then((route) => { events[i].image = route })))
+        res.send(events);
+    } catch({ message }) {
+        const connectionError = new ResponseError(503, 'Try again later');
+        return res.send(connectionError);
+    }
 }
 
 controller.getOne = async function(req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const validationError = new ResponseError(400, 'Event id is not valid')
-        return res.send(validationError);
-    }
+    const { eventId } = req.params;
 
     try {
-        const event = await this.model.findByPk(id, {
-            include: [this.model.associations.community]
+        const event = await this.model.findByPk(eventId, {
+            attributes: validAttributes
         });
+        event.image = await Archive.route(event.image)
         return res.send(event);
     } catch {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -52,7 +78,6 @@ controller.postFunc = async function (req, res) {
     const {
         name, // required
         description, // required
-        community,
         type, // required
         online, // required
         noCfp,
@@ -72,7 +97,7 @@ controller.postFunc = async function (req, res) {
         name,
         description,
         type,
-        communityId: community,
+        communityId: req.community.id,
         online,
         url,
         noCfp,
@@ -122,14 +147,6 @@ controller.postFunc = async function (req, res) {
         validationError.addContext('url', message)
     }
 
-    try {
-        if(!(await this.db.community.exists(community))) {
-            throw new Error('This community does not exists')
-        }
-    } catch ({message}) {
-        validationError.addContext('community', message)
-    }
-
     if(start) {
         try {
             if(!validateDate(start)) {
@@ -162,7 +179,8 @@ controller.postFunc = async function (req, res) {
             await image.upload(); // save image
             eventData.image = image.id;
             if(!primaryColor || !secondaryColor) { // get main colors if not set
-                let [primaryColor, secondaryColor] = await getColors(image.route, { count: 2 })
+                let imgRoute = await Archive.from(image.id)
+                let [primaryColor, secondaryColor] = await getColors(imgRoute, { count: 2 })
                 eventData.primaryColor = primaryColor.hex()
                 eventData.secondaryColor = secondaryColor.hex()
             }
@@ -181,14 +199,8 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
 
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Event id is not valid')
-        return res.send(idError);
-    }
-
-    const validationError = new ResponseError(400, 'Event id is not valid')
+    const validationError = new ResponseError(400)
 
     let eventData = {};
 
@@ -243,22 +255,6 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-    if(req.body.community) {
-        try {
-            let community = await this.db.community.findByPk(req.body.community)
-            if(!community) {
-                throw new Error('This community does not exist')
-            }
-
-            if(!(await community.canCreateEvents(req.user.id))) {
-                throw new Error('You don\'t have the right permissions for this community')
-            }
-            eventData.communityId = community.id
-        } catch ({message}) {
-            validationError.addContext('community', message)
-        }
-    }
-
     if(req.body.start) {
         try {
             if(!validateDate(req.body.start)) {
@@ -310,7 +306,8 @@ controller.putFunc = async function (req, res) {
             await image.upload() // save image
             eventData.image = image.id;
             if(!primaryColor || !secondaryColor) { // get main colors if not sent
-                let [primaryColor, secondaryColor] = await getColors(image.route, { count: 2 })
+                let imgRoute = await Archive.from(image.id)
+                let [primaryColor, secondaryColor] = await getColors(imgRoute, { count: 2 })
                 eventData.primaryColor = primaryColor.hex()
                 eventData.secondaryColor = secondaryColor.hex()
             }
@@ -318,14 +315,13 @@ controller.putFunc = async function (req, res) {
         }
 
         if(updatePicture) {
-            let r = await this.findByPk(req.params.id, { attributes: ['image'] })
-            previousImageName = r.image;
+            previousImageName = req.event.image;
         }
 
-        const rows = await this.model.update({
-			id: req.params.id,
+        const rows = await this.update({
+			id: req.event.id,
 			data: eventData
-		});
+		});    
 
 		if(rows > 0 && eventData.hasOwnProperty('image') && updatePicture) {
 			await Archive.fromString(previousImageName).remove();
@@ -333,30 +329,19 @@ controller.putFunc = async function (req, res) {
 
 		return res.send([])
     } catch (error) {
-        console.log(error.message);
         const connectionError = new ResponseError(503, 'Try again later');
         res.send(connectionError)
     }
 }
 
 controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const validationError = new ResponseError(400, 'Event id is not valid')
-        return res.send(validationError);
-    }
-
     try {
-        let event = await this.model.findByPk(id, { attributes: [ 'id', 'image' ]});
-        if(!event) {
-            const notFoundError = new ResponseError(404, 'This event does not exist')
-            return res.send(notFoundError);
-        }
 
-        await Archive.fromString(event.image).remove();
+       if(req.event.image) {
+            await Archive.fromString(req.event.image).remove();
+       }
         
-        let rows = await this.delete({ id });
+        let rows = await this.delete(req.event.id);
         return res.send(rows)
     } catch (error) {
         console.warn(error.message)
@@ -365,236 +350,5 @@ controller.deleteFunc = async function (req, res) {
     }
 }
 
-/*
-
-// ---------- special functions ----------
-controller.getEventsByCommunity = async function (req, res) {
-    const { id_community } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.event.findAll({
-            limit,
-            offset,
-            attributes: ['id', 'name', 'description', 'type', 'online', 'no_cfp', 'url_code', 'id_webside', 'is_private', 'start', 'end', 'active', 'prom_rate', 'id_repository', 'image', 'host'],
-            order,
-            where: { id_community },
-            include: [
-                {
-                    attributes: ['name', 'blocker'],
-                    model: this.db.state,
-                    as: 'state',
-                    where: {
-                        active: true
-                    }
-                }
-            ]
-        });
-
-        this.response({
-            res,
-            payload: [data]
-        });
-
-
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-    }
-}
-
-
-controller.getPublicEventsByCommunity = async function (req, res) {
-    const { id_community } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.event.findAll({
-            limit,
-            offset,
-            attributes: ['id', 'name', 'description', 'type', 'online', 'no_cfp', 'url_code', 'id_webside', 'is_private', 'start', 'end', 'active', 'prom_rate', 'id_repository', 'image', 'host'],
-            order,
-            where: { id_community, is_private: false },
-            include: [
-                {
-                    attributes: ['name', 'blocker'],
-                    model: this.db.state,
-                    as: 'state',
-                    where: {
-                        active: true
-                    }
-                }
-            ]
-        });
-
-        this.response({
-            res,
-            payload: [data]
-        });
-
-
-    } catch (error) {
-        console.log(error);
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-    }
-}
-
-
-controller.getSpeakersByEvent = async function (req, res) {
-    const { id_event } = req.params;
-    const { limit, offset, order } = req.body;
-
-    try {
-        const data = await this.db.speaker.findAll({
-            limit,
-            offset,
-            attributes: ['id'],
-            order,
-            where: { id_event },
-            include: [{
-                attributes: ['name', 'last_name', 'profile_photo','username', 'organization', 'email', 'country_code', 'phone', 'country', 'city', 'address','zip_code'],
-                model: this.db.user,
-                as: 'user'
-            },
-            {
-                attributes: ['name', 'description'],
-                model: this.db.session,
-                as: 'session',
-            },
-            {
-                attributes: ['name', 'blocker'],
-                model: this.db.state,
-                as: 'state',
-                where: {
-                    active: true
-                }
-            }
-
-            ]
-        });
-
-        this.response({
-            res,
-            payload: [data]
-        });
-
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-
-    }
-
-}
-
-controller.getTicketsByEvent = async function (req, res) {
-    const { id_event } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.ticket.findAll({
-            limit,
-            offset,
-            attributes: ['id', 'name', 'description', 'base_price', 'quantity_total', 'quantity_current'],
-            order,
-            where: { id_event },
-            include: [
-                {
-                    attributes: ['name', 'blocker'],
-                    model: this.db.state,
-                    as: 'state',
-                    where: {
-                        active: true
-                    }
-                },
-                {
-                    attributes: ['name'],
-                    model: this.db.coupon,
-                    as: 'coupon'
-                }
-            ]
-        });
-
-        this.response({
-            res,
-            payload: [data]
-        });
-
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-
-    }
-}
-
-controller.getAttendeesByEvent = async function (req, res) {
-    const { id_event } = req.params;
-    const { limit, offset, order } = req.body;
-    try {
-        const data = await this.db.attendee.findAll({
-            limit,
-            offset,
-            attributes: ['id', 'id_user', 'name','email', 'is_present', 'rate'],
-            order,
-            where: {
-                id_event
-            },
-            include: [
-                {
-                    attributes: ['name', 'blocker'],
-                    model: this.db.state,
-                    as: 'state',
-                    where: {
-                        active: true
-                    }
-                },
-                {
-                    attributes: ['name', 'last_name', 'username', 'profile_photo', 'address', 'email', 'phone'],
-                    model: this.db.user,
-                    as: 'user'
-                },
-                {
-                    attributes: ['uuid', 'deactivated'],
-                    model: this.db.ticket_sale_detail,
-                    as: 'ticket_sale_detail',
-                    include: [
-                        {
-                            attributes: ['name_ticket'],
-                            model: this.db.ticket_sale,
-                            as: 'ticket_sale',
-                        }
-                    ]
-                }
-            ]
-        });
-
-        this.response({
-            res,
-            payload: [data]
-        });
-
-    } catch (error) {
-        this.response({
-            res,
-            success: false,
-            statusCode: 500,
-            message: 'something went wrong',
-        });
-
-    }
-}*/
 
 module.exports = controller;
