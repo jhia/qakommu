@@ -8,6 +8,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
+RUN npm install -g sequelize-cli
+RUN npm install -g nodemon
+
 ENV NODE_ENV=development
 
 USER node
