@@ -51,13 +51,12 @@ exports.signUpEmail = async function (req, res) {
 
         await authorize.save()
 
-        return res.send({
-            ...token,
-            refreshToken
-        })
+        res._res.cookie('Authentication', refreshToken, { httpOnly: true })
 
-    } catch ({ message }) {
-        process.stdout.write(message)
+        return res.send(token)
+
+    } catch (err) {
+        console.log(err)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }

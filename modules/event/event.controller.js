@@ -27,7 +27,9 @@ controller.getFunc = async function (req, res) {
         });
 
         await Promise.all(events.map((e, i) => Archive.route(e.image)
-            .then((route) => { events[i].image = route })))
+            .then((route) => { events[i].image = route })
+            .catch(err => ({}))
+        ));
         res.send(events);
     } catch({ message }) {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -49,7 +51,9 @@ controller.getEventsByCommunity = async function (req, res) {
         });
 
         await Promise.all(events.map((e, i) => Archive.route(e.image)
-            .then((route) => { events[i].image = route })))
+            .then((route) => { events[i].image = route })
+            .catch(err => ({}))
+        ));
         res.send(events);
     } catch({ message }) {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -64,7 +68,11 @@ controller.getOne = async function(req, res) {
         const event = await this.model.findByPk(eventId, {
             attributes: validAttributes
         });
-        event.image = await Archive.route(event.image)
+        // no images
+        try {
+            event.image = await Archive.route(event.image)
+        } catch {}
+
         return res.send(event);
     } catch {
         const connectionError = new ResponseError(503, 'Try again later');

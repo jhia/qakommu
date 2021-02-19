@@ -6,19 +6,18 @@ let refreshToken;
 describe('Authorization Flow', () => {
 
   it('Should let the user login and return a refresh token', async () => {
-    let { body } = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
+    let res = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
       email: 'p_ellett87@kommu.com',
       password: '123'
-    });
-    expect(typeof body.payload.refreshToken).toBe(typeof '')
-
-    refreshToken = body.payload.refreshToken;
+    })
+    expect(res.headers).toHaveProperty('set-cookie')
+    let auth = res.headers['set-cookie'].find(cookie => /^Authentication/i.test(cookie))
+    expect(auth).toBeDefined();
+    refreshToken = auth;
   });
 
   it('User requests an access token using their refresh token', async () => {
-    let res = await request(app).post('/authorize').set({
-      'Authentication': refreshToken
-    })
+    let res = await request(app).post('/authorize').set('Cookie', refreshToken).send()
 
     expect(res.statusCode).toBe(200)
     expect(res.body.payload.hasOwnProperty('accessToken')).toBe(true)
@@ -30,7 +29,7 @@ describe('Authorization Flow', () => {
   });
 
   it('User cannot access to API with their refresh token', async () => {
-    let res = await request(app).get('/api/user').set({ 'Authorization': `Bearer ${refreshToken}`})
+    let res = await request(app).get('/api/user').set({ 'Authorization': `Bearer ${refreshToken.split(';')[0]}`})
 
     expect(res.statusCode).toBe(401)
   });
@@ -41,9 +40,7 @@ describe('Authorization Flow', () => {
   });
   
   it('User cannot request an access token with another access token or any other thing', async () => {
-    let res = await request(app).post('/authorize').set({
-      'Authentication': '1234'
-    })
+    let res = await request(app).post('/authorize').set('Cookie', 'Authentication=K1234')
 
     expect(res.statusCode).toBe(401)
   });
