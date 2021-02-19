@@ -13,6 +13,8 @@ const controller = new Base('room');
 *this.model -> Current module model
 */
 
+const validAttributes = ['id', 'name', 'description', 'active', 'eventId', 'isOnline', 'maxCapacity', 'name', 'urlClassroom'];
+
 controller.getRoomsByEvent = async function (req, res) {
 	const { limit, offset } = req.query;
 
@@ -21,6 +23,7 @@ controller.getRoomsByEvent = async function (req, res) {
 			where: {
 				eventId: req.event.id
 			},
+			attributes: validAttributes,
 			limit,
 			offset
 		})
@@ -32,15 +35,12 @@ controller.getRoomsByEvent = async function (req, res) {
 }
 
 controller.getOne = async function (req, res) {
-	const { id } = req.params;
-
-	if (isNaN(id)) {
-		let idError = new ResponseError(400, 'Room id is not valid')
-		return res.send(idError)
-	}
+	const { roomId } = req.params;
 
 	try {
-		const room = await this.model.findByPk(id)
+		const room = await this.model.findByPk(roomId, {
+			attributes: validAttributes
+		})
 		return res.send(room)
 	} catch {
 		const connectionError = new ResponseError(503, 'Try again later')
@@ -57,7 +57,6 @@ controller.postFunc = async function (req, res) {
 		maxCapacity,
 		urlClassroom, // required if isOnline is true
 		active,
-		event // required
 	} = req.body;
 
 	const data = {
@@ -65,7 +64,7 @@ controller.postFunc = async function (req, res) {
 		description,
 		isOnline: Boolean(isOnline),
 		active,
-		eventId: event
+		eventId: req.event.id
 	};
 
 	const validationError = new ResponseError(400)
@@ -105,14 +104,6 @@ controller.postFunc = async function (req, res) {
 		}
 	}
 
-	try {
-		if(!(await this.db.event.exists(event))) {
-			throw new Error('Event does not exist')
-		}
-	} catch({message}) {
-		validationError.addContext('event', message)
-	}
-
 	if(validationError.hasContext()) {
 		return res.send(validationError)
 	}
@@ -128,12 +119,7 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-	const { id } = req.params;
-
-	if(isNaN(id)) {
-		let idError = new ResponseError(400, 'Room id is not valid')
-		return res.send(idError)
-	}
+	const { roomId } = req.params;
 
 	const data = {};
 
@@ -173,12 +159,12 @@ controller.putFunc = async function (req, res) {
 		}
 	}
 
-	if(req.body.hasOwnPropery('isOnline')) {
-		data.isOnline = req.body.isOnline
+	if(req.body.hasOwnProperty('isOnline')) {
+		data.isOnline = !!req.body.isOnline
 	}
 
-	if(req.body.hasOwnPropery('active')) {
-		data.active = req.body.active
+	if(req.body.hasOwnProperty('active')) {
+		data.active = !!req.body.active
 	}
 
 	if(req.body.isOnline && req.body.urlClassroom) {
@@ -193,7 +179,7 @@ controller.putFunc = async function (req, res) {
 	}
 	try {
 		let result = await this.update({
-				id,
+				id: roomId,
 				data
 		});
 		return res.send(result)
@@ -210,14 +196,10 @@ controller.putFunc = async function (req, res) {
 
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
+	const { roomId } = req.params;
 
-	if(isNaN(id)) {
-		const validationError = new ResponseError(400, 'Room id is not valid')
-		return res.send(validationError)
-	}
 	try {
-		let deleterows = await this.delete({ id });
+		let deleterows = await this.delete(roomId);
 		return res.send(deleterows)
 	} catch (error) {
 		const connectionError = new ResponseError(503, 'Try again later')

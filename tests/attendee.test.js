@@ -131,8 +131,8 @@ describe('Attendees API', () => {
 
   })
 
-  describe('Delete events', () => {
-    it('should delete event', async () => {
+  describe('Delete attendee', () => {
+    it('should delete attendee', async () => {
       const res = await agent.delete(`/api/attendee`).set(headers)
       .send({
         id: editing.id

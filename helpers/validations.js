@@ -23,9 +23,15 @@ exports.validateDate = (value) => {
 }
 
 exports.validateName = (value) => {
+	if(!value) {
+		throw new Error('Name is required');
+	}
 	return typeof value === typeof '' && value.length >= 3;
 }
 
 exports.validateDescription = (value) => {
+	if(!value) {
+		throw new Error('Description is required');
+	}
 	return typeof value === typeof '';
 }
