@@ -1,7 +1,7 @@
 FROM node:12.13.0-slim
 
 RUN apt-get update \
-	&& apt-get install -y make g++ python \
+	&& apt-get install -y make g++ python git \
 	&& mkdir -p /app/node_modules
 
 WORKDIR /app
