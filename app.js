@@ -10,10 +10,12 @@ const fileUpload = require('express-fileupload');
 const app = express();
 //MIDDLEWARE
 app.use(logger('dev'));
+
 //Enable some CORS Requests
 const allowed = [
 	  'http://localhost:3000',
-	  'https://localhost:3000'
+	  'https://localhost:3000',
+          'https://backoffice-front.vercel.app'
 ];
 app.use(cors({
 	origin: function(origin, cb) {
