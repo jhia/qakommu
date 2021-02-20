@@ -18,6 +18,7 @@ module.exports = {
   production: {
     use_env_variable: "DATABASE_URL",
     dialect: 'postgres',
+    logging: false,
     ssl: {
       rejectUnauthorized: false,
       key: cKey,
@@ -26,13 +27,11 @@ module.exports = {
     }
   },
   test: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    username: process.env.DB_USER,
+    use_env_variable: "DATABASE_TEST_URL",
     dialect: 'postgres',
-    logging: false
+    ssl: {
+      rejectUnauthorized: false
+    },
   },
   development: {
     host: process.env.DB_HOST,
