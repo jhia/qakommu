@@ -37,7 +37,7 @@ router.put('/:boothTypeId', boothTypeVerification, (req, res) => {
 
 router.delete('/', (req, res) => {
   //HTTP delete route
-  controller.deleteFunc(req, new Response(res));
+  controller.deleteMultiple(req, new Response(res));
 });
 
 module.exports = router;

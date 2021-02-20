@@ -2,11 +2,11 @@ const { boothType:BoothType } = require('../models')
 const { Response, ResponseError } = require('../http')
 
 exports.boothTypeVerification = async function(req, res, next) {
-  const notFoundError = new ResponseError(404, 'Booth does not exist')
+  const notFoundError = new ResponseError(404, 'Booth type does not exist')
   const { boothTypeId } = req.params;
 
   if(isNaN(boothTypeId)) {
-    const validationError = new ResponseError(400, 'Booth id is not valid')
+    const validationError = new ResponseError(400, 'Booth type id is not valid')
     return Response.from(res).send(validationError)
   }
   
