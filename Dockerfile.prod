@@ -1,0 +1,23 @@
+FROM node:12.13.0-alpine
+
+RUN apk update \
+        && apk add make g++ python \
+        && mkdir -p /app/node_modules
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install -g sequelize-cli
+RUN npm install -g nodemon
+
+ENV NODE_ENV=production
+
+RUN npm install
+
+COPY . ./
+
+EXPOSE 8000
+
+CMD ["npm","run","start"]
+
