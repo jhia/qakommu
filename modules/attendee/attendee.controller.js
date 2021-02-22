@@ -26,7 +26,12 @@ controller.getFunc = async function (req, res) {
             limit,
             offset,
             attributes: validAttributes,
-            where: { eventId : req.event.id }
+            where: { eventId : req.event.id },
+            include: [{
+                model: this.db.user,
+                attributes: ['profilePhoto'],
+                as: 'user'
+            }]
         });
 
         res.send(attendees);        

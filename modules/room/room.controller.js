@@ -63,6 +63,7 @@ controller.postFunc = async function (req, res) {
 		name,
 		description,
 		isOnline: Boolean(isOnline),
+		maxCapacity,
 		active,
 		eventId: req.event.id
 	};
@@ -162,6 +163,7 @@ controller.putFunc = async function (req, res) {
 	if(req.body.hasOwnProperty('isOnline')) {
 		data.isOnline = !!req.body.isOnline
 	}
+	
 
 	if(req.body.hasOwnProperty('active')) {
 		data.active = !!req.body.active
@@ -172,11 +174,16 @@ controller.putFunc = async function (req, res) {
 			if (!this.model.validateUrlClassroom(req.body.urlClassroom)) {
 				throw new Error('URL for classroom is not valid')
 			}
-			data.urlClassroom = urlClassroom
+			data.urlClassroom = req.body.urlClassroom
 		} catch ({ message }) {
 			validationError.addContext('urlClassroom', message)
 		}
 	}
+
+	if(!data.isOnline){
+		data.urlClassroom = null
+	}
+
 	try {
 		let result = await this.update({
 				id: roomId,
