@@ -63,6 +63,7 @@ controller.postFunc = async function (req, res) {
 		name,
 		description,
 		isOnline: Boolean(isOnline),
+		maxCapacity,
 		active,
 		eventId: req.event.id
 	};
