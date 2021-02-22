@@ -125,9 +125,6 @@ controller.putFunc = async function (req, res) {
 	const data = {};
 
 	const validationError = new ResponseError(400)
-	console.log("----------------")
-	console.log(req.body.urlClassroom)
-	console.log("----------------")
 
 	if(req.body.name) {
 		try {
@@ -166,6 +163,7 @@ controller.putFunc = async function (req, res) {
 	if(req.body.hasOwnProperty('isOnline')) {
 		data.isOnline = !!req.body.isOnline
 	}
+	
 
 	if(req.body.hasOwnProperty('active')) {
 		data.active = !!req.body.active
@@ -182,6 +180,9 @@ controller.putFunc = async function (req, res) {
 		}
 	}
 
+	if(!data.isOnline){
+		data.urlClassroom = null
+	}
 
 	try {
 		let result = await this.update({
