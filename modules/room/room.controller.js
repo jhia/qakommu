@@ -125,6 +125,9 @@ controller.putFunc = async function (req, res) {
 	const data = {};
 
 	const validationError = new ResponseError(400)
+	console.log("----------------")
+	console.log(req.body.urlClassroom)
+	console.log("----------------")
 
 	if(req.body.name) {
 		try {
@@ -173,11 +176,13 @@ controller.putFunc = async function (req, res) {
 			if (!this.model.validateUrlClassroom(req.body.urlClassroom)) {
 				throw new Error('URL for classroom is not valid')
 			}
-			data.urlClassroom = urlClassroom
+			data.urlClassroom = req.body.urlClassroom
 		} catch ({ message }) {
 			validationError.addContext('urlClassroom', message)
 		}
 	}
+
+
 	try {
 		let result = await this.update({
 				id: roomId,
