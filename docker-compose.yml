@@ -13,19 +13,6 @@ services:
       - "$HOME/.kommu-data:/var/lib/postgresql/data"
     ports:
       - 5432:5432
-  # test database
-  kommu_test_db:
-    image: postgres:11-alpine
-    container_name: kommu_test_db
-    environment:
-      POSTGRES_DB: kommu_test
-      POSTGRES_PASSWORD: kommu_test
-      POSTGRES_USER: kommu_test
-    networks: [kommu]
-    volumes:
-      - "$HOME/.kommu-test-data:/var/lib/postgresql/data"
-    ports:
-      - 5435:5432
 
   # development
   kommu:
@@ -41,6 +28,7 @@ services:
       DEBUG_PORT: 9228
       KOMMU_DB_PORT: 5432
       CLOUDINARY_URL: "${CLOUDINARY_URL}"
+      DATABASE_TEST_URL: "${DATABASE_TEST_URL}"
     container_name: kommu
     build:
       context: .
@@ -55,33 +43,6 @@ services:
       - 9228:9228
     depends_on:
       - kommu_db
-    networks: [kommu]
-  # test
-  test:
-    image: kommu_test:1.2
-    environment:
-      #DB CONFIGURATION
-      DB_HOST: kommu_test_db
-      DB_NAME: kommu_test
-      DB_PASSWORD: kommu_test
-      DB_USER: kommu_test
-      NODE_ENV: test
-      PORT: 9000
-      KOMMU_DB_PORT: 5435
-      CLOUDINARY_URL: "${CLOUDINARY_URL}"
-    container_name: test
-    build:
-      context: .
-      dockerfile: ./Dockerfile.test
-    volumes:
-      - type: bind
-        source: .
-        target: /app
-      - /app/node_modules
-    ports:
-      - 9000:9000
-    depends_on:
-      - kommu_test_db
     networks: [kommu]
 networks:
   kommu:

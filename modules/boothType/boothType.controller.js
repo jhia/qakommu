@@ -3,9 +3,9 @@
 const Base = require('../../helpers/base.controller');
 const { ResponseError } = require('../../http');
 
-const controller = new Base('typeBooth');
+const controller = new Base('boothType');
 
-const validAttributes = ['id', 'name', 'description', 'cost', 'sizeWidth', 'sizeHeight', 'active'];
+const validAttributes = ['id', 'name', 'description', 'cost', 'width', 'height', 'active', 'communityId'];
 
 controller.getTypesFromCommunity = async function (req, res) {
     const { limit, offset } = req.query;
@@ -22,7 +22,7 @@ controller.getTypesFromCommunity = async function (req, res) {
 
         return res.send(types);
     } catch (err) {
-        console.log(err.message)
+        console.log(err.message);
         const connectionError = new ResponseError(503, 'Try again later');
         return res.send(connectionError);
     }
@@ -125,15 +125,6 @@ controller.postFunc = async function (req, res) {
         validationError.addContext('height', message)
     }
 
-    // community
-    try {
-        if (!(await this.db.community.exists(community))) {
-            throw new Error('This community does not exist')
-        }
-    } catch ({ message }) {
-        validationError.addContext('community', message)
-    }
-
     if(validationError.hasContext()) {
         return res.send(validationError)
     }
@@ -150,12 +141,6 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Booth type id is not valid');
-        return res.send(idError)
-    }
 
     let updateData = {};
 
@@ -221,35 +206,22 @@ controller.putFunc = async function (req, res) {
         }
     }
 
+    if(req.body.hasOwnProperty('active')) {
+        updateData.active = !!req.body.active;
+    }
+
     if(validationError.hasContext()) {
         return res.send(validationError);
     }
 
     try {
         let result = await this.update({
-            id,
+            id: req.boothType.id,
             data: updateData
         });
         return res.send(result);
     } catch (error) {
         console.warn(error.message)
-        const connectionError = new ResponseError(503, 'Try again later')
-        return res.send(connectionError)
-    }
-}
-
-controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Booth type id is not valid');
-        return res.send(idError)
-    }
-
-    try {
-        let rows = await this.delete({ id });
-        return res.send(rows);
-    } catch (error) {
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }

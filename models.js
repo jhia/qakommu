@@ -20,7 +20,7 @@ if(config.use_env_variable) {
   );
 }
 
-sequelize.authenticate().catch(() => {
+sequelize.authenticate().catch(err => {
   if(env !== 'production') {
     throw err; // connection error, please reset connection
   }

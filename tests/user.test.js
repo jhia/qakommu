@@ -1,16 +1,15 @@
+const http = require('http')
 const request = require('supertest')
-const app = require('../app');
-
-
+const app = require('../app')
 let accessToken = '';
 let headers = {};
 
-let editingUser = null;
+let editing = null;
 
 let server, agent;
 
 beforeEach((done) => {
-    server = app.listen(process.env.PORT || 9000, (err) => {
+    server = http.createServer(app).listen((err) => {
       if (err) return done(err);
 
        agent = request.agent(server); // since the application is already listening, it should use the allocated port
@@ -23,10 +22,8 @@ afterEach((done) => {
 });
 
 beforeAll(async () => {
-  let res = await request(app).post('/auth').set({ 'Content-Type': 'application/json' }).send({
-    email: 'p_ellett87@kommu.com',
-    password: '123'
-  });
+  let token = 'Authentication=2hKy3LWUVZjjcI2ig1Tp3Qc1WMBYJrURyCPsKBlBIQsQlJWPs5HMrTYMS4ZR2Yl9Za4KdvZrq84bBrGc7upHDKt1Uh3jWbd8fpyCXIfOSSDUuYBWXljESey5KFcHFxKgazRzFTgTRBq9rwl9qhN4RBY43vWDnhNGEgOhONbm4D2DfsRVkyKMlYdfsCIDnyTHx7elYnpJb4aL6a1lAHLF3vYcobhRdUs0gXiW5ffldjRAxLXm3fdt9kB2cHaOW3X8; Path=/';
+  let res = await request(app).post('/authorize').set('Cookie', token).send({});
 
   if(res.statusCode !== 200) {
     console.log(res.body.message)
@@ -40,7 +37,6 @@ beforeAll(async () => {
     'Authorization': 'Bearer ' + accessToken
   }
 })
-
 
 describe('User API', () => {
 
@@ -167,9 +163,7 @@ describe('User API', () => {
 
     it('should show error if trying to edit another user', async () => {
       const res = await agent.put('/api/user/2').set(headers)
-      expect(res.statusCode).toEqual(401)
-      expect(res.body.successful).toEqual(false)
-      expect(res.body.message).toBe('Unauthorized')
+      expect(res.statusCode).toEqual(404)
     })
 
     it('should not update password if trying to edit with the /api/user post', async () => {

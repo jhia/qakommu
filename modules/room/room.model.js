@@ -1,5 +1,7 @@
 'use strict'
 
+const { validateName, validateDescription } = require("../../helpers/validations");
+
 module.exports = (sequelize, DataTypes) => {
     const Room = sequelize.define('room', {
         name: {
@@ -49,6 +51,21 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_room',
             as: 'sessions'
         });
+    }
+
+    Room.validateName = validateName;
+
+    Room.validateDescription = validateDescription;
+
+    Room.validateMaxCapacity = function (value) {
+        return !isNaN(value) && value >= 0;
+    }
+
+    Room.validateUrlClassroom = function (value) {
+        if(!value) {
+            throw new Error('URL for classroom is required')
+        }
+        return typeof value === typeof '' && value.length > 0;
     }
 
     return Room;

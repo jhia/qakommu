@@ -12,7 +12,7 @@ exports.eventVerification = async function(req, res, next) {
   
   try {
     const event = await Event.findByPk(eventId, {
-      attributes: ['id']
+      attributes: ['id', 'image']
     })
     if(!event) {
       return Response.from(res).send(notFoundError)

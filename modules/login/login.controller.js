@@ -51,15 +51,38 @@ exports.signUpEmail = async function (req, res) {
 
         await authorize.save()
 
-        return res.send({
-            ...token,
-            refreshToken
-        })
+        res._res.cookie('Authentication', refreshToken, { httpOnly: true })
 
-    } catch ({ message }) {
-        process.stdout.write(message)
+        return res.send(token)
+
+    } catch (err) {
+        console.log(err)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }
 
+}
+
+exports.logout = async function(req, res) {
+    let auth = req.cookies.Authentication || req.cookies.authentication;
+
+    if(!auth) {
+        const noTokenProvided = new ResponseError(400, 'No authentication')
+        return res.send(noTokenProvided);
+    }
+
+    try {
+        await Authorize.destroy({
+            where: {
+                refreshToken: auth
+            }
+        })
+        res._res.clearCookie(req.cookies.hasOwnProperty('authentication') ? 'authentication' : 'Authentication')
+        res.statusCode = 200;
+        return res.send();
+    } catch (err) {
+        console.log(err.message)
+        const connectionError = new ResponseError(503, 'Try again later')
+        return res.send(connectionError)
+    }
 }

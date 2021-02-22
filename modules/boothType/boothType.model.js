@@ -1,5 +1,7 @@
 'use strict'
 
+const { validateName, validateDescription } = require("../../helpers/validations");
+
 module.exports = (sequelize, DataTypes) => {
     const BoothType = sequelize.define('boothType', {
         name: {
@@ -66,19 +68,9 @@ module.exports = (sequelize, DataTypes) => {
 		return !!type;
 	}
 
-    BoothType.validateName = function (value) {
-        if(!name) {
-            throw new Error('Name is required');
-        }
-        return typeof value === typeof '' && value.length > 0;
-    }
+    BoothType.validateName = validateName;
 
-    BoothType.validateDescription = function (value) {
-        if(!value) {
-            throw new Error('Description is required');
-        }
-        return typeof value === typeof '' && value.length > 0;
-    }
+    BoothType.validateDescription = validateDescription;
 
     BoothType.validateCost = function (value) {
         if(!value) {

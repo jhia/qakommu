@@ -10,8 +10,26 @@ const fileUpload = require('express-fileupload');
 const app = express();
 //MIDDLEWARE
 app.use(logger('dev'));
-//Enable All CORS Requests
-app.use(cors());
+
+//Enable some CORS Requests
+const allowed = [
+	  'http://localhost:3000',
+	  'https://localhost:3000',
+          'https://backoffice-front.vercel.app'
+];
+app.use(cors({
+	origin: function(origin, cb) {
+		if(!origin) return cb(null, true);
+		if(allowed.indexOf(origin) === -1) {
+			const msg = 'The CORS policy for this site does not ' +
+	                'allow access from the specified Origin.';
+			return cb(new Error(msg), false);
+		}
+		return cb(null, true);
+	},
+    credentials: true,
+    exposedHeaders: ['set-cookies', 'set-cookie', 'Authorization', 'Set-Cookie']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

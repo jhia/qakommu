@@ -6,7 +6,7 @@ const { ResponseError } = require('../../http');
 const controller = new Base('authorize');
 
 controller.createAccessToken = async function (req, res) {
-  const refreshToken = req.headers.Authentication || req.headers.authentication;
+  const refreshToken = req.cookies.Authentication || req.cookies.authentication;
 
   if (!refreshToken) {
     let validationError = new ResponseError(400, 'No authentication provided')

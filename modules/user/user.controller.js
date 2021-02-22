@@ -481,7 +481,7 @@ controller.putFunc = async function (req, res) {
 	try {
 		let updatePicture = false;
 		let previousAvatarName = null;
-		if(req.files.avatar && req.files.avatar !== 'not-image') {
+		if(req.files && req.files.avatar && req.files.avatar !== 'not-image') {
 			let avatar = new Archive('profile_photo', req.files.avatar);
 			await avatar.upload();
 			userData.profilePhoto = avatar.id;

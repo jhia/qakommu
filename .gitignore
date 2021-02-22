@@ -15,3 +15,4 @@ data
 app.zip
 docs
 .env
+.updater
