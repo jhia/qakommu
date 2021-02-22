@@ -174,10 +174,11 @@ controller.putFunc = async function (req, res) {
         }
     }
 
+
     if(req.body.contributionValue) {
         // contribution value
         try {
-            if (!this.model.validateContributionValue(req.body.contribution)) {
+            if (!this.model.validateContributionValue(req.body.contributionValue)) {
                 throw new Error('Contribution value is not valid')
             }
             data.contributionValue = req.body.contributionValue

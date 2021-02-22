@@ -48,9 +48,34 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    SponsorType.validateContributionValue = function (value) {
-        return !isNaN(value) && value >= 0
+    SponsorType.validateName = function(value){
+        if(!value){
+            throw new Error('Name is required')
+        }
+        return typeof value === typeof '' && value.length >= 3;
     }
+
+    SponsorType.validateDescription = function(value){
+        if(!value){
+            throw new Error('Decription is required')
+        }
+        return typeof value === typeof '' && value.length >= 3;
+    }
+
+    SponsorType.validateContributionValue = function (value) {
+        if(!value){
+            throw new Error('Contribution value is required')
+        }
+        return !isNaN(value) && value > 0
+    }
+
+    SponsorType.validateDisplayNumber = function(value){
+        if(!value){
+            throw new Error('Display number is required')
+        }
+        return !isNaN(value) && value > 0
+    }
+
 
     return SponsorType;
 }
