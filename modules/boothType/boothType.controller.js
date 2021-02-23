@@ -173,7 +173,7 @@ controller.putFunc = async function (req, res) {
     if(req.body.cost) {
         // cost
         try {
-            if (!this.model.validateCost(name)) {
+            if (!this.model.validateCost(req.body.cost)) {
                 throw new Error('Cost is not valid')
             }
             updateData.cost = req.body.cost;

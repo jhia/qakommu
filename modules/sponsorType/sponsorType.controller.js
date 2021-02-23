@@ -12,13 +12,19 @@ const controller = new Base('sponsorType');
 *this.db -> All models
 *this.model -> Current module model
 */
-
+const validAttributes = ['id', 'name', 'description', 'contributionValue', 'displayNumber', 'active', 'communityId'];
+        
 controller.getTypesByCommunity = async function (req, res) {
+    const { limit, offset } = req.query;
     try {
         const data = await this.model.findAll({
             where: {
                 communityId: req.community.id
-            }
+            },
+            limit,
+            offset,
+            attributes: validAttributes,
+            order: [['id', 'DESC']]
         })
         return res.send(data)
     } catch {
