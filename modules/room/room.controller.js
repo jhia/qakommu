@@ -13,7 +13,7 @@ const controller = new Base('room');
 *this.model -> Current module model
 */
 
-const validAttributes = ['id', 'name', 'description', 'active', 'eventId', 'isOnline', 'maxCapacity', 'name', 'urlClassroom'];
+const validAttributes = ['id', 'name', 'description', 'active', 'eventId', 'isOnline', 'maxCapacity', 'urlClassroom'];
 
 controller.getRoomsByEvent = async function (req, res) {
 	const { limit, offset } = req.query;
@@ -114,6 +114,7 @@ controller.postFunc = async function (req, res) {
 		res.statusCode = 201;
 		return res.send(newdate)
 	} catch (error) {
+		console.log(error)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}
@@ -127,6 +128,7 @@ controller.putFunc = async function (req, res) {
 	const validationError = new ResponseError(400)
 
 	if(req.body.name) {
+		
 		try {
 			if (!this.model.validateName(req.body.name)) {
 				throw new Error('Name is not valid')
@@ -149,7 +151,8 @@ controller.putFunc = async function (req, res) {
 		}
 	}
 
-	if(req.body.maxCapacity) {
+	
+	if(req.body.hasOwnProperty('maxCapacity')) {
 		try {
 			if (!this.model.validateMaxCapacity(req.body.maxCapacity)) {
 				throw new Error('Capacity is not valid')
@@ -184,6 +187,10 @@ controller.putFunc = async function (req, res) {
 		data.urlClassroom = null
 	}
 
+	if(validationError.hasContext()) {
+		return res.send(validationError)
+	}
+
 	try {
 		let result = await this.update({
 				id: roomId,
@@ -191,12 +198,9 @@ controller.putFunc = async function (req, res) {
 		});
 		return res.send(result)
 	} catch (error) {
-		this.response({
-			res,
-			success: false,
-			statusCode: 500,
-			message: 'something went wrong'
-		});
+		
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
 	}
 }
 
