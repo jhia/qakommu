@@ -3,9 +3,11 @@
 const router = require('express').Router();
 const attendeeController = require('./attendee.controller');
 const Response = require('../../http/response')
-const { eventVerification } = require('../../middleware/event');
-const { attendeeVerification } = require('../../middleware/attendee');
-const { ticketSaleDetailUUIDVerification } = require('../../middleware/ticket');
+const {
+  attendeeVerification,
+  eventVerification,
+  ticketSaleDetailUUIDVerification
+} = require('../../middleware/verification');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module

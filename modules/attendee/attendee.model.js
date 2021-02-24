@@ -1,8 +1,6 @@
 'use strict'
 
-
-const { sequelize } = require("../../models");
-const { validateEmail } = require('../../helpers/validations')
+const { validateEmail, validateName } = require('../../helpers/validations')
 
 module.exports = (sequelize, DataTypes) => {
     const Attendee = sequelize.define('attendee', {
@@ -107,31 +105,11 @@ module.exports = (sequelize, DataTypes) => {
     }
 
 
-    Attendee.validateFirstName = function (value) {
-        if (!value) {
-            throw new Error('First name is required')
-        }
-        return typeof value === typeof '' &&
-        !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
-    }
+    Attendee.validateFirstName = validateName;
 
-    Attendee.validateLastName = function (value) {
-        if (!value) {
-            throw new Error('Last name is required')
-        }
-        return typeof value === typeof '' &&
-            !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
-    }
+    Attendee.validateLastName = validateName;
 
-    Attendee.validateEmail = function (value) {
-        if (!value) {
-            throw new Error('Email is required')
-        }
-        if (!validateEmail(value)) {
-            throw new Error('Email has unvalid characters')
-        }
-        return typeof value === typeof '' && value.length > 5;
-    }
+    Attendee.validateEmail = validateEmail;
 
     return Attendee;
 }

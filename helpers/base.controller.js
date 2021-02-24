@@ -16,7 +16,7 @@ function base(name) {
 base.prototype.getFunc = function (req, res) {
 	Response.from(res).send();
 }
-
+/* DO NOT CREATE CRUD AUTOMATICALLY
 base.prototype.postFunc = async function (req, res) {
 	const id = await this.insert(req.body);
 	if (id) {
@@ -33,48 +33,60 @@ base.prototype.putFunc = async function (req, res) {
 
 base.prototype.deleteFunc = function (req, res) {
 	res.status('200').send(`GET to ${this.moduleName}`);
-}
+}*/
 
 base.prototype.update = async function (data) {
 	const { id } = data;
 	if (!id) throw new Error("id is needed");
 
 	const fillables = Object.keys(data.data);
+
 	const result = await this.model.update(data.data,
 		{
 			fields: fillables,
 			where: {
 				id
-			}
-		});
+			},
+			returning: true
+		}
+	);
 	if (!result[0]) {
 		throw new Error("I cannot perform the action successfully");
 	};
 
-	if (data.return_data) {
-		return data.data;
-	};
+	if (data.returning) {
+		let r = {};
+		for(const key of data.returning) {
+			r[key] = result[1][0][key];
+		}
+		return r;
+	}
 	return true;
 }
 
-base.prototype.insert = async function (data) {
+base.prototype.insert = async function (data, options = {}) {
+	let fields = Object.keys(data);
 	const res = await this.db[this.moduleName].create(data, {
-		retuning: true,
-		fields: Object.keys(data)
+		returning: options.returning,
+		fields
 	});
-	return res;
+
+	if (options.returning) {
+		let r = {};
+		for(const key of options.returning) {
+			r[key] = res[key];
+		}
+		return r;
+	}
+	return res.id;
 }
 
 base.prototype.getData = async function (data) {
-	const { id, limit, offset, order, attributes } = data;
-	
+	const { id, limit, offset, order, attributes, where } = data;
+
 	if (id) {
-		const one = await this.model.findOne({
-			where: {
-				id
-			},
-			attributes,
-			order
+		const one = await this.model.findByPk(id, {
+			attributes
 		});
 		return one;
 	} else {
@@ -82,7 +94,8 @@ base.prototype.getData = async function (data) {
 			limit,
 			offset,
 			attributes,
-			order
+			order,
+			where
 		});
 		return list;
 	}

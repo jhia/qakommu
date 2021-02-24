@@ -44,35 +44,39 @@ describe('Booth Type API', () => {
   describe('Get booth types', () => {
     it('/api/boothType/community/{id} Should show all available booths', async () => {
       const res = await agent.get('/api/boothType/community/KOMMMU').set(headers)
-      expect(res.statusCode).toEqual(200)
-      expect(res.body.successful).toEqual(true)
-      expect(res.body).toHaveProperty('payload')
+      expect(res.statusCode).toBe(200)
+      expect(res.body.successful).toBe(true)
       expect(res.body.payload.length).toBeGreaterThanOrEqual(1)
     })
   
     it('/api/boothType/{id} should show one booth', async () => {
-      const res = await agent.get('/api/boothType/1').set(headers)
-      expect(res.statusCode).toEqual(200)
-      expect(res.body.successful).toEqual(true)
-      expect(res.body).toHaveProperty('payload')
       const expectedResponse = {
-        id: 1,
-        name: "standard",
-        description: "generic size",
-        cost: 887.12,
-        width: 10,
-        height: 10,
-        active: true,
-        "communityId": 1,
+        successful: true,
+        message: 'OK',
+        payload: {
+          id: 1,
+          name: "standard",
+          description: "generic size",
+          cost: 887.12,
+          width: 10,
+          height: 10,
+          active: true,
+        }
       };
-      expect(res.body.payload).toEqual(expectedResponse)
+      const res = await agent.get('/api/boothType/1').set(headers)
+      expect(res.statusCode).toBe(200)
+      expect(res.body).toEqual(expectedResponse)
     })
 
     it('/api/boothType/{id} should show error if the id is not valid', async () => {
+      const expectedResponse = {
+        successful: false,
+        message: 'Booth type id is not valid',
+        payload: {}
+      }
       const res = await agent.get('/api/boothType/test').set(headers)
-      expect(res.statusCode).toEqual(400)
-      expect(res.body.successful).toEqual(false)
-      expect(res.body.message).toBe('Booth type id is not valid')
+      expect(res.statusCode).toBe(400)
+      expect(res.body).toEqual(expectedResponse)
     })
   })
 
@@ -85,19 +89,22 @@ describe('Booth Type API', () => {
         height: 800,
         cost: 10
       }
+
+      const expectedResponse = {
+        successful: true,
+        message: 'Created',
+        payload: {
+          ...good,
+          active: true
+        }
+      }
       
       const res = await agent.post('/api/boothType/community/KOMMMU').set(headers).send(good)
-
-      console.log(res.body)
   
       expect(res.statusCode).toEqual(201)
-      expect(res.body.successful).toEqual(true)
-      expect(res.body.message).toBe('Created')
-      expect(res.body).toHaveProperty('payload')
-      expect(res.body.payload).toHaveProperty('id')
-      expect(res.body.payload).toMatchObject(good)
-      expect(res.body.payload.active).toEqual(true)
+      expectedResponse.payload.id = res.body.payload.id;
       editing = res.body.payload;
+      expect(res.body).toEqual(expectedResponse);
     })
 
     it('should show error creating booth type if you are not the community owner', async () => {
@@ -105,20 +112,22 @@ describe('Booth Type API', () => {
     })
     
     it('should show error creating booth type for missing inputs', async () => {
-      const badEvent = {
+      const bad = {
         description: 'my new booth without name and size'
       }
-      const res = await agent.post('/api/boothType/community/KOMMMU').set(headers).send(badEvent)
-      expect(res.statusCode).toEqual(400)
-      expect(res.body.successful).toEqual(false)
-      expect(res.body.message).toBe('Bad Request')
-      expect(res.body).toHaveProperty('payload')
-      expect(res.body.payload).toEqual({
-        name: 'Name is required',
-        width: 'Width is required',
-        height: 'Height is required',
-        cost: 'Cost is required'
-      })
+      const expectedResponse = {
+        successful: false,
+        message: 'Bad Request',
+        payload: {
+          name: 'Text is required',
+          width: 'Number is required',
+          height: 'Number is required',
+          cost: 'Number is required'
+        }
+      }
+      const res = await agent.post('/api/boothType/community/KOMMMU').set(headers).send(bad)
+      expect(res.statusCode).toBe(400)
+      expect(res.body).toEqual(expectedResponse)
     })
   })
 
@@ -129,51 +138,69 @@ describe('Booth Type API', () => {
         description: 'My test2 description',
         active: false
       }
+      const expectedResponse = {
+        successful: true,
+        message: 'OK',
+        payload: {
+          ...editing,
+          ...update
+        }
+      }
   
       const res = await agent.put(`/api/boothType/${editing.id}`).set(headers).send(update)
   
-      expect(res.statusCode).toEqual(200)
-      expect(res.body.successful).toEqual(true)
-      expect(res.body.message).toBe('OK')
+      expect(res.statusCode).toBe(200)
+      expect(res.body).toEqual(expectedResponse)
   
       const res2 = await agent.get(`/api/boothType/${editing.id}`).set(headers)
   
-      expect(res2.statusCode).toEqual(200)
-      expect(res2.body.successful).toEqual(true)
-      expect(res2.body.message).toBe('OK')
-      expect(res2.body).toHaveProperty('payload')
-      expect(res2.body.payload).toMatchObject(update)
+      expect(res2.statusCode).toBe(200)
+      expect(res2.body).toEqual(expectedResponse)
     })
 
     it('should show error if the id is not valid', async () => {
+      const expectedResponse = {
+        successful: false,
+        message: 'Booth type id is not valid',
+        payload: {}
+      }
       const res = await agent.put('/api/boothType/my-testing-event').set(headers)
-      expect(res.statusCode).toEqual(400)
-      expect(res.body.successful).toEqual(false)
-      expect(res.body.message).toBe('Booth type id is not valid')
+      expect(res.statusCode).toBe(400)
+      expect(res.body).toEqual(expectedResponse)
     })
 
     it('should show error if the id does not exists', async () => {
       const res = await agent.delete('/api/boothType/200051').set(headers)
-      expect(res.statusCode).toEqual(404)
+      expect(res.statusCode).toBe(404)
+      expect(res.body).toEqual({})
     })
 
   })
 
   describe('Delete booth type', () => {
     it('should delete booths', async () => {
+      const expectedResponse = {
+        successful: true,
+        message: 'OK',
+        payload: 1
+      }
       const res = await agent.delete(`/api/boothType/`).set(headers)
       .send({
         id: editing.id
       })
       
-      expect(res.statusCode).toEqual(200)
-      expect(res.body.successful).toEqual(true)
-      expect(res.body.message).toBe('OK')
+      expect(res.statusCode).toBe(200)
+      expect(res.body).toEqual(expectedResponse)
   
+      const expectedResponse2 = {
+        successful: false,
+        message: 'Booth type does not exist',
+        payload: {}
+      }
       const res2 = await agent.get(`/api/boothType/${editing.id}`).set(headers)
   
       expect(res2.statusCode).toBe(404)
-      expect(res2.body.message).toBe('Booth type does not exist')
+      expect(res2.body).toEqual(expectedResponse2)
     })
   })
 })

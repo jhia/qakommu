@@ -1,6 +1,7 @@
 'use strict';
 
-const { userCommunity: UserCommunity } = require('../../models')
+const { userCommunity: UserCommunity } = require('../../models');
+const { validateNotEmptyString, validateText } = require('../../helpers/validations');
 
 module.exports = (sequelize, DataTypes) => {
 	const Community = sequelize.define('community', {
@@ -143,6 +144,12 @@ module.exports = (sequelize, DataTypes) => {
 
 		return communities
 	}
+
+	Community.validateName = validateNotEmptyString;
+	
+	Community.validateDescription = validateText;
+
+	Community.validatePrefix = validateNotEmptyString;
 
 	return Community;
 };

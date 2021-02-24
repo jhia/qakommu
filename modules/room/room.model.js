@@ -1,6 +1,6 @@
 'use strict'
 
-const { validateName, validateDescription } = require("../../helpers/validations");
+const { validateNotEmptyString, validateText } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const Room = sequelize.define('room', {
@@ -53,9 +53,9 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    Room.validateName = validateName;
+    Room.validateName = validateNotEmptyString;
 
-    Room.validateDescription = validateDescription;
+    Room.validateDescription = validateText;
 
     Room.validateMaxCapacity = function (value) {
         return !isNaN(value) && value >= 0;

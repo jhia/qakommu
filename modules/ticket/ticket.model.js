@@ -1,6 +1,6 @@
 'use strict'
 
-const { validateName, validateDescription, validateDate } = require('../../helpers/validations');
+const { validateNotEmptyString, validateText, validateDate, validatePositiveInteger, validateNotNegative, validateNotNegativeInteger } = require('../../helpers/validations');
 
 module.exports = (sequelize, DataTypes) => {
     const Ticket = sequelize.define('ticket', {
@@ -230,40 +230,17 @@ module.exports = (sequelize, DataTypes) => {
         return ticketCount > 0;
     }
 
-    Ticket.validateName = validateName
+    Ticket.validateName = validateNotEmptyString;
     
-    Ticket.validateDescription = validateDescription
+    Ticket.validateDescription = validateText;
 
-    Ticket.validateBasePrice = function (value) {
-        if(!value) {
-            throw new Error('Base price is required')
-        }
-        return !isNaN(value) && value >= 0;
-    }
+    Ticket.validateBasePrice = validateNotNegative;
 
-    Ticket.validateQuantityTotal = function(value) {
-        if(!value) {
-            throw new Error('Total quantity is required')
-        }
+    Ticket.validateQuantityTotal = validatePositiveInteger;
 
-        return !isNaN(value) && value >= 1; // you can't have no tickets for a ticket
-    }
+    Ticket.validateReserved = validateNotNegativeInteger;
 
-    Ticket.validateReserved = function (value) {
-        if(!value) {
-            throw new Error('Reserved value is not valid')
-        }
-
-        return !isNaN(value) && value >= 0;
-    }
-
-    Ticket.validateMaxTicketSale = function(value) {
-        if(!value) {
-            throw new Error('Max ticket sale is required')
-        }
-
-        return !isNaN(value) && value >= 1; // you can't have no tickets for a ticket
-    }
+    Ticket.validateMaxTicketSale = validatePositiveInteger;
 
 
     Ticket.prototype.getPrices = function () {

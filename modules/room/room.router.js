@@ -2,8 +2,7 @@
 
 const router = require('express').Router();
 const roomController = require('./room.controller');
-const { eventVerification } = require('../../middleware/event');
-const { roomVerification } = require('../../middleware/room');
+const { eventVerification, roomVerification } = require('../../middleware/verification');
 const Response = require('../../http/response');
 
 router.use((req, res, next) => {

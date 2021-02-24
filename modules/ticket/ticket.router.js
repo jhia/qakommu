@@ -3,8 +3,7 @@
 const router = require('express').Router();
 const ticketController = require('./ticket.controller');
 const Response = require('../../http/response');
-const { eventVerification } = require('../../middleware/event')
-const { ticketVerification } = require('../../middleware/ticket')
+const { eventVerification, ticketVerification } = require('../../middleware/verification')
 
 router.get('/event/:eventId', eventVerification, function(req, res){
   //HTTP get route
