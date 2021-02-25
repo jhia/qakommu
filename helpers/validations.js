@@ -4,6 +4,9 @@
  * @returns {boolean} Is valid email
  */
 exports.validateEmail = (email) => {
+	if(!email) {
+		throw new Error('Text is required');
+	}
 	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   	return re.test(email);
 }
@@ -22,16 +25,79 @@ exports.validateDate = (value) => {
 	return regex.test(value);
 }
 
+exports.validateUUID = (v) => {
+	const regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+	if(!v) {
+		throw new Error("UUID is required");
+	}
+	return typeof v === typeof '' && regex.test(v);
+}
+
+/**
+ * Person name validation
+ * @param {string} value Name
+ * @returns {boolean} Is a valid name
+ */
 exports.validateName = (value) => {
+	if (!value) {
+		throw new Error('Text is required')
+	}
+	return typeof value === typeof '' && !/[.0-9!_@#\d½º<>↓;?:¡¿|/[¨{}\$%\^\&*\])\(+=._-]/g.test(value);
+}
+
+exports.validateNotEmptyString = (value) => {
 	if(!value) {
-		throw new Error('Name is required');
+		throw new Error('Text is required');
 	}
 	return typeof value === typeof '' && value.length >= 3;
 }
 
-exports.validateDescription = (value) => {
+exports.validateText = (value) => {
 	if(!value) {
-		throw new Error('Description is required');
+		throw new Error('Text is required');
 	}
 	return typeof value === typeof '';
+}
+
+exports.validateNotNegative =  (value) => {
+	if(!value && value !== 0) {
+		throw new Error('Number is required');
+	}
+	return !isNaN(value) && value >= 0;
+}
+
+exports.validateNotNegativeInteger = (value) => {
+	if(!value && value !== 0 || isNaN(value)) {
+		throw new Error('Number is required');
+	}
+
+	if(value === 0) { // avoid validate zero, causes division by 0 error
+		return true;
+	}
+
+	if((value % parseInt(value)) > 0) {
+		throw new Error('Decimal is not permitted')
+	}
+
+	return value >= 0;
+}
+
+exports.validatePositive = value => {
+	if(!value || isNaN(value) || value === 0) {
+		throw new Error('Number is required');
+	}
+
+	return value > 0;
+}
+
+exports.validatePositiveInteger = value => {
+	if(!value || isNaN(value) || value === 0) {
+		throw new Error('Number is required');
+	}
+
+	if((value % parseInt(value)) > 0) {
+		throw new Error('Decimal is not permitted')
+	}
+
+	return value >= 1;
 }

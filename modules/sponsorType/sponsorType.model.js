@@ -1,5 +1,7 @@
 'use strict'
 
+const { validateNotEmptyString, validateNotNegative, validatePositiveInteger } = require("../../helpers/validations");
+
 module.exports = (sequelize, DataTypes) => {
     const SponsorType = sequelize.define('sponsorType', {
         name: {
@@ -48,33 +50,13 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    SponsorType.validateName = function(value){
-        if(!value){
-            throw new Error('Name is required')
-        }
-        return typeof value === typeof '' && value.length >= 3;
-    }
+    SponsorType.validateContributionValue = validateNotNegative;
 
-    SponsorType.validateDescription = function(value){
-        if(!value){
-            throw new Error('Decription is required')
-        }
-        return typeof value === typeof '' && value.length >= 3;
-    }
+    SponsorType.validateName = validateNotEmptyString;
 
-    SponsorType.validateContributionValue = function (value) {
-        if(!value){
-            throw new Error('Contribution value is required')
-        }
-        return !isNaN(value) && value > 0
-    }
+    SponsorType.validateDescription = validateNotEmptyString;
 
-    SponsorType.validateDisplayNumber = function(value){
-        if(!value){
-            throw new Error('Display number is required')
-        }
-        return !isNaN(value) && value > 0
-    }
+    SponsorType.validateDisplayNumber = validatePositiveInteger;
 
 
     return SponsorType;

@@ -12,8 +12,11 @@ const controller = new Base('sponsorType');
 *this.db -> All models
 *this.model -> Current module model
 */
-const validAttributes = ['id', 'name', 'description', 'contributionValue', 'displayNumber', 'active', 'communityId'];
-        
+const validAttributes = [
+    'id', 'name', 'description', 'displayNumber',
+    'contributionValue', 'active', 'communityId'
+]
+
 controller.getTypesByCommunity = async function (req, res) {
     const { limit, offset } = req.query;
     try {
@@ -48,16 +51,10 @@ controller.getCountTypesByCommunity = async function (req, res) {
 }
 
 controller.getOne = async function (req, res) {
-
-    const { id } = req.params;
-
-    if (isNaN(id)) {
-        let idError = new ResponseError(400, 'Sponsor id is not valid')
-        return res.send(idError)
-    }
-
     try {
-        const data = await this.model.findByPk(id)
+        const data = await this.model.findByPk(req.params.sponsorTypeId, {
+            attributes: validAttributes
+        })
         return res.send(data)
     } catch {
         const connectionError = new ResponseError(503, 'Try again later')
@@ -71,8 +68,7 @@ controller.postFunc = async function (req, res) {
         description,
         contributionValue,
         displayNumber,
-        active,
-        community
+        active
     } = req.body;
 
     const data = {
@@ -81,7 +77,7 @@ controller.postFunc = async function (req, res) {
         contributionValue,
         displayNumber,
         active,
-        communityId: community
+        communityId: req.community.id
     }
 
     const validationError = new ResponseError(400)
@@ -122,14 +118,6 @@ controller.postFunc = async function (req, res) {
         validationError.addContext('displayNumber', message)
     }
 
-    try {
-        if (!(await this.db.community.exists(community))) {
-            throw new Error('Community does not exists')
-        }
-    } catch ({ message }) {
-        validationError.addContext('community', message)
-    }
-
     if (validationError.hasContext()) {
         return res.send(validationError)
     }
@@ -145,13 +133,6 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if (isNaN(id)) {
-        let idError = new ResponseError(400, 'Sponsor id is not valid')
-        return res.send(idError)
-    }
-
     let data = {};
 
     const validationError = new ResponseError(400)
@@ -215,8 +196,8 @@ controller.putFunc = async function (req, res) {
 
     try {
         let result = await this.update({
-                id,
-                data
+            id: req.params.sponsorTypeId,
+            data
         });
         return res.send(result)
     } catch (error) {
@@ -225,25 +206,7 @@ controller.putFunc = async function (req, res) {
     }
 }
 
-controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if (isNaN(id)) {
-        let idError = new ResponseError(400, 'Sponsor id is not valid')
-        return res.send(idError)
-    }
-
-    try {
-        let deleterows = await this.delete({ id });
-        return res.send(deleterows)
-    } catch (error) {
-        const connectionError = new ResponseError(503, 'Try again later')
-        return res.send(connectionError)
-    }
-}
-
 controller.deleteMultiple = async function (req, res) {
-
     const { id } = req.body;
 
     try {

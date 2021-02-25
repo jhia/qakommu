@@ -3,7 +3,7 @@
 const router = require('express').Router();
 const partnershipController = require('./partnership.controller');
 const Response = require('../../http/response');
-const { communityCodeVerification } = require('../../middleware/community');
+const { communityCodeVerification } = require('../../middleware/verification');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module

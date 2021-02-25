@@ -2,7 +2,7 @@
 
 const router = require('express').Router();
 const exhibitorController = require('./exhibitor.controller');
-const { eventVerification } = require('../../middleware/event');
+const { eventVerification } = require('../../middleware/verification');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module

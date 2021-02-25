@@ -3,8 +3,8 @@
 const router = require('express').Router();
 const eventController = require('./event.controller');
 const Response = require('../../http/response');
-const { eventVerification } = require('../../middleware/event');
-const { communityCodeVerification, communityOwner } = require('../../middleware/community');
+const { communityOwner } = require('../../middleware/access');
+const { eventVerification, communityCodeVerification } = require('../../middleware/verification');
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
   next();

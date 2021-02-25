@@ -2,7 +2,8 @@
 
 const router = require('express').Router();
 const controller = require('./sponsorType.controller');
-const { communityCodeVerification } = require('../../middleware/community');
+const { communityCodeVerification, sponsorTypeVerification } = require('../../middleware/verification');
+
 const Response = require('../../http/response')
 
 router.use((req, res, next) => {
@@ -21,18 +22,18 @@ router.get('/community/:communityCode/count', communityCodeVerification, functio
   controller.getCountTypesByCommunity(req, new Response(res));
 });
 
-router.get('/:id', function(req, res){
+router.get('/:sponsorTypeId', sponsorTypeVerification, function(req, res){
   //HTTP get route
   controller.getOne(req, new Response(res));
 });
 
 
-router.post('/',(req, res) => {
+router.post('/community/:communityCode', communityCodeVerification, (req, res) => {
   ///HTTP post route
   controller.postFunc(req, new Response(res));
 });
 
-router.put('/:id',(req, res) => {
+router.put('/:sponsorTypeId', sponsorTypeVerification, (req, res) => {
   //HTTP put route
   controller.putFunc(req, new Response(res));
 });
@@ -43,7 +44,7 @@ router.delete('/multiple',(req, res) => {
   controller.deleteMultiple(req, new Response(res));
 });
 
-router.delete('/:id',(req, res) => {
+router.delete('/:sponsorTypeId', sponsorTypeVerification, (req, res) => {
   //HTTP delete route
   controller.deleteFunc(req, new Response(res));
 });

@@ -1,6 +1,6 @@
 'use strict'
 
-const { validateName, validateDescription } = require("../../helpers/validations");
+const { validateNotEmptyString, validateText, validateNotNegative, validatePositiveInteger } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const BoothType = sequelize.define('boothType', {
@@ -68,30 +68,15 @@ module.exports = (sequelize, DataTypes) => {
 		return !!type;
 	}
 
-    BoothType.validateName = validateName;
+    BoothType.validateName = validateNotEmptyString;
 
-    BoothType.validateDescription = validateDescription;
+    BoothType.validateDescription = validateText;
 
-    BoothType.validateCost = function (value) {
-        if(!value) {
-            throw new Error('Cost is required');
-        }
-        return value >= 0;
-    }
+    BoothType.validateCost = validateNotNegative;
 
-    BoothType.validateWidth = function (value) {
-        if(!value) {
-            throw new Error('Width is required');
-        }
-        return value > 0;
-    }
+    BoothType.validateWidth = validatePositiveInteger;
 
-    BoothType.validateHeight = function (value) {
-        if(!value) {
-            throw new Error('Height is required');
-        }
-        return value > 0;
-    }
+    BoothType.validateHeight = validatePositiveInteger;
 
     return BoothType;
 }

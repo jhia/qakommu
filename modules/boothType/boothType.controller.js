@@ -5,7 +5,7 @@ const { ResponseError } = require('../../http');
 
 const controller = new Base('boothType');
 
-const validAttributes = ['id', 'name', 'description', 'cost', 'width', 'height', 'active', 'communityId'];
+const validAttributes = ['id', 'name', 'description', 'cost', 'width', 'height', 'active'];
 
 controller.getTypesFromCommunity = async function (req, res) {
     const { limit, offset } = req.query;
@@ -130,7 +130,7 @@ controller.postFunc = async function (req, res) {
     }
 
     try {
-        const newType = await this.insert(typeData)
+        const newType = await this.insert(typeData, { returning: validAttributes })
         res.statusCode = 201
         return res.send(newType)
     } catch (err) {
@@ -217,7 +217,8 @@ controller.putFunc = async function (req, res) {
     try {
         let result = await this.update({
             id: req.boothType.id,
-            data: updateData
+            data: updateData,
+            returning: validAttributes
         });
         return res.send(result);
     } catch (error) {

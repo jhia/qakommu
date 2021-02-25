@@ -2,8 +2,7 @@
 
 const router = require('express').Router();
 const trackController = require('./track.controller');
-const { communityCodeVerification } = require('../../middleware/community')
-const { eventVerification } = require('../../middleware/event')
+const { communityCodeVerification, eventVerification } = require('../../middleware/verification')
 const Response = require('../../http/response');
 
 router.get('/community/:communityCode', communityCodeVerification, (req, res) => {

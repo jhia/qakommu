@@ -1,12 +1,11 @@
 'use strict'
 
-const { makeid, dynamic_host } = require('../../helpers/utilities')
+const { makeid } = require('../../helpers/utilities')
 
 
-const _ = require('lodash');
 const Base = require('../../helpers/base.controller');
 const controller = new Base('community');
-
+const Archive = require('../../helpers/archive');
 const jwt = require('jsonwebtoken');
 const { ResponseError } = require('../../http');
 
@@ -25,22 +24,33 @@ function llama(invitation_code, community_id, time) {
 	return tk;
 }
 
+const validAttributes = ['code', 'name', 'description', 'prefix', 'isPrivate', 'memberVerification', 'active'];
+
 
 controller.getMyCommunities = async function (req, res) {
 	const { limit, offset } = req.query;
 	try {
-		let userCommunities = await this.db.userCommunities.find({
+		let userCommunities = await this.db.userCommunity.findAll({
 			where: {
 				userId: req.user.id,
 				active: true
 			},
 			limit,
 			offset,
-			include: [this.db.userCommunity.associations.community],
-			attributes: ['userId', 'owner', 'communityId', 'community'],
+			include: [{
+				model: this.db.community,
+				as: 'community',
+				attributes: validAttributes
+			}],
+			attributes: ['owner'],
 		})
 
-		return res.send(userCommunities)
+		let communities = userCommunities.map(c => {
+			c.community.owner = c.owner;
+			return c.community;
+		})
+
+		return res.send(communities)
 	} catch ({ message }) {
 		console.log(message)
 		const connectionError = new ResponseError(503, 'Try again later')
@@ -60,8 +70,10 @@ controller.getPublicCommunities = async function (req, res) {
 			},
 			limit,
 			offset,
-			attributes: ['code', 'name', 'description', 'prefix', 'memberVerification']
+			attributes: validAttributes
 		})
+
+		return res.send(communities)
 	} catch (err) {
 		console.log(err.message)
 		const connectionError = new ResponseError(503, 'Try again later')
@@ -70,10 +82,8 @@ controller.getPublicCommunities = async function (req, res) {
 }
 
 controller.getOne = async function (req, res) {
-	const { id } = req.params;
-
 	try {
-		const community = await this.model.findByCode(id)
+		const community = await this.model.findByPk(req.community.id, { attributes: validAttributes })
 		if (!community) {
 			const notFoundError = new ResponseError(404, 'Community does not exist')
 			return res.send(notFoundError)
@@ -87,19 +97,76 @@ controller.getOne = async function (req, res) {
 
 }
 
+controller.getCommunityUsers = async function (req, res) {
+	const { limit, offset } = req.query;
+	try {
+		let userCommunities = await this.db.userCommunity.findAll({
+			where: {
+				communityId: req.community.id,
+				userId: req.user.id,
+				approved: true,
+			},
+			limit,
+			offset,
+			include: [{
+				model: this.db.user,
+				as: 'user',
+				attributes: ['firstName', 'lastName', 'username', 'profilePhoto'],
+			}],
+			attributes: ['owner'],
+		})
+
+		let users = await Promise.all(userCommunities.map(u =>{
+			let user = {...u.user.dataValues};
+			user.owner = !!u.dataValues.owner;
+			return Archive.route(u.user.profilePhoto).then(r => {
+				user.profilePhoto = r;
+				return user;
+			})
+			.catch(() => user)
+		}))
+		return res.send(users)
+	} catch ({ message }) {
+		console.log(message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
+	}
+}
+
+controller.getCountCommunityUsers = async function (req, res) {
+	try {
+		let count = await this.db.userCommunity.count({
+			where: {
+				communityId: req.community.id,
+				userId: req.user.id,
+				active: true,
+			}
+		});
+
+		return res.send({ count })
+	} catch ({ message }) {
+		console.log(message)
+		const connectionError = new ResponseError(503, 'Try again later')
+		return res.send(connectionError)
+	}
+}
+
 controller.postFunc = async function (req, res) {
 	const {
 		name, // required
 		description, // required
 		prefix, // required
 		isPrivate, // default false
-		memberVerification // default false
+		memberVerification // default false, true if
 	} = req.body;
 
 	let communityData = {
 		name,
 		description,
-		prefix
+		prefix,
+		isPrivate: !!isPrivate, // needed as boolean
+		// verify is 
+		memberVerification: req.body.hasOwnProperty('memberVerification') ? !!memberVerification : !!isPrivate
 	}
 
 	const validationError = new ResponseError(400)
@@ -131,14 +198,6 @@ controller.postFunc = async function (req, res) {
 		validationError.addContext('prefix', message)
 	}
 
-	if (req.body.hasOwnProperty('isPrivate')) {
-		communityData.isPrivate = !!isPrivate;
-	}
-
-	if (req.body.hasOwnProperty('memberVerification')) {
-		communityData.memberVerification = !!memberVerification;
-	}
-
 	if (validationError.hasContext()) {
 		return res.send(validationError)
 	}
@@ -147,17 +206,19 @@ controller.postFunc = async function (req, res) {
 	communityData.code = makeid(6)
 
 	try {
-		let newCommunity = await this.insert(communityData)
+		let newCommunity = await this.insert(communityData, { returning: [...validAttributes, 'id']})
 
-		let communityAssociation = await this.db.userCommunity.build({
+		await this.db.userCommunity.create({
 			userId: req.user.id,
 			communityId: newCommunity.id,
 			owner: true,
 			membershipId: 1
-		})
+		}, {
+			fields: ['userId', 'communityId', 'owner', 'membershipId'],
+			returning: ['id']
+		});
 
-		await communityAssociation.save();
-
+		delete(newCommunity.id)
 		res.statusCode = 201;
 		return res.send(newCommunity)
 	} catch (err) {
@@ -168,16 +229,13 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-	const { id } = req.params;
-
 	const {
-		name, // required
-		description, // required
-		prefix, // required
 		isPrivate, // default false
 		memberVerification // default false
 	} = req.body;
 	let communityData = {};
+
+	const validationError = new ResponseError(400);
 
 	// name
 	if (req.body.name) {
@@ -223,23 +281,28 @@ controller.putFunc = async function (req, res) {
 		communityData.memberVerification = !!memberVerification;
 	}
 
+	if(req.body.hasOwnProperty('active')) {
+		communityData.active = !!req.body.active;
+	}
+
 	if (validationError.hasContext()) {
 		return res.send(validationError)
 	}
 
-	try {
-		let community = await this.model.findByCode(id);
-		if (!community) {
-			const notFoundError = new ResponseError(404, 'Community does not exists')
-			return res.send(notFoundError)
-		}
+	// if no data do nothing
+	if(Object.keys(communityData) < 1) {
+		return res.send();
+	}
 
-		Object.assign(community, communityData)
-		await community.save();
+	try {
+		let community = await this.update({
+			id: req.community.id,
+			data: communityData,
+			returning: validAttributes
+		})
 
 		return res.send(community)
 	} catch (err) {
-		console.log(err.message)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}
@@ -247,12 +310,19 @@ controller.putFunc = async function (req, res) {
 }
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
+	if(req.community.id === 1) {
+		const mainCommunityError = new ResponseError(400, 'Cannot delete default community');
+		return res.send(mainCommunityError);
+	}
 
 	try {
-		let community = this.model.findByCode(id);
-		let deleteRows = await this.delete(community.id)
-		return res.send(deleteRows)
+		await this.db.userCommunity.destroy({
+			where: {
+				communityId: req.community.id
+			}
+		})
+		let deleteRows = await this.delete(req.community.id)
+		return res.send(deleteRows);
 	} catch (err) {
 		console.log(err.message)
 		const connectionError = new ResponseError(503, 'Try again later')

@@ -3,8 +3,7 @@
 const router = require('express').Router();
 const controller = require('./boothType.controller');
 const Response = require('../../http/response');
-const { communityCodeVerification } = require('../../middleware/community');
-const { boothTypeVerification } = require('../../middleware/boothType');
+const { communityCodeVerification, boothTypeVerification } = require('../../middleware/verification');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
