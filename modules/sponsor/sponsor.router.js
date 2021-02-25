@@ -20,7 +20,7 @@ router.get('/:id',function(req, res){
   sponsorController.getOne(req, new Response(res));
 });
 
-router.post('/',(req, res) => {
+router.post('/', (req, res) => {
   ///HTTP post route
   sponsorController.postFunc(req, new Response(res));
 });

@@ -198,7 +198,6 @@ controller.putFunc = async function (req, res) {
 		});
 		return res.send(result)
 	} catch (error) {
-		
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}

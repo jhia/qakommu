@@ -59,5 +59,15 @@ module.exports = (sequelize, DataTypes) => {
     SponsorType.validateDisplayNumber = validatePositiveInteger;
 
 
+
+    SponsorType.exists = async function (id) {
+		if(!id) {
+			throw new Error('Sponsor Type ID is required')
+		}
+		const partner = await this.findByPk(id, { attributes: ['id'] })
+		return !!partner;
+	}
+
+
     return SponsorType;
 }

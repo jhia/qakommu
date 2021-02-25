@@ -1,5 +1,5 @@
 'use strict'
-
+const { validateText } = require("../../helpers/validations");
 module.exports = (sequelize, DataTypes) => {
     const Sponsor = sequelize.define('sponsor', {
         description: {
@@ -64,6 +64,8 @@ module.exports = (sequelize, DataTypes) => {
             as: 'event'
         });
     }
+
+    Sponsor.validateDescription = validateText
 
     return Sponsor;
 }

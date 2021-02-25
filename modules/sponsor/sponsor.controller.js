@@ -22,12 +22,25 @@ controller.getSponsorsByEvent = async function (req, res) {
 			},
 			limit,
 			offset,
-			attributes: ['id', 'description', 'active'],
-			include: [this.model.associations.sponsorType, this.model.associations.partnership]
+			attributes: ['id', 'description', 'active','image'],
+			include: [
+				{
+					model: this.db.sponsorType,
+					attributes: ['id','name','description','contributionValue','active','displayNumber'],
+					as: 'type'
+				},
+				{
+					model: this.db.partnership,
+					attributes: ['id','name', 'description', 'logo', 'web', 'active'],
+					as: 'partnership'
+				}
+			]
+				 
 		});
 		return res.send(data)
 
 	} catch (error) {
+		console.log(error)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}
@@ -44,9 +57,20 @@ controller.getOne = async function (req, res) {
 	}
 
 	try {
-		const data = await this.findByPk(id, {
+		const data = await this.model.findByPk(id, {
 			attributes: ['id', 'description', 'active'],
-			include: [this.model.associations.sponsorType, this.model.associations.partnership]
+			include: [
+				{
+					model: this.db.sponsorType,
+					attributes: ['id','name','description','contributionValue','active','displayNumber'],
+					as: 'type'
+				},
+				{
+					model: this.db.partnership,
+					attributes: ['id','name', 'description', 'logo', 'web', 'active'],
+					as: 'partnership'
+				}
+			]
 		});
 		return res.send(data)
 	} catch (error) {
@@ -55,6 +79,7 @@ controller.getOne = async function (req, res) {
 }
 
 controller.postFunc = async function (req, res) {
+
 	const {
 		description,
 		event,
@@ -62,7 +87,7 @@ controller.postFunc = async function (req, res) {
 		sponsorType,
 		active
 	} = req.body;
-
+	
 	const data = {
 		description,
 		eventId: event,
@@ -70,6 +95,7 @@ controller.postFunc = async function (req, res) {
 		sponsorTypeId: sponsorType,
 		active
 	}
+
 
 	const validationError = new ResponseError(400)
 
@@ -118,7 +144,8 @@ controller.postFunc = async function (req, res) {
 		}
 
 		let newdate = await this.insert(data);
-		return res.send(newdate)
+		res.statusCode = 201;
+		return res.send(newdate);
 	} catch (error) {
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
