@@ -6,6 +6,7 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('sponsor');
 const Archive = require('../../helpers/archive');
 const { ResponseError } = require('../../http');
+const { sponsorTypeVerification } = require('../../middleware/verification');
 /*
 *Extend or overwrite the base functions
 *All the controllers already have implicit the models by:
@@ -58,7 +59,7 @@ controller.getOne = async function (req, res) {
 
 	try {
 		const data = await this.model.findByPk(id, {
-			attributes: ['id', 'description', 'active'],
+			attributes: ['id', 'description', 'active','image'],
 			include: [
 				{
 					model: this.db.sponsorType,
@@ -157,15 +158,17 @@ controller.putFunc = async function (req, res) {
 	const { id } = req.params;
 
 	if (isNaN(id)) {
-		let idError = new ResponseError(400, 'Session id is not valid')
+		let idError = new ResponseError(400, 'Sponsor id is not valid')
 		return res.send(idError)
 	}
 
 	const data = {};
 	const validationError = new ResponseError(400)
 
+	
 	// description
 	if (req.body.description) {
+		
 		try {
 			if (!this.model.validateDescription(req.body.description)) {
 				throw new Error('Description is not valid')
@@ -207,28 +210,32 @@ controller.putFunc = async function (req, res) {
 	}
 
 	try {
+
 		let updatePicture = false;
 		let previousImageName = null;
 		if (req.files && req.files.image) { // there's image
 			let image = new Archive('sponsor', req.files.image); // let the handler do it
 			await image.upload() // save image
-			eventData.image = image.id;
+			data.image = image.id;
 			updatePicture = true;
 		}
 
 		if (updatePicture) {
-			let r = await this.findByPk(id, { attributes: ['image'] })
+			let r = await this.model.findByPk(id, { attributes: ['image'] })
 			previousImageName = r.image;
 		}
 
-		const rows = await this.model.update({
+		const rows = await this.update({
 			id,
 			data
 		});
 
 		if (rows > 0 && data.hasOwnProperty('image') && updatePicture) {
-			await Archive.fromString(previousImageName).remove();
+			let image = new Archive('sponsor', req.files.image); // let the handler do it
+			await image.remove(previousImageName);
+			//await Archive.fromString(previousImageName).remove();
 		}
+		
 
 		return res.send([])
 	} catch (err) {
@@ -240,7 +247,7 @@ controller.putFunc = async function (req, res) {
 
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
+	const{ id }   = req.params;
 
 	if (isNaN(id)) {
 		let idError = new ResponseError(400, 'Sponsor id is not valid')
@@ -257,10 +264,18 @@ controller.deleteFunc = async function (req, res) {
 		}
 
 		await Archive.fromString(sponsor.image).remove();
-
-		let deleterows = await this.delete({ id });
+		/*
+		if(sponsor.image){
+			console.log('epaleee -> ' + sponsor.image )
+			let image = new Archive('sponsor', sponsor.image); 
+			await image.remove(sponsor.image);
+		}
+		*/
+	
+		let deleterows = await this.delete({ id }); 
 		return res.send(deleterows)
 	} catch (error) {
+		console.log(error)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}

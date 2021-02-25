@@ -3,7 +3,7 @@
 const router = require('express').Router();
 const sponsorController = require('./sponsor.controller');
 const Response = require('../../http/response')
-const { eventVerification } = require('../../middleware/verification')
+const { eventVerification, sponsorVerification } = require('../../middleware/verification')
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
@@ -30,7 +30,7 @@ router.put('/:id',(req, res) => {
   sponsorController.putFunc(req, new Response(res));
 });
 
-router.delete('/:id',(req, res) => {
+router.delete('/:id', function(req, res){
   //HTTP delete route
   sponsorController.deleteFunc(req, new Response(res));
 });
