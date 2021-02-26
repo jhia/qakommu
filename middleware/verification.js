@@ -66,11 +66,14 @@ exports.sessionVerification = modelIdVerification({ module: 'session', name: 'Se
 
 exports.sessionAttendeeVerification = modelIdVerification({ module: 'sessionAttendee', name: 'Session attendee', attributes: ['id', 'isPresent'] })
 
+exports.sponsorVerification = modelIdVerification({ module: 'sponsor', name: 'Sponsor', attributes: ['id', 'image']})
+
 exports.sponsorTypeVerification = modelIdVerification({ module: 'sponsorType', name: 'Sponsor type' });
 
 exports.ticketVerification = modelIdVerification({ module: 'ticket', name: 'Ticket', attributes: undefined });
 
 exports.ticketSaleVerification = modelIdVerification({ module: 'ticketSale', name: 'Ticket sale', attributes: ['id', 'count'] });
+
 
 exports.ticketSaleDetailUUIDVerification = modelIdVerification({
   module: 'ticketSaleDetail',

@@ -231,9 +231,7 @@ controller.putFunc = async function (req, res) {
 		});
 
 		if (rows > 0 && data.hasOwnProperty('image') && updatePicture) {
-			let image = new Archive('sponsor', req.files.image); // let the handler do it
-			await image.remove(previousImageName);
-			//await Archive.fromString(previousImageName).remove();
+			await (await Archive.fromString(previousImageName)).remove();
 		}
 		
 
@@ -247,32 +245,11 @@ controller.putFunc = async function (req, res) {
 
 
 controller.deleteFunc = async function (req, res) {
-	const{ id }   = req.params;
-
-	if (isNaN(id)) {
-		let idError = new ResponseError(400, 'Sponsor id is not valid')
-		return res.send(idError)
-	}
-
 	try {
-		let sponsor = await this.model.findByPk(id, {
-			attributes: ['image']
-		});
-		if (!sponsor) {
-			const notFoundError = new ResponseError(404, 'Sponsor not found')
-			return res.send(notFoundError)
+		if(req.sponsor.image){
+			await (await Archive.fromString(req.sponsor.image)).remove();
 		}
-
-		await Archive.fromString(sponsor.image).remove();
-		/*
-		if(sponsor.image){
-			console.log('epaleee -> ' + sponsor.image )
-			let image = new Archive('sponsor', sponsor.image); 
-			await image.remove(sponsor.image);
-		}
-		*/
-	
-		let deleterows = await this.delete({ id }); 
+		let deleterows = await this.delete(req.sponsor.id); 
 		return res.send(deleterows)
 	} catch (error) {
 		console.log(error)

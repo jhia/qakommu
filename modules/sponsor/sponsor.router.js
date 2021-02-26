@@ -30,7 +30,7 @@ router.put('/:id',(req, res) => {
   sponsorController.putFunc(req, new Response(res));
 });
 
-router.delete('/:id', function(req, res){
+router.delete('/:sponsorId', sponsorVerification, function(req, res){
   //HTTP delete route
   sponsorController.deleteFunc(req, new Response(res));
 });
