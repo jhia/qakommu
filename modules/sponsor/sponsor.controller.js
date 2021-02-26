@@ -23,20 +23,20 @@ controller.getSponsorsByEvent = async function (req, res) {
 			},
 			limit,
 			offset,
-			attributes: ['id', 'description', 'active','image'],
+			attributes: ['id', 'description', 'active', 'image'],
 			include: [
 				{
 					model: this.db.sponsorType,
-					attributes: ['id','name','description','contributionValue','active','displayNumber'],
+					attributes: ['id', 'name', 'description', 'contributionValue', 'active', 'displayNumber'],
 					as: 'type'
 				},
 				{
 					model: this.db.partnership,
-					attributes: ['id','name', 'description', 'logo', 'web', 'active'],
+					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
 					as: 'partnership'
 				}
 			]
-				 
+
 		});
 		return res.send(data)
 
@@ -59,16 +59,16 @@ controller.getOne = async function (req, res) {
 
 	try {
 		const data = await this.model.findByPk(id, {
-			attributes: ['id', 'description', 'active','image'],
+			attributes: ['id', 'description', 'active', 'image'],
 			include: [
 				{
 					model: this.db.sponsorType,
-					attributes: ['id','name','description','contributionValue','active','displayNumber'],
+					attributes: ['id', 'name', 'description', 'contributionValue', 'active', 'displayNumber'],
 					as: 'type'
 				},
 				{
 					model: this.db.partnership,
-					attributes: ['id','name', 'description', 'logo', 'web', 'active'],
+					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
 					as: 'partnership'
 				}
 			]
@@ -83,15 +83,15 @@ controller.postFunc = async function (req, res) {
 
 	const {
 		description,
-		event,
 		partnership,
 		sponsorType,
 		active
 	} = req.body;
-	
+
+
 	const data = {
 		description,
-		eventId: event,
+		eventId: req.event.id,
 		partnershipId: partnership,
 		sponsorTypeId: sponsorType,
 		active
@@ -109,14 +109,7 @@ controller.postFunc = async function (req, res) {
 		validationError.addContext('description', message)
 	}
 
-	try {
-		if (!(await this.db.event.exists(event))) {
-			throw new Error('Event does not exist')
-		}
-	} catch ({ message }) {
-		validationError.addContext('event', message)
-	}
-
+	
 	try {
 		if (!(await this.db.partnership.exists(partnership))) {
 			throw new Error('Partner does not exist')
@@ -143,11 +136,11 @@ controller.postFunc = async function (req, res) {
 			await image.upload()
 			data.image = image.id;
 		}
-
 		let newdate = await this.insert(data);
 		res.statusCode = 201;
 		return res.send(newdate);
 	} catch (error) {
+		console.log(error)
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)
 	}
@@ -155,20 +148,14 @@ controller.postFunc = async function (req, res) {
 
 
 controller.putFunc = async function (req, res) {
-	const { id } = req.params;
-
-	if (isNaN(id)) {
-		let idError = new ResponseError(400, 'Sponsor id is not valid')
-		return res.send(idError)
-	}
 
 	const data = {};
 	const validationError = new ResponseError(400)
 
-	
+
 	// description
 	if (req.body.description) {
-		
+
 		try {
 			if (!this.model.validateDescription(req.body.description)) {
 				throw new Error('Description is not valid')
@@ -221,19 +208,20 @@ controller.putFunc = async function (req, res) {
 		}
 
 		if (updatePicture) {
-			let r = await this.model.findByPk(id, { attributes: ['image'] })
+			let r = await this.model.findByPk(req.sponsor.id, { attributes: ['image'] })
 			previousImageName = r.image;
 		}
 
 		const rows = await this.update({
-			id,
+			id: req.sponsor.id,
 			data
 		});
 
-		if (rows > 0 && data.hasOwnProperty('image') && updatePicture) {
+
+		if (rows > 0 && data.hasOwnProperty('image') && updatePicture && previousImageName) {
 			await (await Archive.fromString(previousImageName)).remove();
 		}
-		
+
 
 		return res.send([])
 	} catch (err) {
@@ -246,10 +234,10 @@ controller.putFunc = async function (req, res) {
 
 controller.deleteFunc = async function (req, res) {
 	try {
-		if(req.sponsor.image){
+		if (req.sponsor.image) {
 			await (await Archive.fromString(req.sponsor.image)).remove();
 		}
-		let deleterows = await this.delete(req.sponsor.id); 
+		let deleterows = await this.delete(req.sponsor.id);
 		return res.send(deleterows)
 	} catch (error) {
 		console.log(error)

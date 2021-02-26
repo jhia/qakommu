@@ -20,12 +20,12 @@ router.get('/:id',function(req, res){
   sponsorController.getOne(req, new Response(res));
 });
 
-router.post('/', (req, res) => {
+router.post('/event/:eventId', eventVerification, function (req, res) {
   ///HTTP post route
   sponsorController.postFunc(req, new Response(res));
 });
 
-router.put('/:id',(req, res) => {
+router.put('/:sponsorId', sponsorVerification, function (req, res) {
   //HTTP put route
   sponsorController.putFunc(req, new Response(res));
 });
