@@ -108,6 +108,7 @@ controller.postFunc = async function (req, res) {
             if(!this.model.validateWeb(web)) {
                 throw new Error('Web is not valid')
             }
+            data.web = web 
         } catch ({ message }) {
             validationError.addContext('web', message)
         }
@@ -124,7 +125,7 @@ controller.postFunc = async function (req, res) {
             data.logo = logo.id;
         }
         
-        let result = await this.insert(eventData);
+        let result = await this.insert(data);
 
         res.statusCode = 201;
         res.send(result);

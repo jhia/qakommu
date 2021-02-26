@@ -1,5 +1,5 @@
 'use strict'
-
+const { validateText, validateNotEmptyString,validateWEB } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const Partnership = sequelize.define('partnership', {
@@ -47,7 +47,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		const partner = await this.findByPk(id, { attributes: ['id'] })
 		return !!partner;
-	}
+    }
+    
+    Partnership.validateName = validateNotEmptyString;
+
+    Partnership.validateDescription = validateText;
+
+    Partnership.validateWeb = validateWEB;
 
     return Partnership;
 }

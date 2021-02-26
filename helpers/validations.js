@@ -33,6 +33,12 @@ exports.validateUUID = (v) => {
 	return typeof v === typeof '' && regex.test(v);
 }
 
+exports.validateWEB = (value) =>
+{
+	let regex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
+	return regex.test(value);
+}
+
 /**
  * Person name validation
  * @param {string} value Name

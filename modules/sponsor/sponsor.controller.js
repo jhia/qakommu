@@ -109,7 +109,6 @@ controller.postFunc = async function (req, res) {
 		validationError.addContext('description', message)
 	}
 
-	
 	try {
 		if (!(await this.db.partnership.exists(partnership))) {
 			throw new Error('Partner does not exist')
