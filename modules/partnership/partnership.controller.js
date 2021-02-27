@@ -14,13 +14,14 @@ const Archive = require('../../helpers/archive');
 *this.model -> Current module model
 */
 
-
+const validAttributes = ['id', 'name', 'description', 'active', 'web', 'logo'];
 controller.getFunc = async function (req, res) {
     const { limit, offset } = req.query;
     try {
         const data = await this.getData({
             limit,
             offset,
+            attributes: validAttributes
         });
 
         return res.send(data);
@@ -125,7 +126,7 @@ controller.postFunc = async function (req, res) {
             data.logo = logo.id;
         }
         
-        let result = await this.insert(data);
+        let result = await this.insert(data, {returning: validAttributes});
 
         res.statusCode = 201;
         res.send(result);
