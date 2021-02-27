@@ -33,7 +33,7 @@ controller.getMyCommunities = async function (req, res) {
 		let userCommunities = await this.db.userCommunity.findAll({
 			where: {
 				userId: req.user.id,
-				active: true
+				approved: true
 			},
 			limit,
 			offset,

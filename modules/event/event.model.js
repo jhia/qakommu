@@ -111,6 +111,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_event',
       as: 'exhibitors'
     });
+
+    Event.belongsTo(models.cfpForm, {
+      foreignKey: 'id_cfp_form',
+      as: 'callForPaper'
+    });
+    
     /*
         //event to ticket
         event.hasMany(models.ticket, {
