@@ -1,4 +1,5 @@
 'use strict'
+const { validateNotEmptyString } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const Track = sequelize.define('track', {
@@ -45,6 +46,12 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
+
+    Track.validateName = validateNotEmptyString;
+    Track.validateDescription = validateNotEmptyString;
+    Track.validateIcon = validateNotEmptyString
+
+    
     Track.findByCommunity = function (communityId, options={}) {
         return this.findAll({
             where: {

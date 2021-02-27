@@ -74,6 +74,7 @@ exports.ticketVerification = modelIdVerification({ module: 'ticket', name: 'Tick
 
 exports.ticketSaleVerification = modelIdVerification({ module: 'ticketSale', name: 'Ticket sale', attributes: ['id', 'count'] });
 
+exports.trackVerification = modelIdVerification({ module: 'track', name: 'Track', attributes:['id'] });
 
 exports.ticketSaleDetailUUIDVerification = modelIdVerification({
   module: 'ticketSaleDetail',

@@ -2,7 +2,7 @@
 
 const router = require('express').Router();
 const trackController = require('./track.controller');
-const { communityCodeVerification, eventVerification } = require('../../middleware/verification')
+const { communityCodeVerification, eventVerification, trackVerification } = require('../../middleware/verification')
 const Response = require('../../http/response');
 
 router.get('/community/:communityCode', communityCodeVerification, (req, res) => {
@@ -19,17 +19,17 @@ router.get('/:id', (req, res) => {
   trackController.getOne(req, new Response(res));
 });
 
-router.post('/', (req, res) => {
+router.post('/community/:communityCode', communityCodeVerification, (req, res) => {
   ///HTTP post route
   trackController.postFunc(req, new Response(res));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:trackId', trackVerification, (req, res) => {
   //HTTP put route
   trackController.putFunc(req, new Response(res));
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:trackId', trackVerification, (req, res) => {
   //HTTP delete route
   trackController.deleteFunc(req, new Response(res));
 });

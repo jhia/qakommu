@@ -154,6 +154,7 @@ controller.putFunc = async function (req, res) {
             if(!this.model.validateName(req.body.name)) {
                 throw new Error('Name is not valid')
             }
+            data.name= req.body.name
         } catch ({ message }) {
             validationError.addContext('name', message)
         }
@@ -200,21 +201,22 @@ controller.putFunc = async function (req, res) {
         }
 
         if(updatePicture) {
-            let r = await this.findByPk(id, { attributes: ['logo'] })
+            let r = await this.model.findByPk(id, { attributes: ['logo'] })
             previousImageName = r.logo;
         }
 
-        const rows = await this.model.update({
+        const rows = await this.update({
 			id,
 			data
 		});
 
-		if(rows > 0 && data.hasOwnProperty('logo') && updatePicture) {
-			await Archive.fromString(previousImageName).remove();
+		if(rows > 0 && data.hasOwnProperty('logo') && updatePicture && previousImageName) {
+			await (await Archive.fromString(previousImageName)).remove();
 		}
 
 		return res.send([])
     } catch (err) {
+        console.log(err)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }

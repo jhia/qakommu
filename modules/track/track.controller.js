@@ -4,12 +4,17 @@ const Base = require('../../helpers/base.controller');
 const { ResponseError } = require('../../http');
 const controller = new Base('track');
 
+const validAttributes = ['id', 'name', 'description', 'active', 'communityId', 'icon'];
 controller.getTracksForCommunity = async function (req, res) {
 	const { limit, offset } = req.query;
 	try {
-		const tracks = await this.model.findByCommunity(req.community.id, {
+		const tracks = await this.model.findAll({
 			limit,
-			offset
+			offset,
+			attributes: validAttributes,
+			where:{
+				communityId: req.community.id
+			}
 		});
 		return res.send(tracks)
 	} catch (err) {
@@ -34,7 +39,9 @@ controller.getOne = async function (req, res) {
 	const { id } = req.params;
 
 	try {
-		const track = await this.model.findByPk(id)
+		const track = await this.model.findByPk(id,{
+			attributes: validAttributes,
+		})
 		if(!track) {
 			const notFoundError = new ResponseError(404, 'Track does not exist');
 			return res.send(notFoundError)
@@ -54,7 +61,6 @@ controller.postFunc = async function (req, res) {
 		description,
 		active,
 		icon,
-		community
 	} = req.body; // everything is required
 
 	const validationError = new ResponseError(400)
@@ -83,14 +89,6 @@ controller.postFunc = async function (req, res) {
 		validationError.addContext('icon', message)
 	}
 
-	try {
-		if(!(await this.db.community.exists(community))) {
-			throw new Error('Community is not valid')
-		}
-	} catch ({message}) {
-		validationError.addContext('community', message)
-	}
-
 	if(validationError.hasContext()) {
 		return res.send(validationError)
 	}
@@ -101,7 +99,7 @@ controller.postFunc = async function (req, res) {
 			description,
 			active,
 			icon,
-			communityId: community,
+			communityId: req.community.id,
 			hidden: false
 		});
 
@@ -115,7 +113,7 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-	const { id } = req.params;
+	//const { id } = req.params;
 
 	const validationError = new ResponseError(400)
 
@@ -158,17 +156,6 @@ controller.putFunc = async function (req, res) {
 		trackData.active = !!req.body.active;
 	}
 
-	// TODO review this validation, it should not move between communities
-	if(req.body.community) {
-		try {
-			if(!(await this.db.community.exists(req.body.community))) {
-				throw new Error('Community is not valid')
-			}
-			trackData.communityId = req.body.community;
-		} catch ({message}) {
-			validationError.addContext('community', message)
-		}
-	}
 
 	if(validationError.hasContext()) {
 		return res.send(validationError)
@@ -177,7 +164,7 @@ controller.putFunc = async function (req, res) {
 	try {
 		let result = await this.update(
 			{
-				id,
+				id: req.track.id,
 				data: trackData
 			}
 		);
@@ -190,14 +177,9 @@ controller.putFunc = async function (req, res) {
 }
 
 controller.deleteFunc = async function (req, res) {
-	const { id } = req.params;
-	if(isNaN(id)) {
-		const validationError = new ResponseError(400, 'Track id is not valid')
-		return res.send(validationError)
-	}
 
 	try {
-		let rows = await this.delete({ id });
+		let rows = await this.delete(req.track.id);
 		return res.send(rows)
 	} catch (error) {
 		console.log(error.message)
