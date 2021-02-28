@@ -24,6 +24,11 @@ controller.getFunc = async function (req, res) {
             attributes: validAttributes
         });
 
+        await Promise.all(data.map((e, i) => Archive.route(e.logo)
+            .then((route) => { data[i].logo = route })
+            .catch(err => ({}))
+        ));
+
         return res.send(data);
     } catch (error) {
         const connectionError = new ResponseError(503, 'Try again later');
@@ -42,6 +47,7 @@ controller.getOne = async function (req, res) {
 
     try {
         const data = await this.model.findByPk(id)
+        data.logo = await Archive.route(data.logo);
         return res.send(data)
     } catch {
         const connectionError = new ResponseError(503, 'Try again later')
@@ -86,16 +92,16 @@ controller.postFunc = async function (req, res) {
     const validationError = new ResponseError(400)
 
     try {
-        if(!this.model.validateName(name)) {
+        if (!this.model.validateName(name)) {
             throw new Error('Name is not valid')
         }
     } catch ({ message }) {
         validationError.addContext('name', message)
     }
 
-    if(description) {
+    if (description) {
         try {
-            if(!this.model.validateDescription(description)) {
+            if (!this.model.validateDescription(description)) {
                 throw new Error('Description is not valid')
             }
             data.description = description
@@ -104,34 +110,35 @@ controller.postFunc = async function (req, res) {
         }
     }
 
-    if(web) {
+    if (web) {
         try {
-            if(!this.model.validateWeb(web)) {
+            if (!this.model.validateWeb(web)) {
                 throw new Error('Web is not valid')
             }
-            data.web = web 
+            data.web = web
         } catch ({ message }) {
             validationError.addContext('web', message)
         }
     }
 
     if (validationError.hasContext()) {
-		return res.send(validationError)
+        return res.send(validationError)
     }
-    
+
     try {
-        if(req.files && req.files.logo) { // there's image
+        if (req.files && req.files.logo) { // there's image
             let logo = new Archive('partnership', req.files.logo); // let the handler do it
             await logo.upload() // save image
             data.logo = logo.id;
         }
-        
-        let result = await this.insert(data, {returning: validAttributes});
+
+        let result = await this.insert(data, { returning: validAttributes });
+        result.logo = await Archive.route(result.logo);
 
         res.statusCode = 201;
         res.send(result);
 
-    } catch(err) {
+    } catch (err) {
         console.error(err)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
@@ -141,7 +148,7 @@ controller.postFunc = async function (req, res) {
 controller.putFunc = async function (req, res) {
     const { id } = req.params;
 
-    if(isNaN(id)) {
+    if (isNaN(id)) {
         const idError = new ResponseError(400, 'Partnership id is not valid');
         return res.send(idError);
     }
@@ -150,20 +157,20 @@ controller.putFunc = async function (req, res) {
 
     const validationError = new ResponseError(400)
 
-    if(req.body.name) {
+    if (req.body.name) {
         try {
-            if(!this.model.validateName(req.body.name)) {
+            if (!this.model.validateName(req.body.name)) {
                 throw new Error('Name is not valid')
             }
-            data.name= req.body.name
+            data.name = req.body.name
         } catch ({ message }) {
             validationError.addContext('name', message)
         }
     }
 
-    if(req.body.description) {
+    if (req.body.description) {
         try {
-            if(!this.model.validateDescription(req.body.description)) {
+            if (!this.model.validateDescription(req.body.description)) {
                 throw new Error('Description is not valid')
             }
             data.description = req.body.description
@@ -172,9 +179,9 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-    if(req.body.web) {
+    if (req.body.web) {
         try {
-            if(!this.model.validateWeb(req.body.web)) {
+            if (!this.model.validateWeb(req.body.web)) {
                 throw new Error('Web is not valid')
             }
             data.web = req.body.web
@@ -183,39 +190,40 @@ controller.putFunc = async function (req, res) {
         }
     }
 
-    if(req.body.hasOwnProperty('active')) {
+    if (req.body.hasOwnProperty('active')) {
         data.active = Boolean(req.body.active)
     }
 
     if (validationError.hasContext()) {
-		return res.send(validationError)
+        return res.send(validationError)
     }
 
     try {
         let updatePicture = false;
         let previousImageName = null;
-        if(req.files && req.files.logo) { // there's image
+        if (req.files && req.files.logo) { // there's image
             let image = new Archive('partnership', req.files.logo); // let the handler do it
             await image.upload() // save image
             data.logo = image.id;
             updatePicture = true;
         }
 
-        if(updatePicture) {
+        if (updatePicture) {
             let r = await this.model.findByPk(id, { attributes: ['logo'] })
             previousImageName = r.logo;
         }
-
         const rows = await this.update({
-			id,
-			data
-		});
+            id,
+            data,
+        });
 
-		if(rows > 0 && data.hasOwnProperty('logo') && updatePicture && previousImageName) {
-			await (await Archive.fromString(previousImageName)).remove();
-		}
+    
 
-		return res.send([])
+        if (rows > 0 && data.hasOwnProperty('logo') && updatePicture && previousImageName) {
+            await (await Archive.fromString(previousImageName)).remove();
+        }
+
+        return res.send([])
     } catch (err) {
         console.log(err)
         const connectionError = new ResponseError(503, 'Try again later')
@@ -227,7 +235,7 @@ controller.putFunc = async function (req, res) {
 controller.deleteFunc = async function (req, res) {
     const { id } = req.params;
 
-    if(isNaN(id)) {
+    if (isNaN(id)) {
         const idError = new ResponseError(400, 'Partnership id is not valid');
         return res.send(idError);
     }
@@ -237,12 +245,12 @@ controller.deleteFunc = async function (req, res) {
             attributes: ['logo']
         })
 
-        if(!prev) {
+        if (!prev) {
             const notFoundError = new ResponseError(404, 'Partnership not found');
             return res.send(notFoundError)
         }
 
-        if(prev.logo) {
+        if (prev.logo) {
             await Archive.fromString(prev.logo).remove();
         }
 
