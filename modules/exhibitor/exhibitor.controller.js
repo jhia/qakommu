@@ -5,7 +5,7 @@ const { ResponseError } = require('../../http');
 
 const controller = new Base('exhibitor');
 
-
+const validAttributes = ['id','description','active'];
 controller.getExhibitorByEvent = async function (req, res) {
     const { limit, offset } = req.query;
 
@@ -14,6 +14,19 @@ controller.getExhibitorByEvent = async function (req, res) {
             where: {
                 eventId: req.event.id
             },
+            attributes: validAttributes,
+            include: [
+				{
+					model: this.db.boothType,
+					attributes: ['id', 'name', 'description', 'cost', 'width', 'height','active'],
+					as: 'type'
+				},
+				{
+					model: this.db.partnership,
+					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
+					as: 'partnership'
+				}
+			],
             limit,
             offset
         });
@@ -26,16 +39,22 @@ controller.getExhibitorByEvent = async function (req, res) {
 }
 
 controller.getOne = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const validationError = new ResponseError(400, 'Exhibitor id is not valid')
-        return res.send(validationError)
-    }
-
+  
     try {
-        const event = this.model.findByPk(id, {
-            include: [this.model.associations.boothType, this.model.associations.partnership],
+        const event = await this.model.findByPk(req.exhibitor.id, {
+            attributes: validAttributes,
+            include: [
+				{
+					model: this.db.boothType,
+					attributes: ['id', 'name', 'description', 'cost', 'width', 'height','active'],
+					as: 'type'
+				},
+				{
+					model: this.db.partnership,
+					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
+					as: 'partnership'
+				}
+			],
         })
         return res.send(event)
     } catch {
@@ -46,12 +65,12 @@ controller.getOne = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-    const { description, partnership, boothType, event, active } = req.body;
+    const { description, partnership, boothType, active } = req.body;
     const exhibitorData = {
         description,
         partnershipId: partnership,
         boothTypeId: boothType,
-        eventId: event,
+        eventId: req.event.id,
         active
     };
 
@@ -84,21 +103,13 @@ controller.postFunc = async function (req, res) {
 		validationError.addContext('boothType', message)
     }
     
-    // event
-    try {
-		if(!(await this.db.event.exists(event))) {
-			throw new Error('Event does not exist')
-		}
-	} catch ({message}) {
-		validationError.addContext('event', message)
-    }
 
     if(validationError.hasContext()) {
         return res.send(validationError)
     }
     
     try {
-        let newExhibitor = await this.insert(exhibitorData);
+        let newExhibitor = await this.insert(exhibitorData, {returning: validAttributes});
         res.statusCode = 201;
         return res.send(newExhibitor)
     } catch (error) {
@@ -109,60 +120,60 @@ controller.postFunc = async function (req, res) {
 }
 
 controller.putFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Exhibitor id is not valid')
-        return res.send(idError)
-    }
 
     const validationError = new ResponseError(400)
     const updateData = {};
 
-    if(res.body.description) {
+    if(req.body.description) {
         // description
         try {
-            if(!this.model.validateDescription(res.body.description)) {
+            if(!this.model.validateDescription(req.body.description)) {
                 throw new Error('Description is not valid')
             }
-            updateData.description = res.body.description
+            updateData.description = req.body.description
         } catch ({message}) {
             validationError.addContext('description', message)
         }
     }
-    
-    if(res.body.partnership) {
+   
+    if(req.body.partnership) {
         // partnership
         try {
-            if(!(await this.db.partnership.exists(res.body.partnership))) {
+            if(!(await this.db.partnership.exists(req.body.partnership))) {
                 throw new Error('Partnership does not exist')
             }
-            updateData.partnershipId = res.body.partnership
+            updateData.partnershipId = req.body.partnership
         } catch ({message}) {
             validationError.addContext('partnership', message)
         }
     }
 
-    if(res.body.boothType) {
+    if(req.body.boothType) {
         // booth type
         try {
-            if(!(await this.db.boothType.exists(res.body.boothType))) {
+            if(!(await this.db.boothType.exists(req.body.boothType))) {
                 throw new Error('Booth type does not exist')
             }
-            updateData.boothType = res.body.boothType
+            updateData.boothType = req.body.boothType
         } catch ({message}) {
             validationError.addContext('boothType', message)
         }
     }
+
+    if (req.body.hasOwnProperty('active')) {
+		updateData.active = Boolean(req.body.active)
+	}
+
 
     if(validationError.hasContext()) {
         return res.send(validationError)
     }
 
     try {
-        let result = await this.update({
-            id,
-            data: updateData
+        const result = await this.update({
+            id: req.exhibitor.id,
+            data: updateData,
+            returning: validAttributes
         });
         return res.send(result)
     } catch (error) {
@@ -172,15 +183,8 @@ controller.putFunc = async function (req, res) {
 }
 
 controller.deleteFunc = async function (req, res) {
-    const { id } = req.params;
-
-    if(isNaN(id)) {
-        const idError = new ResponseError(400, 'Exhibitor id is not valid')
-        return res.send(idError)
-    }
-
     try {
-        let deleterows = await this.delete({ id });
+        let deleterows = await this.delete( req.exhibitor.id );
         return res.send(deleterows)
     } catch (error) {
         const connectionError = new ResponseError(503, 'Try again later')

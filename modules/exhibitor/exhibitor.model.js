@@ -1,4 +1,5 @@
 'use strict'
+const { validateNotEmptyString } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const Exhibitor = sequelize.define('exhibitor', {
@@ -40,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         //exhibitor to type_booth
         Exhibitor.belongsTo(models.partnership, {
             foreignKey: 'id_partnership',
-            as: 'partner'
+            as: 'partnership'
         });
 
         //exhibitor to event
@@ -49,6 +50,8 @@ module.exports = (sequelize, DataTypes) => {
             as: 'event'
         });
     }
+
+    Exhibitor.validateDescription = validateNotEmptyString;
 
     return Exhibitor;
 }

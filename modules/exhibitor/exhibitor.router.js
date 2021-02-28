@@ -2,7 +2,8 @@
 
 const router = require('express').Router();
 const exhibitorController = require('./exhibitor.controller');
-const { eventVerification } = require('../../middleware/verification');
+const Response = require('../../http/response')
+const { eventVerification, exhibitorVerification } = require('../../middleware/verification');
 
 router.use((req, res, next) => {
   //Use this to apply a middleware only to this module
@@ -14,22 +15,22 @@ router.get('/event/:eventId', eventVerification, function(req, res){
   exhibitorController.getExhibitorByEvent(req, new Response(res));
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:exhibitorId', exhibitorVerification, function (req, res) {
   //HTTP get route
   exhibitorController.getOne(req, new Response(res));
 });
 
-router.post('/', (req, res) => {
+router.post('/event/:eventId', eventVerification, function (req, res) {
   ///HTTP post route
   exhibitorController.postFunc(req, new Response(res));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:exhibitorId', exhibitorVerification, function (req, res) {
   //HTTP put route
   exhibitorController.putFunc(req, new Response(res));
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:exhibitorId', exhibitorVerification, function(req, res) {
   //HTTP delete route
   exhibitorController.deleteFunc(req, new Response(res));
 });
