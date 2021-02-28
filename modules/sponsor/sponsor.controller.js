@@ -14,6 +14,7 @@ const { sponsorTypeVerification } = require('../../middleware/verification');
 *this.model -> Current module model
 */
 
+const validAttributes = ['id', 'description', 'active', 'image']
 controller.getSponsorsByEvent = async function (req, res) {
 	const { limit, offset } = req.query;
 	try {
@@ -23,7 +24,7 @@ controller.getSponsorsByEvent = async function (req, res) {
 			},
 			limit,
 			offset,
-			attributes: ['id', 'description', 'active', 'image'],
+			attributes: validAttributes,
 			include: [
 				{
 					model: this.db.sponsorType,
@@ -38,6 +39,20 @@ controller.getSponsorsByEvent = async function (req, res) {
 			]
 
 		});
+
+
+		await Promise.all(
+			data.map(
+				(e, i) => Archive.route(e.image)
+					.then((route) => { 
+						data[i].image = route 
+						data[i].partnership.logo = route
+					})
+					.catch(err => ({}))
+			)
+			
+		);
+
 		return res.send(data)
 
 	} catch (error) {
@@ -50,16 +65,10 @@ controller.getSponsorsByEvent = async function (req, res) {
 
 
 controller.getOne = async function (req, res) {
-	const { id } = req.params;
-
-	if (isNaN(id)) {
-		let idError = new ResponseError(400, 'Session id is not valid')
-		return res.send(idError)
-	}
 
 	try {
-		const data = await this.model.findByPk(id, {
-			attributes: ['id', 'description', 'active', 'image'],
+		const data = await this.model.findByPk(req.sponsor.id, {
+			attributes: validAttributes,
 			include: [
 				{
 					model: this.db.sponsorType,
@@ -73,6 +82,7 @@ controller.getOne = async function (req, res) {
 				}
 			]
 		});
+		data.partnership.logo = await Archive.route(data.partnership.logo);
 		return res.send(data)
 	} catch (error) {
 		const connectionError = new ResponseError(503, 'Try again later')
@@ -135,7 +145,8 @@ controller.postFunc = async function (req, res) {
 			await image.upload()
 			data.image = image.id;
 		}
-		let newdate = await this.insert(data);
+		let newdate = await this.insert(data, {returning: validAttributes});
+		newdate.image = await Archive.route(newdate.image);
 		res.statusCode = 201;
 		return res.send(newdate);
 	} catch (error) {
@@ -213,7 +224,8 @@ controller.putFunc = async function (req, res) {
 
 		const rows = await this.update({
 			id: req.sponsor.id,
-			data
+			data,
+			returning: validAttributes
 		});
 
 
@@ -221,7 +233,7 @@ controller.putFunc = async function (req, res) {
 			await (await Archive.fromString(previousImageName)).remove();
 		}
 
-
+		
 		return res.send([])
 	} catch (err) {
 		const connectionError = new ResponseError(503, 'Try again later')

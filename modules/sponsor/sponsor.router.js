@@ -15,7 +15,7 @@ router.get('/event/:eventId', eventVerification, function(req, res){
   sponsorController.getSponsorsByEvent(req, new Response(res));
 });
 
-router.get('/:id',function(req, res){
+router.get('/:sponsorId', sponsorVerification, function(req, res){
   //HTTP get route
   sponsorController.getOne(req, new Response(res));
 });

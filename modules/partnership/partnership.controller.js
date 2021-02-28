@@ -212,9 +212,12 @@ controller.putFunc = async function (req, res) {
             let r = await this.model.findByPk(id, { attributes: ['logo'] })
             previousImageName = r.logo;
         }
+        
+        
         const rows = await this.update({
             id,
             data,
+            returning: validAttributes
         });
 
     

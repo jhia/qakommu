@@ -2,10 +2,10 @@
 
 const Base = require('../../helpers/base.controller');
 const { ResponseError } = require('../../http');
-
+const Archive = require('../../helpers/archive');
 const controller = new Base('exhibitor');
 
-const validAttributes = ['id','description','active'];
+const validAttributes = ['id', 'description', 'active'];
 controller.getExhibitorByEvent = async function (req, res) {
     const { limit, offset } = req.query;
 
@@ -16,22 +16,34 @@ controller.getExhibitorByEvent = async function (req, res) {
             },
             attributes: validAttributes,
             include: [
-				{
-					model: this.db.boothType,
-					attributes: ['id', 'name', 'description', 'cost', 'width', 'height','active'],
-					as: 'type'
-				},
-				{
-					model: this.db.partnership,
-					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
-					as: 'partnership'
-				}
-			],
+                {
+                    model: this.db.boothType,
+                    attributes: ['id', 'name', 'description', 'cost', 'width', 'height', 'active'],
+                    as: 'type'
+                },
+                {
+                    model: this.db.partnership,
+                    attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
+                    as: 'partnership'
+                }
+            ],
             limit,
             offset
         });
+
+        await Promise.all(
+            data.map(
+                (e, i) => Archive.route(e.partnership.logo)
+                    .then((route) => {
+                        data[i].partnership.logo = route
+                    })
+                    .catch(err => ({}))
+            )
+        );
+        
         return res.send(data);
     } catch (error) {
+        console.log(error)
         const connectionError = new ResponseError(503, 'Try again later');
         return res.send(connectionError);
     }
@@ -39,25 +51,27 @@ controller.getExhibitorByEvent = async function (req, res) {
 }
 
 controller.getOne = async function (req, res) {
-  
+
     try {
-        const event = await this.model.findByPk(req.exhibitor.id, {
+        const data = await this.model.findByPk(req.exhibitor.id, {
             attributes: validAttributes,
             include: [
-				{
-					model: this.db.boothType,
-					attributes: ['id', 'name', 'description', 'cost', 'width', 'height','active'],
-					as: 'type'
-				},
-				{
-					model: this.db.partnership,
-					attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
-					as: 'partnership'
-				}
-			],
+                {
+                    model: this.db.boothType,
+                    attributes: ['id', 'name', 'description', 'cost', 'width', 'height', 'active'],
+                    as: 'type'
+                },
+                {
+                    model: this.db.partnership,
+                    attributes: ['id', 'name', 'description', 'logo', 'web', 'active'],
+                    as: 'partnership'
+                }
+            ],
         })
-        return res.send(event)
-    } catch {
+        data.partnership.logo = await Archive.route(data.partnership.logo);
+        return res.send(data)
+    } catch(error) {
+        console.log(error)
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }
@@ -77,39 +91,39 @@ controller.postFunc = async function (req, res) {
     const validationError = new ResponseError(400)
 
     // description
-	try {
-		if(!this.model.validateDescription(description)) {
-			throw new Error('Description is not valid')
-		}
-	} catch ({message}) {
-		validationError.addContext('description', message)
+    try {
+        if (!this.model.validateDescription(description)) {
+            throw new Error('Description is not valid')
+        }
+    } catch ({ message }) {
+        validationError.addContext('description', message)
     }
-    
+
     // partnership
-	try {
-		if(!(await this.db.partnership.exists(partnership))) {
-			throw new Error('Partnership does not exist')
-		}
-	} catch ({message}) {
-		validationError.addContext('partnership', message)
+    try {
+        if (!(await this.db.partnership.exists(partnership))) {
+            throw new Error('Partnership does not exist')
+        }
+    } catch ({ message }) {
+        validationError.addContext('partnership', message)
     }
 
     // booth type
     try {
-		if(!(await this.db.boothType.exists(boothType))) {
-			throw new Error('Booth type does not exist')
-		}
-	} catch ({message}) {
-		validationError.addContext('boothType', message)
+        if (!(await this.db.boothType.exists(boothType))) {
+            throw new Error('Booth type does not exist')
+        }
+    } catch ({ message }) {
+        validationError.addContext('boothType', message)
     }
-    
 
-    if(validationError.hasContext()) {
+
+    if (validationError.hasContext()) {
         return res.send(validationError)
     }
-    
+
     try {
-        let newExhibitor = await this.insert(exhibitorData, {returning: validAttributes});
+        let newExhibitor = await this.insert(exhibitorData, { returning: validAttributes });
         res.statusCode = 201;
         return res.send(newExhibitor)
     } catch (error) {
@@ -124,48 +138,48 @@ controller.putFunc = async function (req, res) {
     const validationError = new ResponseError(400)
     const updateData = {};
 
-    if(req.body.description) {
+    if (req.body.description) {
         // description
         try {
-            if(!this.model.validateDescription(req.body.description)) {
+            if (!this.model.validateDescription(req.body.description)) {
                 throw new Error('Description is not valid')
             }
             updateData.description = req.body.description
-        } catch ({message}) {
+        } catch ({ message }) {
             validationError.addContext('description', message)
         }
     }
-   
-    if(req.body.partnership) {
+
+    if (req.body.partnership) {
         // partnership
         try {
-            if(!(await this.db.partnership.exists(req.body.partnership))) {
+            if (!(await this.db.partnership.exists(req.body.partnership))) {
                 throw new Error('Partnership does not exist')
             }
             updateData.partnershipId = req.body.partnership
-        } catch ({message}) {
+        } catch ({ message }) {
             validationError.addContext('partnership', message)
         }
     }
 
-    if(req.body.boothType) {
+    if (req.body.boothType) {
         // booth type
         try {
-            if(!(await this.db.boothType.exists(req.body.boothType))) {
+            if (!(await this.db.boothType.exists(req.body.boothType))) {
                 throw new Error('Booth type does not exist')
             }
             updateData.boothType = req.body.boothType
-        } catch ({message}) {
+        } catch ({ message }) {
             validationError.addContext('boothType', message)
         }
     }
 
     if (req.body.hasOwnProperty('active')) {
-		updateData.active = Boolean(req.body.active)
-	}
+        updateData.active = Boolean(req.body.active)
+    }
 
 
-    if(validationError.hasContext()) {
+    if (validationError.hasContext()) {
         return res.send(validationError)
     }
 
@@ -184,7 +198,7 @@ controller.putFunc = async function (req, res) {
 
 controller.deleteFunc = async function (req, res) {
     try {
-        let deleterows = await this.delete( req.exhibitor.id );
+        let deleterows = await this.delete(req.exhibitor.id);
         return res.send(deleterows)
     } catch (error) {
         const connectionError = new ResponseError(503, 'Try again later')
