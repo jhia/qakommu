@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "prestart": "npm run db:init",
     "dev": "DEBUG=express:router nodemon --inspect=0.0.0.0:$DEBUG_PORT ./bin/www",
-    "predev": "npm run db:init",
     "test": "NODE_ENV=test jest --testTimeout=10000 --passWithNoTests",
     "pretest": "NODE_ENV=test npm run db:reset",
     "docs": "rimraf docs && esdoc -c .esdoc.json",
