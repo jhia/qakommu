@@ -57,12 +57,20 @@ controller.getOne = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 	const {
-		name,
+		name, 
 		description,
 		active,
 		icon,
 	} = req.body; // everything is required
-
+	
+	const trackData ={
+		name,
+		description,
+		active,
+		icon,
+		communityId: req.community.id,
+		hidden: false
+	}
 	const validationError = new ResponseError(400)
 
 	try {
@@ -94,14 +102,7 @@ controller.postFunc = async function (req, res) {
 	}
 
 	try {
-		let track = await this.insert({
-			name,
-			description,
-			active,
-			icon,
-			communityId: req.community.id,
-			hidden: false
-		});
+		let track = await this.insert(trackData, { returning: validAttributes});
 
 		res.statusCode = 201;
 		return res.send(track);
@@ -165,7 +166,8 @@ controller.putFunc = async function (req, res) {
 		let result = await this.update(
 			{
 				id: req.track.id,
-				data: trackData
+				data: trackData,
+				returning: validAttributes
 			}
 		);
 		return res.send(result);

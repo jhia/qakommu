@@ -6,7 +6,8 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('sponsor');
 const Archive = require('../../helpers/archive');
 const { ResponseError } = require('../../http');
-const { sponsorTypeVerification } = require('../../middleware/verification');
+const e = require('express');
+
 /*
 *Extend or overwrite the base functions
 *All the controllers already have implicit the models by:
@@ -37,20 +38,14 @@ controller.getSponsorsByEvent = async function (req, res) {
 					as: 'partnership'
 				}
 			]
-
 		});
 
 
 		await Promise.all(
-			data.map(
-				(e, i) => Archive.route(e.image)
-					.then((route) => { 
-						data[i].image = route 
-						data[i].partnership.logo = route
-					})
-					.catch(err => ({}))
-			)
-			
+			data.map( async (d,i) => {
+				data[i].image = await Archive.route(d.image)
+				data[i].partnership.logo = await Archive.route(d.partnership.logo)
+			})
 		);
 
 		return res.send(data)
@@ -91,14 +86,7 @@ controller.getOne = async function (req, res) {
 
 controller.postFunc = async function (req, res) {
 
-	const {
-		description,
-		partnership,
-		sponsorType,
-		active
-	} = req.body;
-
-
+	const { description, partnership, sponsorType, active } = req.body;
 	const data = {
 		description,
 		eventId: req.event.id,
@@ -145,7 +133,7 @@ controller.postFunc = async function (req, res) {
 			await image.upload()
 			data.image = image.id;
 		}
-		let newdate = await this.insert(data, {returning: validAttributes});
+		let newdate = await this.insert(data, { returning: validAttributes });
 		newdate.image = await Archive.route(newdate.image);
 		res.statusCode = 201;
 		return res.send(newdate);
@@ -158,10 +146,8 @@ controller.postFunc = async function (req, res) {
 
 
 controller.putFunc = async function (req, res) {
-
-	const data = {};
+	const sponsorData = {};
 	const validationError = new ResponseError(400)
-
 
 	// description
 	if (req.body.description) {
@@ -170,7 +156,7 @@ controller.putFunc = async function (req, res) {
 			if (!this.model.validateDescription(req.body.description)) {
 				throw new Error('Description is not valid')
 			}
-			data.description = req.body.description
+			sponsorData.description = req.body.description
 		} catch ({ message }) {
 			validationError.addContext('description', message)
 		}
@@ -181,7 +167,7 @@ controller.putFunc = async function (req, res) {
 			if (!(await this.db.partnership.exists(req.body.partnership))) {
 				throw new Error('Partner does not exist')
 			}
-			data.partnershipId = req.body.partnership
+			sponsorData.partnershipId = req.body.partnership
 		} catch ({ message }) {
 			validationError.addContext('partnership', message)
 		}
@@ -192,14 +178,14 @@ controller.putFunc = async function (req, res) {
 			if (!(await this.db.sponsorType.exists(req.body.sponsorType))) {
 				throw new Error('Sponsor type does not exist')
 			}
-			data.sponsorTypeId = req.body.sponsorType
+			sponsorData.sponsorTypeId = req.body.sponsorType
 		} catch ({ message }) {
 			validationError.addContext('sponsorType', message)
 		}
 	}
 
 	if (req.body.hasOwnProperty('active')) {
-		data.active = Boolean(req.body.active)
+		sponsorData.active = req.body.active
 	}
 
 	if (validationError.hasContext()) {
@@ -213,7 +199,7 @@ controller.putFunc = async function (req, res) {
 		if (req.files && req.files.image) { // there's image
 			let image = new Archive('sponsor', req.files.image); // let the handler do it
 			await image.upload() // save image
-			data.image = image.id;
+			sponsorData.image = image.id;
 			updatePicture = true;
 		}
 
@@ -221,20 +207,20 @@ controller.putFunc = async function (req, res) {
 			let r = await this.model.findByPk(req.sponsor.id, { attributes: ['image'] })
 			previousImageName = r.image;
 		}
-
+		
 		const rows = await this.update({
 			id: req.sponsor.id,
-			data,
+			data: sponsorData,
 			returning: validAttributes
 		});
-
 
 		if (rows > 0 && data.hasOwnProperty('image') && updatePicture && previousImageName) {
 			await (await Archive.fromString(previousImageName)).remove();
 		}
-
+			
+		rows.image = await Archive.route(rows.image)
 		
-		return res.send([])
+		return res.send(rows)
 	} catch (err) {
 		const connectionError = new ResponseError(503, 'Try again later')
 		return res.send(connectionError)

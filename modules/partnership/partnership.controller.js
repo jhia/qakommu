@@ -225,8 +225,8 @@ controller.putFunc = async function (req, res) {
         if (rows > 0 && data.hasOwnProperty('logo') && updatePicture && previousImageName) {
             await (await Archive.fromString(previousImageName)).remove();
         }
-
-        return res.send([])
+        rows.logo = await Archive.route(rows.logo)
+        return res.send(rows)
     } catch (err) {
         console.log(err)
         const connectionError = new ResponseError(503, 'Try again later')
@@ -254,12 +254,13 @@ controller.deleteFunc = async function (req, res) {
         }
 
         if (prev.logo) {
-            await Archive.fromString(prev.logo).remove();
+            await (await Archive.fromString(prev.logo)).remove();
         }
 
-        let deleterows = await this.delete({ id });
+        let deleterows = await this.delete(id);
         return res.send(deleterows);
     } catch (error) {
+        
         const connectionError = new ResponseError(503, 'Try again later')
         return res.send(connectionError)
     }
