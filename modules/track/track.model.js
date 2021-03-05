@@ -1,5 +1,5 @@
 'use strict'
-const { validateNotEmptyString } = require("../../helpers/validations");
+const { validateNotEmptyString, validateText } = require("../../helpers/validations");
 
 module.exports = (sequelize, DataTypes) => {
     const Track = sequelize.define('track', {
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
 
-    Track.validateName = validateNotEmptyString;
+    Track.validateName = validateText;
     Track.validateDescription = validateNotEmptyString;
     Track.validateIcon = validateNotEmptyString
 
