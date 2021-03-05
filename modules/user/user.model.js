@@ -265,6 +265,8 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}
 
+	User.ValidateEmailFormat = validateEmail;
+
 	User.validatePassword = function (value) {
 		if(!value) {
 			throw new Error('Password is required')

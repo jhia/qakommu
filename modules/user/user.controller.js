@@ -71,6 +71,47 @@ controller.getOne = async function (req, res) {
 	}
 }
 
+
+controller.getOneByEmail = async function (req, res) {
+	const { email } = req.params;
+	
+	try {
+		if(!this.model.ValidateEmailFormat(email)) {
+			throw new Error('Email is not valid')
+		}
+	} catch ({ message }) {
+		const validationError = new ResponseError(400, message)
+		return res.send(validationError)
+	}
+
+
+	try {
+		let user = await this.model.findOne({
+			where: {
+				email,
+				emailVerified: true,
+				active: true
+			},
+			attributes: validAttributes,
+			include: [this.model.associations.language]
+		});
+
+		if(!user) {
+			const notFoundError = new ResponseError(404, 'User not found')
+			return res.send(notFoundError)
+		}
+
+		user.profilePhoto = await Archive.route(user.profilePhoto);
+
+		return res.send(user);
+	} catch({ message }) {
+		
+		let err = new ResponseError(503, 'Try again later')
+		return res.send(err);
+	}
+}
+
+
 controller.postFunc = async function (req, res) {
 	const validationError = new ResponseError(400);
 

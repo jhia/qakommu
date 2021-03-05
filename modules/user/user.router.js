@@ -19,6 +19,13 @@ router.get('/:username',function(req, res){
   userController.getOne(req, new Response(res));
 });
 
+
+
+router.get('/email/:email',function(req, res){
+  //HTTP get route
+  userController.getOneByEmail(req, new Response(res));
+});
+
 router.post('/',(req, res) => {
   ///HTTP post route: Add user
   userController.postFunc(req, new Response(res));
