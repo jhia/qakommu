@@ -159,8 +159,12 @@ controller.postFunc = async function (req, res) {
       validationError.addContext('ticket', 'Ticket does not exist')
       return res.send(validationError) // no more queries
     }
-    if (await this.model.ticketAlreadyUsed(t.id)) {
+    if (t.deactivated || (await this.model.ticketAlreadyUsed(t.id))) {
       const alreadyInUseError = new ResponseError(400, 'Ticket already used')
+      if(!t.deactivated) { // make sure ticket is deactivated
+        t.deactivated = true;
+        await t.save();
+      }
       return res.send(alreadyInUseError)
     }
     attendeeData.ticketSaleDetailId = t.id
@@ -261,8 +265,12 @@ controller.postFromTicket = async function (req, res) {
   }
 
   try {
-    if (await this.model.ticketAlreadyUsed(req.ticketSaleDetail.id)) {
+    if (req.ticketSaleDetail.deactivated || (await this.model.ticketAlreadyUsed(req.ticketSaleDetail.id))) {
       const alreadyInUseError = new ResponseError(400, 'Ticket already used')
+      if(!req.ticketSaleDetail.deactivated) {
+        req.ticketSaleDetail.deactivated = true;
+        await req.ticketSaleDetail.save();
+      }
       return res.send(alreadyInUseError)
     }
   } catch {
