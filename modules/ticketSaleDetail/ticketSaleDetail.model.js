@@ -52,7 +52,18 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			...options
 		})
-	}
+    }
+    
+    TicketSaleDetail.deactivateTicket = function(uuid) {
+        return this.update({ deactivated: true },
+            {
+                fields: ['deactivated'],
+                where: {
+                    uuid
+                }
+            }
+        );
+    }
 
     return TicketSaleDetail;
 }

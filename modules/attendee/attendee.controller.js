@@ -153,7 +153,7 @@ controller.postFunc = async function (req, res) {
 
   try {
     let t = await this.db.ticketSaleDetail.findByUUID(ticket, {
-      attributes: ['id']
+      attributes: ['id', 'deactivated']
     })
     if (!t) {
       validationError.addContext('ticket', 'Ticket does not exist')
@@ -237,12 +237,8 @@ controller.postFunc = async function (req, res) {
   //insert
   try {
     let result = await this.insert(attendeeData, { returning: validAttributes });
-    await this.update({
-      id: attendeeData.ticketSaleDetailId,
-      data: {
-        deactivated: true
-      }
-    })
+
+    await this.db.ticketSaleDetail.deactivateTicket(ticket);
     res.statusCode = 201;
     res.send(result);
 
