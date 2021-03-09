@@ -20,7 +20,7 @@ module.exports = {
           id: 2,
           'uuid': 'c37c4e54-76bf-42aa-9be2-18b94650580c',
           "id_ticket_sale": 2,
-          "deactivated": false,
+          "deactivated": true,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -28,7 +28,7 @@ module.exports = {
           id: 3,
           'uuid': 'ab03f7c2-a7cf-4525-931e-2e2bbad4f756',
           "id_ticket_sale": 2,
-          "deactivated": false,
+          "deactivated": true,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -36,7 +36,7 @@ module.exports = {
           id: 4,
           'uuid': 'd4e950bb-4fcf-4ea0-906a-ed48347ef36c',
           "id_ticket_sale": 2,
-          "deactivated": false,
+          "deactivated": true,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -44,7 +44,7 @@ module.exports = {
           id: 5,
           'uuid': '741a5b4e-8e80-45ed-b2c5-225c7632d9b1',
           "id_ticket_sale": 2,
-          "deactivated": false,
+          "deactivated": true,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -52,7 +52,7 @@ module.exports = {
           id: 6,
           'uuid': '7971b2dc-8b86-469a-a6aa-4923cfb2f0df',
           "id_ticket_sale": 3,
-          "deactivated": false,
+          "deactivated": true,
           createdAt: new Date(),
           updatedAt: new Date()
         }
