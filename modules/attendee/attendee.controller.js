@@ -237,6 +237,12 @@ controller.postFunc = async function (req, res) {
   //insert
   try {
     let result = await this.insert(attendeeData, { returning: validAttributes });
+    await this.update({
+      id: attendeeData.ticketSaleDetailId,
+      data: {
+        deactivated: true
+      }
+    })
     res.statusCode = 201;
     res.send(result);
 
@@ -369,6 +375,8 @@ controller.postFromTicket = async function (req, res) {
   //insert
   try {
     let result = await this.insert(attendeeData, { returning: validAttributes });
+    req.ticketSaleDetail.deactivated = true;
+    await req.ticketSaleDetail.save();
     res.statusCode = 201;
     res.send(result);
 
