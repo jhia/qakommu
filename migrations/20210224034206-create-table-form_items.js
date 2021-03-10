@@ -52,6 +52,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('inputs');
+    return queryInterface.dropTable('form_items');
   }
 };
