@@ -49,10 +49,26 @@ controller.getFunc = async function (req, res) {
 }
 
 controller.getVerificationUUID = async function (req, res) {
+  let ticket = {};
   try{
-    let deactivated = req.ticketSaleDetail.deactivated;
-    return res.send({deactivated})
+    ticket.deactivated  = req.ticketSaleDetail.deactivated;
+    
+    let ticketSale = await this.db.ticketSale.findOne({
+      //attributes: 'id',
+      where: { id : req.ticketSaleDetail.ticketSaleId },
+      include: [{
+        model: this.db.ticket,
+        attributes: ['name','description','eventId'],
+        as: 'ticket'
+      }]
+    });
+    if (ticketSale){
+      ticket.detail = ticketSale.ticket
+    }
+    
+    return res.send({ticket})
   }catch(err){
+
     console.log(err)
     const connectionError = new ResponseError(503, 'Try again later');
     return res.send(connectionError);

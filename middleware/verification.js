@@ -83,5 +83,5 @@ exports.ticketSaleDetailUUIDVerification = modelIdVerification({
   idName: 'uuid',
   isPk: false,
   validation: validateUUID,
-  attributes: ['id', 'deactivated']
+  attributes: ['id',  'ticketSaleId' ,'deactivated']
 });
