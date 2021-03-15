@@ -24,7 +24,7 @@ router.get('/event/:eventId/count', eventVerification, function(req, res){
   attendeeController.getCountFromAttendees(req, new Response(res));
 });
 
-router.get('/ticket/:ticketSaleDetailUUID/verification', ticketSaleDetailUUIDVerification, function(req, res) {
+router.get('/event/:eventId/ticket/:ticketSaleDetailUUID/verification/', ticketSaleDetailUUIDVerification, function(req, res) {
   attendeeController.getVerificationUUID(req, new Response(res));
 })
 

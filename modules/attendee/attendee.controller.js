@@ -5,7 +5,8 @@ const Base = require('../../helpers/base.controller');
 const controller = new Base('attendee');
 const { validateUUID } = require('../../helpers/validations');
 const { ResponseError } = require('../../http');
-const Archive = require('../../helpers/archive')
+const Archive = require('../../helpers/archive');
+const { query } = require('express');
 
 /*
 *Extend or overwrite the base functions
@@ -34,9 +35,9 @@ controller.getFunc = async function (req, res) {
     });
 
     await Promise.all(attendees.map((a, i) => Archive.route(a.user.profilePhoto)
-            .then((route) => { attendees[i].user.profilePhoto = route })
-            .catch(err => ({}))
-        ));
+      .then((route) => { attendees[i].user.profilePhoto = route })
+      .catch(err => ({}))
+    ));
 
     res.send(attendees);
 
@@ -50,30 +51,42 @@ controller.getFunc = async function (req, res) {
 
 controller.getVerificationUUID = async function (req, res) {
   let ticket = {};
-  try{
-    ticket.deactivated  = req.ticketSaleDetail.deactivated;
-    
-    let ticketSale = await this.db.ticketSale.findOne({
-      //attributes: 'id',
-      where: { id : req.ticketSaleDetail.ticketSaleId },
-      include: [{
-        model: this.db.ticket,
-        attributes: ['name','description','eventId'],
-        as: 'ticket'
-      }]
-    });
-    if (ticketSale){
-      ticket.detail = ticketSale.ticket
+  const {eventId} = req.params;
+
+  if (isNaN(eventId)) {
+    const validationError = new ResponseError(400, 'Event id is not valid')
+    return res.send(validationError);
+  }
+
+  try {
+
+    ticket.deactivated = req.ticketSaleDetail.deactivated;
+    if (!ticket.deactivated) {
+      let ticketSale = await this.db.ticketSale.findOne({
+        //attributes: 'id',
+        where: { id: req.ticketSaleDetail.ticketSaleId },
+        include: [{
+          model: this.db.ticket,
+          attributes: ['name', 'description', 'eventId'],
+          as: 'ticket'
+        }]
+      });
+      if (ticketSale.ticket.eventId == eventId) {
+        ticket.detail = ticketSale.ticket
+      } else {
+        const validationError = new ResponseError(400, 'Invalid ticket code for this event')
+        return res.send(validationError);
+      }
     }
-    
-    return res.send({ticket})
-  }catch(err){
+
+    return res.send({ ticket })
+  } catch (err) {
 
     console.log(err)
     const connectionError = new ResponseError(503, 'Try again later');
     return res.send(connectionError);
   }
-  
+
 }
 
 controller.getCountFromAttendees = async function (req, res) {
@@ -177,7 +190,7 @@ controller.postFunc = async function (req, res) {
     }
     if (t.deactivated || (await this.model.ticketAlreadyUsed(t.id))) {
       const alreadyInUseError = new ResponseError(400, 'Ticket already used')
-      if(!t.deactivated) { // make sure ticket is deactivated
+      if (!t.deactivated) { // make sure ticket is deactivated
         t.deactivated = true;
         await t.save();
       }
@@ -285,7 +298,7 @@ controller.postFromTicket = async function (req, res) {
   try {
     if (req.ticketSaleDetail.deactivated || (await this.model.ticketAlreadyUsed(req.ticketSaleDetail.id))) {
       const alreadyInUseError = new ResponseError(400, 'Ticket already used')
-      if(!req.ticketSaleDetail.deactivated) {
+      if (!req.ticketSaleDetail.deactivated) {
         req.ticketSaleDetail.deactivated = true;
         await req.ticketSaleDetail.save();
       }
