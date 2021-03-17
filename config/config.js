@@ -5,7 +5,9 @@ module.exports = {
     use_env_variable: "DATABASE_URL",
     dialect: 'postgres',
     logging: false,
-    ssl: true,
+    ssl: {
+      rejectUnauthorized: false
+    },
     dialectOptions: {
       ssl: {
         require: true, // This will help you. But you will see nwe error
