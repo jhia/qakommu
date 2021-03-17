@@ -1,30 +1,17 @@
 const fs = require('fs')
 
-let cKey, cCert, cCa;
-
-try {
-  cKey = fs.readFileSync(process.env.SSL_KEY_PATH || 'server-key.pem')
-} catch(err) {}
-
-try {
-  cCert = fs.readFileSync(process.env.SSL_CERT_PATH || 'server-cert.pem')
-} catch(err) {}
-
-try {
-  cCa = fs.readFileSync(process.env.SSL_CA_PATH || 'server-ca.pem')
-} catch(err) {}
-
 module.exports = {
   production: {
     use_env_variable: "DATABASE_URL",
     dialect: 'postgres',
     logging: false,
-    ssl: {
-      rejectUnauthorized: false,
-      key: cKey,
-      cert: cCert,
-      ca: cCa
-    }
+    native: true,
+    dialectOptions: {
+      ssl: {
+        require: true, // This will help you. But you will see nwe error
+        rejectUnauthorized: false // This line will fix new error
+      }
+    },
   },
   test: {
     use_env_variable: "DATABASE_TEST_URL",
